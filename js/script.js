@@ -183,7 +183,7 @@ style.textContent = `
         display: flex;
         position: fixed;
         left: -100%;
-        top: 70px;
+        top: 140px;
         flex-direction: column;
         background-color: white;
         width: 100%;
@@ -192,6 +192,12 @@ style.textContent = `
         box-shadow: 0 10px 27px rgba(0, 0, 0, 0.05);
         left: 0;
         padding: 2rem 0;
+    }
+    
+    @media (max-width: 768px) {
+        .nav-menu.active {
+            top: 100px;
+        }
     }
     
     .hamburger.active .bar:nth-child(2) {
