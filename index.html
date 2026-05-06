@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Saltify — Enterprise Salt, Blue/Green, Git-Driven</title>
-    <meta name="description" content="Saltify is a Salt-only consultancy. We deploy SaltStack the enterprise way — blue/green, git-integrated, with optional VMware Aria Automation Config integration. Plus AI vibe coding for lean teams.">
+    <title>Saltify — Blue/Green Salt for Australian Government & Enterprise</title>
+    <meta name="description" content="Saltify is a Canberra-based Salt consultancy. We don't do in-place upgrades — we stand up a new master, test, flip DNS. Architecture adopted as enterprise standard at Australian government departments. Free edition or VMware Aria Automation Config.">
     <link rel="icon" type="image/png" href="logo/saltify-logo-large-transparent.png">
     <link rel="stylesheet" href="css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -45,13 +45,61 @@
     <section id="home" class="hero">
         <div class="container">
             <div class="hero-content">
-                <p class="hero-eyebrow">Enterprise Salt · Blue/Green · Git-Driven</p>
-                <h1 class="hero-title">Salt that ships safely, and <span class="hero-highlight">rolls forward.</span></h1>
-                <p class="hero-sub">We're a Salt-only consultancy. We set up SaltStack the way enterprises actually need it — blue/green deployments, git as the source of truth, and zero-downtime change. Free edition or VMware Aria Automation Config. We do both.</p>
+                <p class="hero-eyebrow">Event-Driven Salt · AI Uplift · Government & Enterprise</p>
+                <h1 class="hero-title">Hard problems deserve <span class="hero-highlight">simple solutions.</span></h1>
+                <p class="hero-sub">We do event-driven Salt our way — complexity is easy; simple is the craft. We build it, hand it back, and turn your team into AI geniuses on the way out.</p>
                 <div class="hero-actions">
                     <a href="#contact" class="btn-primary">Let's talk →</a>
-                    <a href="#salt101" class="btn-ghost">Salt 101 ↓</a>
+                    <a href="#approach" class="btn-ghost">Our approach ↓</a>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Credibility band -->
+    <section class="cred-band" aria-label="Credentials">
+        <div class="container">
+            <ul class="cred-row">
+                <li>Canberra-based</li>
+                <li>Australian Government departments</li>
+                <li>VMware ecosystem</li>
+                <li>Architecture adopted as enterprise standard</li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- What is Salt? -->
+    <section id="what-is-salt" class="what-is-salt">
+        <div class="container">
+            <header class="section-header">
+                <h2>What is Salt?</h2>
+                <p>Configuration management on the surface. Event-driven everywhere underneath.</p>
+            </header>
+            <div class="what-grid">
+                <article class="what-card fade-in">
+                    <div class="service-icon">
+                        <i class="fas fa-sliders"></i>
+                    </div>
+                    <h3>Configuration management</h3>
+                    <p>Declare your fleet's desired state in YAML. Salt enforces it across thousands of nodes — Linux, Windows, anywhere there's a minion. One source of truth, one apply, every host converges.</p>
+                    <a href="https://saltproject.io/" target="_blank" rel="noopener" class="what-link">saltproject.io ↗</a>
+                </article>
+                <article class="what-card fade-in">
+                    <div class="service-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3>Event-driven by design</h3>
+                    <p>Every minion publishes to a real-time event bus. Reactors fire orchestration on those events — no polling, no cron, no five-minute lag. This is what people miss about Salt: it's reactive infrastructure, not just config push.</p>
+                    <a href="https://docs.saltproject.io/en/latest/topics/event/" target="_blank" rel="noopener" class="what-link">Event bus docs ↗</a>
+                </article>
+                <article class="what-card fade-in">
+                    <div class="service-icon">
+                        <i class="fas fa-cubes"></i>
+                    </div>
+                    <h3>Free or enterprise</h3>
+                    <p>Salt Project is open source, free, fully featured. VMware Aria Automation Config (formerly SaltStack Config) wraps it with RBAC, RaaS, and a UI for regulated environments. Same engine, same patterns.</p>
+                    <a href="https://www.vmware.com/products/aria-automation-config.html" target="_blank" rel="noopener" class="what-link">Aria Automation Config ↗</a>
+                </article>
             </div>
         </div>
     </section>
@@ -139,22 +187,121 @@
                     <p>Aria Automation Config (formerly SaltStack Config / SSC), RaaS, and full VCF integration. Uplift from 8.17 / 3006.x, POC prerequisites, and master + RaaS install hardened for production.</p>
                 </article>
 
-                <!-- AI Vibe Coding -->
+                <!-- Reactor & Orchestration -->
                 <article class="service-card fade-in">
                     <div class="service-icon">
-                        <i class="fas fa-robot"></i>
+                        <i class="fas fa-bolt"></i>
                     </div>
-                    <h3>AI Vibe Coding Pipeline</h3>
-                    <p class="service-tech">Claude · Cursor · Lean Teams</p>
-                    <p>Salt states, reactor logic, and pillar data written with AI in the loop. We help your team build a pipeline where AI writes the boilerplate and humans review the diff. Your fleet doesn't care who typed it — it cares that it's right.</p>
+                    <h3>Reactor & Orchestration</h3>
+                    <p class="service-tech">Event-Driven · Real-Time</p>
+                    <p>Salt's event bus tied into reactor SLS so highstate, key acceptance, post-deploy validation, and incident response happen automatically. The event-driven layer most teams skip — and the reason your fleet runs itself.</p>
                 </article>
 
             </div>
         </div>
     </section>
 
+    <!-- Team Uplift -->
+    <section id="uplift" class="uplift">
+        <div class="container">
+            <header class="section-header">
+                <h2>Build it. Train them. Leave.</h2>
+                <p>Modern AI has changed how engineering teams ship. We make sure yours catches up — and stays ahead.</p>
+            </header>
+            <div class="uplift-grid">
+                <article class="service-card service-card--featured uplift-card fade-in">
+                    <div class="featured-header">
+                        <div class="service-icon">
+                            <i class="fas fa-rocket"></i>
+                        </div>
+                        <div class="featured-header-text">
+                            <h3>Team Uplift — Git, AI, Vibecoding</h3>
+                            <p class="service-tech">Claude Code · GitHub Copilot · Cursor · VSCode</p>
+                        </div>
+                    </div>
+                    <p class="featured-desc">
+                        When we come in, we don't just deploy infrastructure — we rewire how your team works. Git flow becomes muscle memory. AI becomes the pair programmer your engineers don't want to work without. By the time we leave, you have a high-performance team that can automate anything, keep it simple, and rebuild from git in minutes if it breaks. No vendor lock-in. No Saltify-shaped hole.
+                    </p>
+                    <div class="featured-items">
+                        <div class="featured-item">
+                            <div class="featured-item-icon">
+                                <i class="fas fa-code-branch"></i>
+                            </div>
+                            <div>
+                                <strong>Git flow, done right</strong>
+                                <span>Branch strategy that fits your team. Pull requests with intent. GitOps-style promotion from develop to staging to prod. Every change a commit. Every commit reviewable. Every deploy a merge.</span>
+                            </div>
+                        </div>
+                        <div class="featured-item">
+                            <div class="featured-item-icon">
+                                <i class="fas fa-wand-magic-sparkles"></i>
+                            </div>
+                            <div>
+                                <strong>Vibecoding with AI</strong>
+                                <span>Claude Code, GitHub Copilot, and Cursor wired into VSCode. Your engineers stop typing boilerplate states and start reviewing diffs. Productivity lifts on day one — and the gap between your team and theirs gets wider from there.</span>
+                            </div>
+                        </div>
+                        <div class="featured-item">
+                            <div class="featured-item-icon">
+                                <i class="fas fa-database"></i>
+                            </div>
+                            <div>
+                                <strong>Version control as the source of truth</strong>
+                                <span>Every state, every pillar, every reactor lives in git. Audit trail comes for free. Restore is <code>git checkout</code>. There's no "what changed?" — git already knows.</span>
+                            </div>
+                        </div>
+                        <div class="featured-item">
+                            <div class="featured-item-icon">
+                                <i class="fas fa-trophy"></i>
+                            </div>
+                            <div>
+                                <strong>High-performance handover</strong>
+                                <span>By the time we walk out, your team can automate anything new in days, not quarters. Simple by default. Restorable in minutes. No vendor dependence — just a team that's measurably better than the day we arrived.</span>
+                            </div>
+                        </div>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Approach: Stop upgrading in place -->
+    <section id="approach" class="approach section-alt">
+        <div class="container">
+            <header class="section-header">
+                <h2>Stop upgrading Salt in place.</h2>
+                <p>There's a simpler way. It's also safer.</p>
+            </header>
+            <div class="compare-grid">
+                <article class="compare-card compare-card--bad fade-in">
+                    <p class="compare-eyebrow">The default approach</p>
+                    <h3>In-place upgrade</h3>
+                    <ul>
+                        <li>Database migration runs against your live master</li>
+                        <li>Multi-hour change window with the fleet locked out</li>
+                        <li>Rollback means restore-from-backup — and pray</li>
+                        <li>One failed state and the whole upgrade is in limbo</li>
+                        <li>Audit trail is whatever someone screenshotted</li>
+                    </ul>
+                </article>
+                <article class="compare-card compare-card--good fade-in">
+                    <p class="compare-eyebrow">The Saltify pattern</p>
+                    <h3>Blue/green cutover</h3>
+                    <ul>
+                        <li>Stand up a new master alongside the old</li>
+                        <li>Copy the certs — minions don't notice the switch</li>
+                        <li>Test the new stack under real load before cutover</li>
+                        <li>Flip DNS or load balancer when you're happy</li>
+                        <li>If something breaks: <strong>rebuild, don't restore</strong></li>
+                    </ul>
+                </article>
+            </div>
+            <p class="approach-footnote">Anyone can build a complex solution for a complex problem. The hard part is making it simple. That's what we do.</p>
+        </div>
+    </section>
+
     <!-- Salt 101 -->
-    <section id="salt101" class="salt101">
+    <section id="salt101" class="salt101 section-alt">
         <div class="container">
             <header class="section-header">
                 <h2>Salt 101</h2>
@@ -250,6 +397,15 @@ salt -C 'web* and G@env:prod' state.apply</code></pre>
                     <p>Grain match (<code>-G</code>) and compound (<code>-C</code>) — the targeting you'll use every day.</p>
                 </div>
             </div>
+
+            <h3 class="subsection-title">Further reading</h3>
+            <ul class="links-row">
+                <li><a href="https://saltproject.io/" target="_blank" rel="noopener">Salt Project ↗</a></li>
+                <li><a href="https://docs.saltproject.io/" target="_blank" rel="noopener">Documentation ↗</a></li>
+                <li><a href="https://github.com/saltstack/salt" target="_blank" rel="noopener">GitHub repo ↗</a></li>
+                <li><a href="https://docs.saltproject.io/salt/install-guide/en/latest/" target="_blank" rel="noopener">Install guide ↗</a></li>
+                <li><a href="https://www.vmware.com/products/aria-automation-config.html" target="_blank" rel="noopener">VMware Aria Automation Config ↗</a></li>
+            </ul>
         </div>
     </section>
 
@@ -259,9 +415,9 @@ salt -C 'web* and G@env:prod' state.apply</code></pre>
             <div class="philosophy-content fade-in">
                 <p class="philosophy-eyebrow">The Saltify thesis</p>
                 <blockquote>
-                    Salt is the most powerful config-management tool nobody's deploying properly.<br>
-                    <strong>The fleet doesn't fail because Salt is wrong.</strong> It fails because the deployment around Salt is wrong — manual changes, one master, no rollback path, no audit trail.<br><br>
-                    Fix the deployment, and Salt does what it was always supposed to.
+                    The hard part isn't building a complex system. <strong>The hard part is making it simple.</strong><br><br>
+                    Anyone can solve a complex problem with a complex solution. What's rare — and what we build — is a simple solution to a hard one.<br><br>
+                    Stand up a new stack. Test it. Flip the switch. If it breaks, rebuild. No drama. No 2am all-hands. No rollback procedure that nobody trusts.
                 </blockquote>
             </div>
         </div>
@@ -294,8 +450,19 @@ salt -C 'web* and G@env:prod' state.apply</code></pre>
         </div>
     </section>
 
+    <!-- Salt in the wild — live GitHub releases -->
+    <section class="salt-wild section-alt">
+        <div class="container">
+            <header class="section-header">
+                <h2>Salt in the wild</h2>
+                <p>Live from <code>saltstack/salt</code> — the latest releases of the engine we run.</p>
+            </header>
+            <div class="release-grid" id="saltFeed"></div>
+        </div>
+    </section>
+
     <!-- Contact -->
-    <section id="contact" class="contact section-alt">
+    <section id="contact" class="contact">
         <div class="container">
             <div class="contact-content fade-in">
                 <h2>Want to work together?</h2>

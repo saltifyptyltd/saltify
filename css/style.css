@@ -382,6 +382,475 @@ p code, li code, h4 code {
 }
 
 /* ================================
+   Credibility band
+   ================================ */
+.cred-band {
+    background: var(--color-bg);
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+    padding: 1.25rem 0;
+}
+
+.cred-row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem 2.25rem;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.cred-row li {
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    position: relative;
+}
+
+.cred-row li:not(:last-child)::after {
+    content: '·';
+    position: absolute;
+    right: -1.25rem;
+    color: var(--color-text-dim);
+}
+
+@media (max-width: 700px) {
+    .cred-row {
+        gap: 0.4rem 1.25rem;
+    }
+    .cred-row li {
+        font-size: 0.6875rem;
+    }
+    .cred-row li:not(:last-child)::after {
+        right: -0.75rem;
+    }
+}
+
+/* ================================
+   Team Uplift
+   ================================ */
+.uplift {
+    padding: 100px 0;
+}
+
+.uplift-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+/* Featured card inside the uplift section spans its single column naturally */
+.uplift-grid .service-card--featured {
+    grid-column: auto;
+}
+
+/* ================================
+   What is Salt?
+   ================================ */
+.what-is-salt {
+    padding: 100px 0;
+}
+
+.what-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--color-border);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+.what-card {
+    background: var(--color-bg-card);
+    padding: 2.25rem;
+    transition: background var(--transition);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.what-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--color-accent);
+    transform: scaleX(0);
+    transition: transform var(--transition);
+}
+
+.what-card:hover {
+    background: #1c1c1c;
+}
+
+[data-theme="light"] .what-card:hover {
+    background: #f0f0f2;
+}
+
+.what-card:hover::after {
+    transform: scaleX(1);
+}
+
+.what-card .service-icon {
+    margin-bottom: 1rem;
+}
+
+.what-card h3 {
+    font-size: 1.0625rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    margin-bottom: 0.625rem;
+    color: var(--color-text);
+}
+
+.what-card > p {
+    font-size: 0.9rem;
+    color: var(--color-text-muted);
+    line-height: 1.65;
+    margin-bottom: 1.25rem;
+    flex: 1;
+}
+
+.what-link {
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-accent);
+    letter-spacing: 0.01em;
+    transition: color var(--transition);
+    align-self: flex-start;
+}
+
+.what-link:hover {
+    color: var(--color-accent-hover);
+}
+
+.what-grid .what-card:nth-child(2) { transition-delay: 90ms; }
+.what-grid .what-card:nth-child(3) { transition-delay: 180ms; }
+
+/* ================================
+   Further reading — link row
+   ================================ */
+.links-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.75rem;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.links-row li {
+    margin: 0;
+}
+
+.links-row a {
+    display: inline-block;
+    padding: 0.5rem 0.875rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--color-text-muted);
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+    transition: color var(--transition), border-color var(--transition), background var(--transition);
+}
+
+.links-row a:hover {
+    color: var(--color-accent);
+    border-color: var(--color-accent);
+    background: var(--color-accent-softer);
+}
+
+/* ================================
+   Salt in the wild — release feed
+   ================================ */
+.salt-wild {
+    padding: 100px 0;
+}
+
+.release-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--color-border);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    min-height: 220px;
+}
+
+.release-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+    padding: 1.75rem;
+    background: var(--color-bg-card);
+    color: inherit;
+    text-decoration: none;
+    position: relative;
+    transition: background var(--transition);
+}
+
+.release-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--color-accent);
+    transform: scaleX(0);
+    transition: transform var(--transition);
+}
+
+.release-card:hover {
+    background: #1c1c1c;
+}
+
+[data-theme="light"] .release-card:hover {
+    background: #f0f0f2;
+}
+
+.release-card:hover::after {
+    transform: scaleX(1);
+}
+
+.release-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+}
+
+.release-tag {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-accent);
+    letter-spacing: 0.01em;
+}
+
+.release-age {
+    font-size: 0.6875rem;
+    color: var(--color-text-dim);
+    flex-shrink: 0;
+}
+
+.release-title {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    line-height: 1.5;
+    color: var(--color-text);
+    flex-grow: 1;
+}
+
+.release-footer {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-top: auto;
+    padding-top: 0.5rem;
+    border-top: 1px solid var(--color-border);
+}
+
+.release-stat {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.release-stat i {
+    font-size: 0.8125rem;
+    color: var(--color-text-dim);
+}
+
+.release-link {
+    margin-left: auto;
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    transition: color var(--transition);
+    flex-shrink: 0;
+}
+
+.release-card:hover .release-link {
+    color: var(--color-accent);
+}
+
+/* Skeleton loading */
+.release-skeleton {
+    pointer-events: none;
+    gap: 1rem;
+}
+
+.skel-line {
+    border-radius: 4px;
+    background: var(--color-border);
+    position: relative;
+    overflow: hidden;
+}
+
+.skel-line::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.05) 50%, transparent 100%);
+    background-size: 200% 100%;
+    animation: skelShimmer 1.5s infinite;
+}
+
+[data-theme="light"] .skel-line::after {
+    background: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.05) 50%, transparent 100%);
+}
+
+.skel-short  { height: 10px; width: 35%; }
+.skel-long   { height: 14px; width: 90%; }
+.skel-medium { height: 14px; width: 70%; }
+.skel-thin   { height: 10px; width: 50%; }
+
+@keyframes skelShimmer {
+    from { background-position: 200% 0; }
+    to   { background-position: -200% 0; }
+}
+
+/* ================================
+   Approach — in-place vs blue/green
+   ================================ */
+.approach {
+    padding: 100px 0;
+}
+
+.compare-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1px;
+    background: var(--color-border);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+.compare-card {
+    background: var(--color-bg-card);
+    padding: 2.25rem;
+    position: relative;
+}
+
+.compare-card--bad {
+    background: linear-gradient(160deg, #1a1010 0%, #161616 100%);
+}
+
+[data-theme="light"] .compare-card--bad {
+    background: linear-gradient(160deg, #fbf2f2 0%, #ffffff 100%);
+}
+
+.compare-card--good {
+    background: linear-gradient(160deg, #0e1a1d 0%, #161616 100%);
+}
+
+[data-theme="light"] .compare-card--good {
+    background: linear-gradient(160deg, #eef9fc 0%, #ffffff 100%);
+}
+
+.compare-card--good::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent 0%, rgba(6, 182, 212, 0.7) 50%, transparent 100%);
+    animation: borderPulse 3s ease-in-out infinite;
+}
+
+.compare-eyebrow {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-text-dim);
+    margin-bottom: 0.75rem;
+}
+
+.compare-card--good .compare-eyebrow {
+    color: var(--color-accent);
+}
+
+.compare-card h3 {
+    font-size: 1.375rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--color-text);
+    margin-bottom: 1.5rem;
+}
+
+.compare-card ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+}
+
+.compare-card li {
+    font-size: 0.9375rem;
+    line-height: 1.55;
+    color: var(--color-text-muted);
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.compare-card--bad li::before {
+    content: '\f00d';  /* fa-xmark */
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    position: absolute;
+    left: 0;
+    top: 1px;
+    color: #b35454;
+    font-size: 0.8125rem;
+}
+
+.compare-card--good li::before {
+    content: '\f00c';  /* fa-check */
+    font-family: 'Font Awesome 6 Free';
+    font-weight: 900;
+    position: absolute;
+    left: 0;
+    top: 1px;
+    color: var(--color-accent);
+    font-size: 0.8125rem;
+}
+
+.compare-card--good li strong {
+    color: var(--color-text);
+    font-weight: 600;
+}
+
+.approach-footnote {
+    text-align: center;
+    margin-top: 3rem;
+    font-size: 1rem;
+    color: var(--color-text-muted);
+    font-style: italic;
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.65;
+}
+
+/* ================================
    Shared section styles
    ================================ */
 .section-alt {
@@ -1024,6 +1493,24 @@ pre code {
     .commands-grid {
         grid-template-columns: 1fr;
     }
+
+    .compare-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .what-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .release-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .release-grid {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* ================================
@@ -1083,8 +1570,12 @@ pre code {
         min-height: auto;
     }
 
+    .what-is-salt { padding: 60px 0; }
     .services { padding: 60px 0; }
+    .uplift { padding: 60px 0; }
+    .approach { padding: 60px 0; }
     .salt101 { padding: 60px 0; }
+    .salt-wild { padding: 60px 0; }
     .philosophy { padding: 80px 0; }
     .process { padding: 60px 0; }
     .contact { padding: 60px 0; }
