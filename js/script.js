@@ -1,5 +1,8 @@
 'use strict';
 
+const RELEASES_CACHE_KEY = 'saltifyReleasesV1';
+const RELEASES_TTL_MS = 60 * 60 * 1000;
+
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
     initNavigation();
@@ -26,6 +29,7 @@ function initTheme() {
         if (icon) {
             icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
         }
+        toggle?.setAttribute('aria-pressed', String(theme === 'light'));
     }
 }
 
@@ -53,9 +57,15 @@ function initNavigation() {
         if (e.key === 'Escape' && navMenu.classList.contains('active')) closeNav();
     });
 
-    window.addEventListener('scroll', debounce(() => {
-        navbar.classList.toggle('scrolled', window.scrollY > 50);
-    }, 150));
+    let pending = false;
+    window.addEventListener('scroll', () => {
+        if (pending) return;
+        pending = true;
+        requestAnimationFrame(() => {
+            navbar.classList.toggle('scrolled', window.scrollY > 50);
+            pending = false;
+        });
+    }, { passive: true });
 }
 
 function initAnimations() {
@@ -73,30 +83,62 @@ function initAnimations() {
 
 /* ================================
    Salt in the wild — GitHub releases for saltstack/salt
+   localStorage cache (1h TTL) avoids hitting GH's 60/hr unauth limit
+   on every page load and keeps the section instant on repeat visits.
    ================================ */
 function initSaltFeed() {
     const container = document.getElementById('saltFeed');
     if (!container) return;
 
-    container.innerHTML = skeletons(6);
+    const cached = readReleaseCache();
+    if (cached) {
+        container.innerHTML = cached.map(releaseCard).join('');
+        if (Date.now() - cached.cachedAt < RELEASES_TTL_MS) return;
+    } else {
+        container.innerHTML = skeletons(6);
+    }
 
-    const url = 'https://api.github.com/repos/saltstack/salt/releases?per_page=12';
-
-    fetch(url)
+    fetch('https://api.github.com/repos/saltstack/salt/releases?per_page=12')
         .then(r => { if (!r.ok) throw new Error(); return r.json(); })
         .then(releases => {
-            // Stable tags only — Salt uses vNNNN.N(.N) and marks RCs with prerelease=false sometimes
             const stable = /^v\d+(\.\d+)+$/;
             const valid = releases
                 .filter(r => !r.draft && !r.prerelease && stable.test(r.tag_name))
                 .slice(0, 6);
             if (valid.length === 0) throw new Error();
-            container.innerHTML = valid.map(releaseCard).join('');
+            const trimmed = valid.map(r => ({
+                tag_name: r.tag_name,
+                name: r.name,
+                published_at: r.published_at,
+                html_url: r.html_url,
+            }));
+            container.innerHTML = trimmed.map(releaseCard).join('');
+            writeReleaseCache(trimmed);
         })
         .catch(() => {
+            if (cached) return;
             const section = container.closest('.salt-wild');
             if (section) section.style.display = 'none';
         });
+}
+
+function readReleaseCache() {
+    try {
+        const raw = localStorage.getItem(RELEASES_CACHE_KEY);
+        if (!raw) return null;
+        const { cachedAt, releases } = JSON.parse(raw);
+        if (!Array.isArray(releases) || releases.length === 0) return null;
+        return Object.assign(releases, { cachedAt });
+    } catch { return null; }
+}
+
+function writeReleaseCache(releases) {
+    try {
+        localStorage.setItem(RELEASES_CACHE_KEY, JSON.stringify({
+            cachedAt: Date.now(),
+            releases,
+        }));
+    } catch { /* quota / private mode — ignore */ }
 }
 
 function releaseCard(release) {
@@ -105,14 +147,14 @@ function releaseCard(release) {
         ? release.name
         : release.tag_name;
     return `
-        <a class="release-card" href="${escHtml(release.html_url)}" target="_blank" rel="noopener noreferrer">
+        <a class="release-card hover-card" href="${escHtml(release.html_url)}" target="_blank" rel="noopener noreferrer">
             <div class="release-card-top">
                 <span class="release-tag">${escHtml(release.tag_name)}</span>
                 <span class="release-age">${age}</span>
             </div>
             <h3 class="release-title">${escHtml(title)}</h3>
             <div class="release-footer">
-                <span class="release-stat"><i class="fab fa-github"></i> saltstack/salt</span>
+                <span class="release-stat"><i class="fab fa-github" aria-hidden="true"></i> saltstack/salt</span>
                 <span class="release-link">Release notes ↗</span>
             </div>
         </a>`;
@@ -144,12 +186,4 @@ function escHtml(str) {
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;');
-}
-
-function debounce(fn, delay) {
-    let timer;
-    return (...args) => {
-        clearTimeout(timer);
-        timer = setTimeout(() => fn(...args), delay);
-    };
 }

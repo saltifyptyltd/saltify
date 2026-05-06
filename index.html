@@ -6,10 +6,11 @@
     <title>Saltify — Blue/Green Salt for Australian Government & Enterprise</title>
     <meta name="description" content="Saltify is a Canberra-based Salt consultancy. We don't do in-place upgrades — we stand up a new master, test, flip DNS. Architecture adopted as enterprise standard at Australian government departments. Free edition or VMware Aria Automation Config.">
     <link rel="icon" type="image/png" href="logo/saltify-logo-large-transparent.png">
-    <link rel="stylesheet" href="css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -29,8 +30,8 @@
                 <li><a href="#contact" class="nav-link nav-cta">Let's talk →</a></li>
             </ul>
             <div class="nav-right">
-                <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
-                    <i class="fas fa-sun" id="themeIcon"></i>
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" aria-pressed="false">
+                    <i class="fas fa-sun" id="themeIcon" aria-hidden="true"></i>
                 </button>
                 <button class="hamburger" aria-label="Toggle menu" aria-expanded="false">
                     <span></span>
@@ -75,26 +76,26 @@
                 <h2>What is Salt?</h2>
                 <p>Configuration management on the surface. Event-driven everywhere underneath.</p>
             </header>
-            <div class="what-grid">
-                <article class="what-card fade-in">
+            <div class="what-grid divider-grid">
+                <article class="what-card hover-card fade-in">
                     <div class="service-icon">
-                        <i class="fas fa-sliders"></i>
+                        <i class="fas fa-sliders" aria-hidden="true"></i>
                     </div>
                     <h3>Configuration management</h3>
                     <p>Declare your fleet's desired state in YAML. Salt enforces it across thousands of nodes — Linux, Windows, anywhere there's a minion. One source of truth, one apply, every host converges.</p>
                     <a href="https://saltproject.io/" target="_blank" rel="noopener" class="what-link">saltproject.io ↗</a>
                 </article>
-                <article class="what-card fade-in">
+                <article class="what-card hover-card fade-in">
                     <div class="service-icon">
-                        <i class="fas fa-bolt"></i>
+                        <i class="fas fa-bolt" aria-hidden="true"></i>
                     </div>
                     <h3>Event-driven by design</h3>
                     <p>Every minion publishes to a real-time event bus. Reactors fire orchestration on those events — no polling, no cron, no five-minute lag. This is what people miss about Salt: it's reactive infrastructure, not just config push.</p>
                     <a href="https://docs.saltproject.io/en/latest/topics/event/" target="_blank" rel="noopener" class="what-link">Event bus docs ↗</a>
                 </article>
-                <article class="what-card fade-in">
+                <article class="what-card hover-card fade-in">
                     <div class="service-icon">
-                        <i class="fas fa-cubes"></i>
+                        <i class="fas fa-cubes" aria-hidden="true"></i>
                     </div>
                     <h3>Free or enterprise</h3>
                     <p>Salt Project is open source, free, fully featured. VMware Aria Automation Config (formerly SaltStack Config) wraps it with RBAC, RaaS, and a UI for regulated environments. Same engine, same patterns.</p>
@@ -111,13 +112,12 @@
                 <h2>What we do</h2>
                 <p>One stack. Done properly. From open source to enterprise VMware integration.</p>
             </header>
-            <div class="services-grid">
+            <div class="services-grid divider-grid">
 
-                <!-- Featured: Blue/Green git-driven deployment -->
                 <article class="service-card service-card--featured fade-in">
                     <div class="featured-header">
                         <div class="service-icon">
-                            <i class="fas fa-code-branch"></i>
+                            <i class="fas fa-code-branch" aria-hidden="true"></i>
                         </div>
                         <div class="featured-header-text">
                             <h3>Blue/Green Salt, Git-Driven</h3>
@@ -130,7 +130,7 @@
                     <div class="featured-items">
                         <div class="featured-item">
                             <div class="featured-item-icon">
-                                <i class="fas fa-code-merge"></i>
+                                <i class="fas fa-code-merge" aria-hidden="true"></i>
                             </div>
                             <div>
                                 <strong>Git as source of truth</strong>
@@ -139,7 +139,7 @@
                         </div>
                         <div class="featured-item">
                             <div class="featured-item-icon">
-                                <i class="fas fa-server"></i>
+                                <i class="fas fa-server" aria-hidden="true"></i>
                             </div>
                             <div>
                                 <strong>Two-master HA</strong>
@@ -148,7 +148,7 @@
                         </div>
                         <div class="featured-item">
                             <div class="featured-item-icon">
-                                <i class="fas fa-rotate"></i>
+                                <i class="fas fa-rotate" aria-hidden="true"></i>
                             </div>
                             <div>
                                 <strong>Pipeline-driven promotion</strong>
@@ -157,7 +157,7 @@
                         </div>
                         <div class="featured-item">
                             <div class="featured-item-icon">
-                                <i class="fas fa-shield-halved"></i>
+                                <i class="fas fa-shield-halved" aria-hidden="true"></i>
                             </div>
                             <div>
                                 <strong>Reactor + orchestration</strong>
@@ -167,30 +167,27 @@
                     </div>
                 </article>
 
-                <!-- Free edition -->
-                <article class="service-card fade-in">
+                <article class="service-card hover-card fade-in">
                     <div class="service-icon">
-                        <i class="fas fa-cube"></i>
+                        <i class="fas fa-cube" aria-hidden="true"></i>
                     </div>
                     <h3>Salt — Free Edition</h3>
                     <p class="service-tech">Open Source · Self-Hosted</p>
                     <p>Salt Project upstream, properly architected. Master/minion topology, pillar separation, environment splits, RBAC via external auth. Same enterprise patterns, no licence fees.</p>
                 </article>
 
-                <!-- VMware edition -->
-                <article class="service-card fade-in">
+                <article class="service-card hover-card fade-in">
                     <div class="service-icon">
-                        <i class="fas fa-cloud"></i>
+                        <i class="fas fa-cloud" aria-hidden="true"></i>
                     </div>
                     <h3>Salt — VMware Edition</h3>
                     <p class="service-tech">Aria Automation Config · VCF</p>
                     <p>Aria Automation Config (formerly SaltStack Config / SSC), RaaS, and full VCF integration. Uplift from 8.17 / 3006.x, POC prerequisites, and master + RaaS install hardened for production.</p>
                 </article>
 
-                <!-- Reactor & Orchestration -->
-                <article class="service-card fade-in">
+                <article class="service-card hover-card fade-in">
                     <div class="service-icon">
-                        <i class="fas fa-bolt"></i>
+                        <i class="fas fa-bolt" aria-hidden="true"></i>
                     </div>
                     <h3>Reactor & Orchestration</h3>
                     <p class="service-tech">Event-Driven · Real-Time</p>
@@ -212,7 +209,7 @@
                 <article class="service-card service-card--featured uplift-card fade-in">
                     <div class="featured-header">
                         <div class="service-icon">
-                            <i class="fas fa-rocket"></i>
+                            <i class="fas fa-rocket" aria-hidden="true"></i>
                         </div>
                         <div class="featured-header-text">
                             <h3>Team Uplift — Git, AI, Vibecoding</h3>
@@ -225,7 +222,7 @@
                     <div class="featured-items">
                         <div class="featured-item">
                             <div class="featured-item-icon">
-                                <i class="fas fa-code-branch"></i>
+                                <i class="fas fa-code-branch" aria-hidden="true"></i>
                             </div>
                             <div>
                                 <strong>Git flow, done right</strong>
@@ -234,7 +231,7 @@
                         </div>
                         <div class="featured-item">
                             <div class="featured-item-icon">
-                                <i class="fas fa-wand-magic-sparkles"></i>
+                                <i class="fas fa-wand-magic-sparkles" aria-hidden="true"></i>
                             </div>
                             <div>
                                 <strong>Vibecoding with AI</strong>
@@ -243,7 +240,7 @@
                         </div>
                         <div class="featured-item">
                             <div class="featured-item-icon">
-                                <i class="fas fa-database"></i>
+                                <i class="fas fa-database" aria-hidden="true"></i>
                             </div>
                             <div>
                                 <strong>Version control as the source of truth</strong>
@@ -252,7 +249,7 @@
                         </div>
                         <div class="featured-item">
                             <div class="featured-item-icon">
-                                <i class="fas fa-trophy"></i>
+                                <i class="fas fa-trophy" aria-hidden="true"></i>
                             </div>
                             <div>
                                 <strong>High-performance handover</strong>
@@ -272,7 +269,7 @@
                 <h2>Stop upgrading Salt in place.</h2>
                 <p>There's a simpler way. It's also safer.</p>
             </header>
-            <div class="compare-grid">
+            <div class="compare-grid divider-grid">
                 <article class="compare-card compare-card--bad fade-in">
                     <p class="compare-eyebrow">The default approach</p>
                     <h3>In-place upgrade</h3>
@@ -309,7 +306,7 @@
             </header>
 
             <h3 class="subsection-title">Get started in five steps</h3>
-            <div class="quickstart-grid">
+            <div class="quickstart-grid divider-grid">
                 <article class="quickstart-step fade-in">
                     <span class="step-number">01</span>
                     <h4>Install the master</h4>
@@ -352,45 +349,45 @@ sudo salt '*'    state.highstate</code></pre>
             </div>
 
             <h3 class="subsection-title">Essential commands</h3>
-            <div class="commands-grid">
-                <div class="cmd-card fade-in">
+            <div class="commands-grid divider-grid">
+                <div class="cmd-card hover-card fade-in">
                     <div class="cmd-label">Connectivity</div>
                     <pre><code>salt '*' test.ping</code></pre>
                     <p>Are my minions alive and authenticated?</p>
                 </div>
-                <div class="cmd-card fade-in">
+                <div class="cmd-card hover-card fade-in">
                     <div class="cmd-label">Apply states</div>
                     <pre><code>salt '*' state.apply
 salt 'db*' state.apply mysql</code></pre>
                     <p>Run the top file, or apply a specific state to a target.</p>
                 </div>
-                <div class="cmd-card fade-in">
+                <div class="cmd-card hover-card fade-in">
                     <div class="cmd-label">Inspect facts</div>
                     <pre><code>salt '*' grains.items
 salt '*' pillar.items</code></pre>
                     <p>Read grains (host facts) and pillar (your data tree).</p>
                 </div>
-                <div class="cmd-card fade-in">
+                <div class="cmd-card hover-card fade-in">
                     <div class="cmd-label">Run anything</div>
                     <pre><code>salt 'web*' cmd.run 'systemctl status nginx'</code></pre>
                     <p>Ad-hoc shell across a fleet. Use sparingly — prefer states.</p>
                 </div>
-                <div class="cmd-card fade-in">
+                <div class="cmd-card hover-card fade-in">
                     <div class="cmd-label">Local dry run</div>
                     <pre><code>salt-call --local state.apply test=True</code></pre>
                     <p>From the minion itself, no master, no commit. Iterate fast.</p>
                 </div>
-                <div class="cmd-card fade-in">
+                <div class="cmd-card hover-card fade-in">
                     <div class="cmd-label">Watch the bus</div>
                     <pre><code>salt-run state.event pretty=True</code></pre>
                     <p>Tail every event on the master. The first thing you open when something's off.</p>
                 </div>
-                <div class="cmd-card fade-in">
+                <div class="cmd-card hover-card fade-in">
                     <div class="cmd-label">Orchestration</div>
                     <pre><code>salt-run state.orch orch.deploy_app</code></pre>
                     <p>Multi-step, multi-host workflows. Blue/green cutovers live here.</p>
                 </div>
-                <div class="cmd-card fade-in">
+                <div class="cmd-card hover-card fade-in">
                     <div class="cmd-label">Targeting</div>
                     <pre><code>salt -G 'os:Windows' test.ping
 salt -C 'web* and G@env:prod' state.apply</code></pre>
@@ -430,7 +427,7 @@ salt -C 'web* and G@env:prod' state.apply</code></pre>
                 <h2>How we work</h2>
                 <p>Three phases. No surprises.</p>
             </header>
-            <div class="process-steps">
+            <div class="process-steps divider-grid">
                 <div class="process-step fade-in">
                     <span class="step-number">01</span>
                     <h3>Assess</h3>
@@ -457,7 +454,7 @@ salt -C 'web* and G@env:prod' state.apply</code></pre>
                 <h2>Salt in the wild</h2>
                 <p>Live from <code>saltstack/salt</code> — the latest releases of the engine we run.</p>
             </header>
-            <div class="release-grid" id="saltFeed"></div>
+            <div class="release-grid divider-grid" id="saltFeed"></div>
         </div>
     </section>
 

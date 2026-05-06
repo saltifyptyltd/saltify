@@ -14,6 +14,11 @@
     --color-accent-soft: rgba(6, 182, 212, 0.1);
     --color-accent-softer: rgba(6, 182, 212, 0.04);
     --color-accent-mid: rgba(6, 182, 212, 0.18);
+    --color-bg-card-hover: #1c1c1c;
+    --color-bg-featured: #0e1a1d;
+    --color-bg-featured-hover: #122023;
+    --color-bg-bad: #1a1010;
+    --color-danger: #b35454;
     --color-border: #222222;
     --font: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     --font-mono: 'JetBrains Mono', 'SF Mono', 'Menlo', 'Consolas', monospace;
@@ -34,8 +39,53 @@
     --color-text-muted: #6e6e73;
     --color-text-dim: #aaaaaa;
     --color-border: #d2d2d7;
+    --color-bg-card-hover: #f0f0f2;
+    --color-bg-featured: #eef9fc;
+    --color-bg-featured-hover: #e3f5fa;
+    --color-bg-bad: #fbf2f2;
     --color-accent-soft: rgba(6, 182, 212, 0.12);
     --color-accent-softer: rgba(6, 182, 212, 0.06);
+}
+
+/* ================================
+   Shared primitives
+   ================================ */
+
+/* Grid with 1px hairline dividers between cells (used everywhere) */
+.divider-grid {
+    display: grid;
+    gap: 1px;
+    background: var(--color-border);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+/* Card with cyan top-edge that animates in on hover */
+.hover-card {
+    background: var(--color-bg-card);
+    transition: background var(--transition);
+    position: relative;
+}
+
+.hover-card::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--color-accent);
+    transform: scaleX(0);
+    transition: transform var(--transition);
+}
+
+.hover-card:hover {
+    background: var(--color-bg-card-hover);
+}
+
+.hover-card:hover::after {
+    transform: scaleX(1);
 }
 
 /* ================================
@@ -445,7 +495,6 @@ p code, li code, h4 code {
     overflow: hidden;
 }
 
-/* Featured card inside the uplift section spans its single column naturally */
 .uplift-grid .service-card--featured {
     grid-column: auto;
 }
@@ -458,46 +507,13 @@ p code, li code, h4 code {
 }
 
 .what-grid {
-    display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 1px;
-    background: var(--color-border);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius);
-    overflow: hidden;
 }
 
 .what-card {
-    background: var(--color-bg-card);
     padding: 2.25rem;
-    transition: background var(--transition);
-    position: relative;
     display: flex;
     flex-direction: column;
-}
-
-.what-card::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: var(--color-accent);
-    transform: scaleX(0);
-    transition: transform var(--transition);
-}
-
-.what-card:hover {
-    background: #1c1c1c;
-}
-
-[data-theme="light"] .what-card:hover {
-    background: #f0f0f2;
-}
-
-.what-card:hover::after {
-    transform: scaleX(1);
 }
 
 .what-card .service-icon {
@@ -578,13 +594,7 @@ p code, li code, h4 code {
 }
 
 .release-grid {
-    display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 1px;
-    background: var(--color-border);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius);
-    overflow: hidden;
     min-height: 220px;
 }
 
@@ -593,35 +603,8 @@ p code, li code, h4 code {
     flex-direction: column;
     gap: 0.625rem;
     padding: 1.75rem;
-    background: var(--color-bg-card);
     color: inherit;
     text-decoration: none;
-    position: relative;
-    transition: background var(--transition);
-}
-
-.release-card::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: var(--color-accent);
-    transform: scaleX(0);
-    transition: transform var(--transition);
-}
-
-.release-card:hover {
-    background: #1c1c1c;
-}
-
-[data-theme="light"] .release-card:hover {
-    background: #f0f0f2;
-}
-
-.release-card:hover::after {
-    transform: scaleX(1);
 }
 
 .release-card-top {
@@ -731,13 +714,7 @@ p code, li code, h4 code {
 }
 
 .compare-grid {
-    display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 1px;
-    background: var(--color-border);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius);
-    overflow: hidden;
 }
 
 .compare-card {
@@ -747,19 +724,11 @@ p code, li code, h4 code {
 }
 
 .compare-card--bad {
-    background: linear-gradient(160deg, #1a1010 0%, #161616 100%);
-}
-
-[data-theme="light"] .compare-card--bad {
-    background: linear-gradient(160deg, #fbf2f2 0%, #ffffff 100%);
+    background: linear-gradient(160deg, var(--color-bg-bad) 0%, var(--color-bg-card) 100%);
 }
 
 .compare-card--good {
-    background: linear-gradient(160deg, #0e1a1d 0%, #161616 100%);
-}
-
-[data-theme="light"] .compare-card--good {
-    background: linear-gradient(160deg, #eef9fc 0%, #ffffff 100%);
+    background: linear-gradient(160deg, var(--color-bg-featured) 0%, var(--color-bg-card) 100%);
 }
 
 .compare-card--good::before {
@@ -812,18 +781,18 @@ p code, li code, h4 code {
 }
 
 .compare-card--bad li::before {
-    content: '\f00d';  /* fa-xmark */
+    content: '\f00d';
     font-family: 'Font Awesome 6 Free';
     font-weight: 900;
     position: absolute;
     left: 0;
     top: 1px;
-    color: #b35454;
+    color: var(--color-danger);
     font-size: 0.8125rem;
 }
 
 .compare-card--good li::before {
-    content: '\f00c';  /* fa-check */
+    content: '\f00c';
     font-family: 'Font Awesome 6 Free';
     font-weight: 900;
     position: absolute;
@@ -897,56 +866,18 @@ p code, li code, h4 code {
 }
 
 .services-grid {
-    display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 1px;
-    background: var(--color-border);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius);
-    overflow: hidden;
 }
 
 .service-card {
-    background: var(--color-bg-card);
     padding: 2.25rem;
-    transition: background var(--transition);
-    position: relative;
 }
 
-.service-card::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: var(--color-accent);
-    transform: scaleX(0);
-    transition: transform var(--transition);
-}
-
-.service-card:hover {
-    background: #1c1c1c;
-}
-
-[data-theme="light"] .service-card:hover {
-    background: #f0f0f2;
-}
-
-.service-card:hover::after {
-    transform: scaleX(1);
-}
-
-/* Featured card — full width, first in grid */
 .service-card--featured {
     grid-column: 1 / -1;
-    background: linear-gradient(160deg, #0e1a1d 0%, #0e0e0e 100%);
+    background: linear-gradient(160deg, var(--color-bg-featured) 0%, var(--color-bg) 100%);
     position: relative;
     overflow: hidden;
-}
-
-[data-theme="light"] .service-card--featured {
-    background: linear-gradient(160deg, #eef9fc 0%, #f5f5f7 100%);
 }
 
 .service-card--featured::before {
@@ -965,11 +896,7 @@ p code, li code, h4 code {
 }
 
 .service-card--featured:hover {
-    background: linear-gradient(160deg, #122023 0%, #111111 100%);
-}
-
-[data-theme="light"] .service-card--featured:hover {
-    background: linear-gradient(160deg, #e3f5fa 0%, #f0f0f2 100%);
+    background: linear-gradient(160deg, var(--color-bg-featured-hover) 0%, var(--color-bg-alt) 100%);
 }
 
 .service-icon {
@@ -1096,13 +1023,7 @@ p code, li code, h4 code {
 }
 
 .quickstart-grid {
-    display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 1px;
-    background: var(--color-border);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius);
-    overflow: hidden;
     margin-bottom: 2rem;
 }
 
@@ -1146,47 +1067,14 @@ p code, li code, h4 code {
 }
 
 .commands-grid {
-    display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 1px;
-    background: var(--color-border);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius);
-    overflow: hidden;
 }
 
 .cmd-card {
-    background: var(--color-bg-card);
     padding: 1.75rem 2rem;
     display: flex;
     flex-direction: column;
     gap: 0.625rem;
-    position: relative;
-    transition: background var(--transition);
-}
-
-.cmd-card::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: var(--color-accent);
-    transform: scaleX(0);
-    transition: transform var(--transition);
-}
-
-.cmd-card:hover {
-    background: #1c1c1c;
-}
-
-[data-theme="light"] .cmd-card:hover {
-    background: #f0f0f2;
-}
-
-.cmd-card:hover::after {
-    transform: scaleX(1);
 }
 
 .cmd-label {
@@ -1265,9 +1153,9 @@ pre code {
 
 .philosophy blockquote {
     font-size: clamp(1.25rem, 2.5vw, 1.75rem);
-    font-weight: 300;
+    font-weight: 400;
     line-height: 1.65;
-    color: #f2f2f2;
+    color: var(--color-text);
     letter-spacing: -0.01em;
 }
 
@@ -1284,13 +1172,7 @@ pre code {
 }
 
 .process-steps {
-    display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 1px;
-    background: var(--color-border);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius);
-    overflow: hidden;
 }
 
 .process-step {
