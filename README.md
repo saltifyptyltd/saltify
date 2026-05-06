@@ -18,7 +18,7 @@ Visit our website at [saltify.work](https://saltify.work) to learn more about ou
 
 ### 📧 Contact
 
-- **Email**: hello@saltify.work
+- **Email**: sales@saltify.work
 - **Website**: www.saltify.work
 - **Company**: Saltify Pty Ltd
 

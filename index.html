@@ -1,237 +1,306 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Saltify Pty Ltd - SaltStack & VMware Automation Experts</title>
-    <meta name="description" content="Saltify specializes in configuring SaltStack for large enterprises and seamless VMware automation integration. Transform your infrastructure with our expert consultancy services.">
+    <title>Saltify — Enterprise Salt, Blue/Green, Git-Driven</title>
+    <meta name="description" content="Saltify is a Salt-only consultancy. We deploy SaltStack the enterprise way — blue/green, git-integrated, with optional VMware Aria Automation Config integration. Plus AI vibe coding for lean teams.">
+    <link rel="icon" type="image/png" href="logo/saltify-logo-large-transparent.png">
     <link rel="stylesheet" href="css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="icon" type="image/png" href="logo/saltify-logo-large-transparent.png">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
+
     <!-- Navigation -->
-    <nav class="navbar">
+    <nav class="navbar" id="navbar">
         <div class="nav-container">
-            <div class="nav-logo">
-                <img src="logo/saltify-logo-large-transparent.png" alt="Saltify Pty Ltd" class="logo">
-            </div>
+            <a href="#home" class="nav-logo">
+                <span class="logo-primary">Saltify</span>
+                <span class="logo-secondary">Pty Ltd</span>
+            </a>
             <ul class="nav-menu">
-                <li class="nav-item">
-                    <a href="#home" class="nav-link">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#services" class="nav-link">Services</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#expertise" class="nav-link">Expertise</a>
-                </li>
-                <li class="nav-item">
-                    <a href="#contact" class="nav-link">Contact</a>
-                </li>
+                <li><a href="#services" class="nav-link">Services</a></li>
+                <li><a href="#salt101" class="nav-link">Salt 101</a></li>
+                <li><a href="#about" class="nav-link">About</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+                <li><a href="#contact" class="nav-link nav-cta">Let's talk →</a></li>
             </ul>
-            <div class="hamburger">
-                <span class="bar"></span>
-                <span class="bar"></span>
-                <span class="bar"></span>
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+                    <i class="fas fa-sun" id="themeIcon"></i>
+                </button>
+                <button class="hamburger" aria-label="Toggle menu" aria-expanded="false">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
             </div>
         </div>
     </nav>
 
-    <!-- Hero Section -->
+    <!-- Hero -->
     <section id="home" class="hero">
-        <div class="hero-container">
+        <div class="container">
             <div class="hero-content">
-                <h1 class="hero-title">
-                    Transform Your Enterprise Infrastructure with 
-                    <span class="gradient-text">SaltStack Mastery</span>
-                </h1>
-                <p class="hero-subtitle">
-                    We specialize in configuring SaltStack for large enterprises and seamless VMware automation integration. 
-                    Your infrastructure evolution starts here.
-                </p>
-                <div class="hero-buttons">
-                    <a href="#contact" class="btn btn-primary">Start Your Journey</a>
-                    <a href="#services" class="btn btn-secondary">Explore Services</a>
-                </div>
-            </div>
-            <div class="hero-visual">
-                <div class="floating-card">
-                    <div class="card-icon">🔧</div>
-                    <h3>SaltStack Configuration</h3>
-                    <p>Enterprise-grade automation</p>
-                </div>
-                <div class="floating-card">
-                    <div class="card-icon">☁️</div>
-                    <h3>VMware Integration</h3>
-                    <p>Seamless cloud orchestration</p>
-                </div>
-                <div class="floating-card">
-                    <div class="card-icon">📊</div>
-                    <h3>Infrastructure at Scale</h3>
-                    <p>Built for enterprise needs</p>
+                <p class="hero-eyebrow">Enterprise Salt · Blue/Green · Git-Driven</p>
+                <h1 class="hero-title">Salt that ships safely, and <span class="hero-highlight">rolls forward.</span></h1>
+                <p class="hero-sub">We're a Salt-only consultancy. We set up SaltStack the way enterprises actually need it — blue/green deployments, git as the source of truth, and zero-downtime change. Free edition or VMware Aria Automation Config. We do both.</p>
+                <div class="hero-actions">
+                    <a href="#contact" class="btn-primary">Let's talk →</a>
+                    <a href="#salt101" class="btn-ghost">Salt 101 ↓</a>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Services Section -->
-    <section id="services" class="services">
+    <!-- Services -->
+    <section id="services" class="services section-alt">
         <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">Our Expert Services</h2>
-                <p class="section-subtitle">Comprehensive solutions for modern infrastructure challenges</p>
-            </div>
+            <header class="section-header">
+                <h2>What we do</h2>
+                <p>One stack. Done properly. From open source to enterprise VMware integration.</p>
+            </header>
             <div class="services-grid">
-                <div class="service-card">
-                    <div class="service-icon">
-                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg" alt="SaltStack Configuration">
-                    </div>
-                    <h3>SaltStack Configuration & Management</h3>
-                    <p>Expert configuration of SaltStack for large-scale enterprise environments. We ensure your infrastructure automation is robust, scalable, and maintainable.</p>
-                    <ul class="service-features">
-                        <li>Custom SaltStack deployment strategies</li>
-                        <li>State management optimization</li>
-                        <li>Multi-environment configuration</li>
-                        <li>Performance tuning & monitoring</li>
-                    </ul>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon">
-                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" alt="VMware Integration">
-                    </div>
-                    <h3>VMware Automation Integration</h3>
-                    <p>Seamless integration between SaltStack and VMware environments, enabling automated provisioning, configuration, and management of virtual infrastructure.</p>
-                    <ul class="service-features">
-                        <li>vSphere API integration</li>
-                        <li>Automated VM provisioning</li>
-                        <li>Infrastructure as Code (IaC)</li>
-                        <li>Hybrid cloud orchestration</li>
-                    </ul>
-                </div>
-                <div class="service-card">
-                    <div class="service-icon">
-                        <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-plain.svg" alt="Enterprise Consulting">
-                    </div>
-                    <h3>Enterprise Infrastructure Consulting</h3>
-                    <p>Strategic guidance for large enterprises looking to modernize their infrastructure with automation-first approaches and best practices.</p>
-                    <ul class="service-features">
-                        <li>Infrastructure assessment & strategy</li>
-                        <li>Migration planning & execution</li>
-                        <li>Team training & knowledge transfer</li>
-                        <li>24/7 support & maintenance</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </section>
 
-    <!-- Expertise Section -->
-    <section id="expertise" class="expertise">
-        <div class="container">
-            <div class="expertise-content">
-                <div class="expertise-text">
-                    <h2 class="section-title">Why Choose Saltify?</h2>
-                    <p class="expertise-description">
-                        With years of experience in enterprise infrastructure automation, we bring unparalleled expertise 
-                        in SaltStack configuration and VMware integration. Our team has successfully deployed solutions 
-                        for Fortune 500 companies, handling complex multi-datacenter environments with ease.
+                <!-- Featured: Blue/Green git-driven deployment -->
+                <article class="service-card service-card--featured fade-in">
+                    <div class="featured-header">
+                        <div class="service-icon">
+                            <i class="fas fa-code-branch"></i>
+                        </div>
+                        <div class="featured-header-text">
+                            <h3>Blue/Green Salt, Git-Driven</h3>
+                            <p class="service-tech">Zero-downtime · GitOps · Two-master pattern</p>
+                        </div>
+                    </div>
+                    <p class="featured-desc">
+                        Most Salt deployments are one master, one branch, one prayer. We build it the enterprise way: two Salt masters running side by side, your git repo as the only source of truth, and a CI pipeline that promotes change from develop → staging → production with a green/blue cutover. If a state breaks, the other master is still serving. You roll forward, not back.
                     </p>
-                    <div class="expertise-stats">
-                        <div class="stat">
-                            <div class="stat-number">500+</div>
-                            <div class="stat-label">Servers Automated</div>
+                    <div class="featured-items">
+                        <div class="featured-item">
+                            <div class="featured-item-icon">
+                                <i class="fas fa-code-merge"></i>
+                            </div>
+                            <div>
+                                <strong>Git as source of truth</strong>
+                                <span>States, pillar, reactor, orchestration — all version controlled. Every change is a PR. Every deploy is a merge. Audit trail comes for free.</span>
+                            </div>
                         </div>
-                        <div class="stat">
-                            <div class="stat-number">50+</div>
-                            <div class="stat-label">Enterprise Clients</div>
+                        <div class="featured-item">
+                            <div class="featured-item-icon">
+                                <i class="fas fa-server"></i>
+                            </div>
+                            <div>
+                                <strong>Two-master HA</strong>
+                                <span>Active/active masters with synchronized state. Promote a release on one, validate, then flip. Minions never miss a beat.</span>
+                            </div>
                         </div>
-                        <div class="stat">
-                            <div class="stat-number">99.9%</div>
-                            <div class="stat-label">Uptime Achieved</div>
+                        <div class="featured-item">
+                            <div class="featured-item-icon">
+                                <i class="fas fa-rotate"></i>
+                            </div>
+                            <div>
+                                <strong>Pipeline-driven promotion</strong>
+                                <span>Azure DevOps, GitHub Actions, GitLab — pick your poison. We wire SSH-driven gitpull services into your branches so every push is a controlled deploy.</span>
+                            </div>
+                        </div>
+                        <div class="featured-item">
+                            <div class="featured-item-icon">
+                                <i class="fas fa-shield-halved"></i>
+                            </div>
+                            <div>
+                                <strong>Reactor + orchestration</strong>
+                                <span>Event bus tied into reactor SLS so highstate, key acceptance, and post-deploy validation run automatically. No more "did the change apply?"</span>
+                            </div>
                         </div>
                     </div>
+                </article>
+
+                <!-- Free edition -->
+                <article class="service-card fade-in">
+                    <div class="service-icon">
+                        <i class="fas fa-cube"></i>
+                    </div>
+                    <h3>Salt — Free Edition</h3>
+                    <p class="service-tech">Open Source · Self-Hosted</p>
+                    <p>Salt Project upstream, properly architected. Master/minion topology, pillar separation, environment splits, RBAC via external auth. Same enterprise patterns, no licence fees.</p>
+                </article>
+
+                <!-- VMware edition -->
+                <article class="service-card fade-in">
+                    <div class="service-icon">
+                        <i class="fas fa-cloud"></i>
+                    </div>
+                    <h3>Salt — VMware Edition</h3>
+                    <p class="service-tech">Aria Automation Config · VCF</p>
+                    <p>Aria Automation Config (formerly SaltStack Config / SSC), RaaS, and full VCF integration. Uplift from 8.17 / 3006.x, POC prerequisites, and master + RaaS install hardened for production.</p>
+                </article>
+
+                <!-- AI Vibe Coding -->
+                <article class="service-card fade-in">
+                    <div class="service-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <h3>AI Vibe Coding Pipeline</h3>
+                    <p class="service-tech">Claude · Cursor · Lean Teams</p>
+                    <p>Salt states, reactor logic, and pillar data written with AI in the loop. We help your team build a pipeline where AI writes the boilerplate and humans review the diff. Your fleet doesn't care who typed it — it cares that it's right.</p>
+                </article>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Salt 101 -->
+    <section id="salt101" class="salt101">
+        <div class="container">
+            <header class="section-header">
+                <h2>Salt 101</h2>
+                <p>How to start, and the commands you'll actually use.</p>
+            </header>
+
+            <h3 class="subsection-title">Get started in five steps</h3>
+            <div class="quickstart-grid">
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">01</span>
+                    <h4>Install the master</h4>
+                    <p>Bootstrap on your control node. The <code>-M</code> flag installs master + minion together so the master manages itself.</p>
+                    <pre><code><span class="code-comment"># on the master host</span>
+curl -fsSL https://bootstrap.saltproject.io | sudo sh -s -- -M</code></pre>
+                </article>
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">02</span>
+                    <h4>Install a minion</h4>
+                    <p>Same bootstrap, no flag. Then point it at your master in <code>/etc/salt/minion</code>.</p>
+                    <pre><code><span class="code-comment"># on each managed host</span>
+curl -fsSL https://bootstrap.saltproject.io | sudo sh
+echo "master: salt-master.your.domain" | \
+  sudo tee /etc/salt/minion.d/master.conf
+sudo systemctl restart salt-minion</code></pre>
+                </article>
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">03</span>
+                    <h4>Accept the keys</h4>
+                    <p>Minions register with a public key. Inspect, then accept.</p>
+                    <pre><code><span class="code-comment"># on the master</span>
+sudo salt-key -L           <span class="code-comment"># list pending keys</span>
+sudo salt-key -A           <span class="code-comment"># accept all pending</span></code></pre>
+                </article>
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">04</span>
+                    <h4>Wire up git</h4>
+                    <p>Treat <code>/srv/salt</code> as a git checkout. A <code>gitpull.service</code> systemd unit lets your CI pipeline trigger a pull over SSH on every promotion.</p>
+                    <pre><code><span class="code-comment"># pulled by your pipeline on each release</span>
+sudo systemctl start gitpull.service</code></pre>
+                </article>
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">05</span>
+                    <h4>Apply your first state</h4>
+                    <p>Define a state in <code>/srv/salt/top.sls</code>, then push it to a target.</p>
+                    <pre><code>sudo salt 'web*' state.apply
+sudo salt '*'    state.highstate</code></pre>
+                </article>
+            </div>
+
+            <h3 class="subsection-title">Essential commands</h3>
+            <div class="commands-grid">
+                <div class="cmd-card fade-in">
+                    <div class="cmd-label">Connectivity</div>
+                    <pre><code>salt '*' test.ping</code></pre>
+                    <p>Are my minions alive and authenticated?</p>
                 </div>
-                <div class="expertise-visual">
-                    <div class="tech-stack">
-                        <div class="tech-item">
-                            <img src="https://avatars.githubusercontent.com/u/1128849?s=200&v=4" alt="SaltStack">
-                            <span>SaltStack</span>
-                        </div>
-                        <div class="tech-item">
-                            <img src="https://logos-world.net/wp-content/uploads/2020/11/VMware-Logo.png" alt="VMware">
-                            <span>VMware</span>
-                        </div>
-                        <div class="tech-item">
-                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg" alt="Python">
-                            <span>Python</span>
-                        </div>
-                        <div class="tech-item">
-                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/linux/linux-original.svg" alt="Linux">
-                            <span>Linux</span>
-                        </div>
-                        <div class="tech-item">
-                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/docker/docker-original.svg" alt="Docker">
-                            <span>Docker</span>
-                        </div>
-                        <div class="tech-item">
-                            <img src="https://cdn.jsdelivr.net/gh/devicons/devicon/icons/kubernetes/kubernetes-plain.svg" alt="Kubernetes">
-                            <span>Kubernetes</span>
-                        </div>
-                    </div>
+                <div class="cmd-card fade-in">
+                    <div class="cmd-label">Apply states</div>
+                    <pre><code>salt '*' state.apply
+salt 'db*' state.apply mysql</code></pre>
+                    <p>Run the top file, or apply a specific state to a target.</p>
+                </div>
+                <div class="cmd-card fade-in">
+                    <div class="cmd-label">Inspect facts</div>
+                    <pre><code>salt '*' grains.items
+salt '*' pillar.items</code></pre>
+                    <p>Read grains (host facts) and pillar (your data tree).</p>
+                </div>
+                <div class="cmd-card fade-in">
+                    <div class="cmd-label">Run anything</div>
+                    <pre><code>salt 'web*' cmd.run 'systemctl status nginx'</code></pre>
+                    <p>Ad-hoc shell across a fleet. Use sparingly — prefer states.</p>
+                </div>
+                <div class="cmd-card fade-in">
+                    <div class="cmd-label">Local dry run</div>
+                    <pre><code>salt-call --local state.apply test=True</code></pre>
+                    <p>From the minion itself, no master, no commit. Iterate fast.</p>
+                </div>
+                <div class="cmd-card fade-in">
+                    <div class="cmd-label">Watch the bus</div>
+                    <pre><code>salt-run state.event pretty=True</code></pre>
+                    <p>Tail every event on the master. The first thing you open when something's off.</p>
+                </div>
+                <div class="cmd-card fade-in">
+                    <div class="cmd-label">Orchestration</div>
+                    <pre><code>salt-run state.orch orch.deploy_app</code></pre>
+                    <p>Multi-step, multi-host workflows. Blue/green cutovers live here.</p>
+                </div>
+                <div class="cmd-card fade-in">
+                    <div class="cmd-label">Targeting</div>
+                    <pre><code>salt -G 'os:Windows' test.ping
+salt -C 'web* and G@env:prod' state.apply</code></pre>
+                    <p>Grain match (<code>-G</code>) and compound (<code>-C</code>) — the targeting you'll use every day.</p>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- Contact Section -->
-    <section id="contact" class="contact">
+    <!-- Philosophy -->
+    <section id="about" class="philosophy">
         <div class="container">
-            <div class="section-header">
-                <h2 class="section-title">Ready to Transform Your Infrastructure?</h2>
-                <p class="section-subtitle">Let's discuss how we can help automate and scale your enterprise systems</p>
+            <div class="philosophy-content fade-in">
+                <p class="philosophy-eyebrow">The Saltify thesis</p>
+                <blockquote>
+                    Salt is the most powerful config-management tool nobody's deploying properly.<br>
+                    <strong>The fleet doesn't fail because Salt is wrong.</strong> It fails because the deployment around Salt is wrong — manual changes, one master, no rollback path, no audit trail.<br><br>
+                    Fix the deployment, and Salt does what it was always supposed to.
+                </blockquote>
             </div>
-            <div class="contact-content">
-                <div class="contact-info">
-                    <div class="contact-item">
-                        <div class="contact-icon">📧</div>
-                        <h3>Email Us</h3>
-                        <p>hello@saltify.work</p>
-                    </div>
-                    <div class="contact-item">
-                        <div class="contact-icon">🌐</div>
-                        <h3>Website</h3>
-                        <p>www.saltify.work</p>
-                    </div>
-                    <div class="contact-item">
-                        <div class="contact-icon">🏢</div>
-                        <h3>Company</h3>
-                        <p>Saltify Pty Ltd</p>
-                    </div>
+        </div>
+    </section>
+
+    <!-- Process -->
+    <section class="process">
+        <div class="container">
+            <header class="section-header">
+                <h2>How we work</h2>
+                <p>Three phases. No surprises.</p>
+            </header>
+            <div class="process-steps">
+                <div class="process-step fade-in">
+                    <span class="step-number">01</span>
+                    <h3>Assess</h3>
+                    <p>Your existing Salt (or no Salt). Master topology, git hygiene, pillar layout, the things people are scared to touch. We map it before we change it.</p>
                 </div>
-                <div class="contact-form">
-                    <form id="contactForm" class="form">
-                        <div class="form-group">
-                            <input type="text" id="name" name="name" required>
-                            <label for="name">Your Name</label>
-                        </div>
-                        <div class="form-group">
-                            <input type="email" id="email" name="email" required>
-                            <label for="email">Email Address</label>
-                        </div>
-                        <div class="form-group">
-                            <input type="text" id="company" name="company">
-                            <label for="company">Company (Optional)</label>
-                        </div>
-                        <div class="form-group">
-                            <textarea id="message" name="message" rows="5" required></textarea>
-                            <label for="message">Project Details</label>
-                        </div>
-                        <button type="submit" class="btn btn-primary btn-full">Send Message</button>
-                    </form>
+                <div class="process-step fade-in">
+                    <span class="step-number">02</span>
+                    <h3>Deploy</h3>
+                    <p>Blue/green masters, git-driven gitpull, reactor + orchestration wired in. Free edition or Aria Automation Config — same pattern, same discipline.</p>
                 </div>
+                <div class="process-step fade-in">
+                    <span class="step-number">03</span>
+                    <h3>Uplift</h3>
+                    <p>We hand it back with the team trained, AI in the pipeline writing states alongside them, and runbooks for the change patterns that matter.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact -->
+    <section id="contact" class="contact section-alt">
+        <div class="container">
+            <div class="contact-content fade-in">
+                <h2>Want to work together?</h2>
+                <p class="contact-sub">We're a small team and we keep it that way. If your Salt is fragile, manual, or about to be — reach out.</p>
+                <a href="mailto:sales@saltify.work" class="contact-email">sales@saltify.work</a>
             </div>
         </div>
     </section>
@@ -239,14 +308,13 @@
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <div class="footer-content">
-                <div class="footer-logo">
-                    <img src="logo/saltify-logo-large-transparent.png" alt="Saltify Pty Ltd" class="logo">
-                </div>
-                <div class="footer-text">
-                    <p>&copy; 2025 Saltify Pty Ltd. All rights reserved.</p>
-                    <p>Transforming enterprise infrastructure with SaltStack expertise.</p>
-                </div>
+            <div class="footer-inner">
+                <p class="footer-logo">
+                    <span class="logo-primary">Saltify</span>
+                    <span class="logo-secondary">Pty Ltd</span>
+                </p>
+                <p class="footer-tagline">Enterprise Salt for teams that can't afford fragile infrastructure. Based in Australia.</p>
+                <p class="footer-copy">© 2026 Saltify Pty Ltd</p>
             </div>
         </div>
     </footer>
