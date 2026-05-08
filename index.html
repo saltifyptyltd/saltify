@@ -25,6 +25,7 @@
             <ul class="nav-menu">
                 <li><a href="#services" class="nav-link">Services</a></li>
                 <li><a href="#salt101" class="nav-link">Salt 101</a></li>
+                <li><a href="install-guide.html" class="nav-link">Install Guide</a></li>
                 <li><a href="#about" class="nav-link">About</a></li>
                 <li><a href="#contact" class="nav-link">Contact</a></li>
                 <li><a href="#contact" class="nav-link nav-cta">Let's talk →</a></li>
@@ -406,6 +407,33 @@ salt -C 'web* and G@env:prod' state.apply</code></pre>
         </div>
     </section>
 
+    <!-- Install Guide promo -->
+    <section class="install-promo">
+        <div class="container">
+            <div class="install-promo-card fade-in">
+                <p class="install-promo-eyebrow">FREE WALKTHROUGH · NO SIGNUP</p>
+                <h2>Build VCF Salt the right way.</h2>
+                <p class="install-promo-lead">The 3-server architecture we run in production. Eleven install steps. Blue/green ready. <strong>Never roll back a database again.</strong></p>
+                <div class="install-promo-stats">
+                    <div class="install-promo-stat">
+                        <span class="install-promo-stat-num">3</span>
+                        <span class="install-promo-stat-label">servers</span>
+                    </div>
+                    <div class="install-promo-stat">
+                        <span class="install-promo-stat-num">11</span>
+                        <span class="install-promo-stat-label">steps</span>
+                    </div>
+                    <div class="install-promo-stat">
+                        <span class="install-promo-stat-num">10<span class="install-promo-stat-unit">min</span></span>
+                        <span class="install-promo-stat-label">rebuild</span>
+                    </div>
+                </div>
+                <a href="install-guide.html" class="btn-primary">Read the install guide →</a>
+                <p class="install-promo-note">No signup. No email gate. Just the playbook.</p>
+            </div>
+        </div>
+    </section>
+
     <!-- Philosophy -->
     <section id="about" class="philosophy">
         <div class="container">
@@ -482,6 +510,35 @@ salt -C 'web* and G@env:prod' state.apply</code></pre>
             </div>
         </div>
     </footer>
+
+    <!-- Install guide promo toast (slides in via CSS animation, dismissable) -->
+    <div class="install-toast" id="installToast" role="dialog" aria-label="Install guide announcement">
+        <button class="install-toast-close" id="installToastClose" aria-label="Dismiss">×</button>
+        <div class="install-toast-body">
+            <div class="install-toast-doc" aria-hidden="true">
+                <svg viewBox="0 0 56 68" width="48" height="58" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Document body with folded corner -->
+                    <path d="M4,3 L36,3 L52,19 L52,63 Q52,65 50,65 L6,65 Q4,65 4,63 Z" class="doc-paper"/>
+                    <!-- Folded corner -->
+                    <path d="M36,3 L36,17 Q36,19 38,19 L52,19" class="doc-fold"/>
+                    <!-- Animated text lines (drawn in sequence) -->
+                    <line x1="11" y1="29" x2="45" y2="29" class="doc-line" style="--d: 0.1s"/>
+                    <line x1="11" y1="37" x2="42" y2="37" class="doc-line" style="--d: 0.25s"/>
+                    <line x1="11" y1="45" x2="45" y2="45" class="doc-line" style="--d: 0.4s"/>
+                    <line x1="11" y1="53" x2="35" y2="53" class="doc-line" style="--d: 0.55s"/>
+                    <!-- Checkmark badge that pops in after lines -->
+                    <circle cx="46" cy="56" r="9" class="doc-check-bg"/>
+                    <path d="M41.5,55.5 L45,59 L50.5,52.5" class="doc-check-mark"/>
+                </svg>
+            </div>
+            <div class="install-toast-text">
+                <p class="install-toast-eyebrow">NEW · FREE GUIDE</p>
+                <h3 class="install-toast-title">VCF Salt — install playbook</h3>
+                <p class="install-toast-sub">3 servers · 11 steps · 10-min rebuild</p>
+                <a href="install-guide.html" class="install-toast-cta">Read it now <span class="install-toast-arrow">→</span></a>
+            </div>
+        </div>
+    </div>
 
     <script src="js/script.js"></script>
 </body>

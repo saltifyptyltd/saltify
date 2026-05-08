@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VCF Salt — Build it the right way | Saltify</title>
+    <meta name="description" content="VMware VCF Salt (formerly Aria Automation Config), built the right way. Plain-English step-by-step: a 3-server stack, multi-master HA, and a clean blue/green path. Distilled from production deployments.">
+    <link rel="icon" type="image/png" href="logo/saltify-logo-large-transparent.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Page-specific styles — keep small, reuse existing classes where possible */
+        .guide-hero {
+            padding: 140px 0 60px;
+            text-align: center;
+        }
+        .guide-hero h1 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            letter-spacing: -0.02em;
+            margin-bottom: 1rem;
+        }
+        .guide-hero .lead {
+            font-size: 1.125rem;
+            color: var(--color-text-muted);
+            max-width: 640px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        .guide-hero .crumb {
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--color-accent);
+            margin-bottom: 1.25rem;
+        }
+
+        /* TL;DR card */
+        .tldr {
+            max-width: 760px;
+            margin: 1.5rem auto 0;
+            padding: 1.5rem 1.75rem;
+            background: var(--color-accent-softer);
+            border: 1px solid var(--color-accent-mid);
+            border-radius: var(--radius);
+            text-align: left;
+        }
+        .tldr h2 {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--color-accent);
+            margin-bottom: 0.75rem;
+        }
+        .tldr ul { padding-left: 1.25rem; margin: 0; }
+        .tldr li { color: var(--color-text); margin-bottom: 0.4rem; line-height: 1.55; }
+
+        /* Diagrams */
+        .diagram-wrap {
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            padding: 2rem;
+            margin: 1rem 0 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .diagram-wrap svg { max-width: 100%; height: auto; }
+        .diagram-caption {
+            font-size: 0.8125rem;
+            color: var(--color-text-muted);
+            text-align: center;
+            margin-top: 0.75rem;
+            font-style: italic;
+        }
+
+        /* Comparison table — internet vs air-gapped */
+        .compare {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            font-size: 0.9rem;
+        }
+        .compare th, .compare td {
+            padding: 0.875rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--color-border);
+            vertical-align: top;
+        }
+        .compare th {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--color-text-muted);
+            background: var(--color-bg-alt);
+        }
+        .compare th:first-child { width: 28%; }
+        .compare td:first-child {
+            font-weight: 600;
+            color: var(--color-text);
+        }
+        .compare .yes { color: var(--color-accent); font-weight: 600; }
+        .compare .heads-up { color: #d4a85e; font-weight: 600; }
+
+        /* Callouts */
+        .callout {
+            display: flex;
+            gap: 1rem;
+            padding: 1.125rem 1.25rem;
+            border-radius: 10px;
+            margin: 1.5rem 0;
+            font-size: 0.925rem;
+            line-height: 1.55;
+            align-items: flex-start;
+        }
+        .callout i { font-size: 1.1rem; margin-top: 0.15rem; flex-shrink: 0; }
+        .callout-tip {
+            background: var(--color-accent-softer);
+            border: 1px solid var(--color-accent-mid);
+        }
+        .callout-tip i { color: var(--color-accent); }
+        .callout-warn {
+            background: var(--color-bg-bad);
+            border: 1px solid rgba(179, 84, 84, 0.4);
+        }
+        .callout-warn i { color: var(--color-danger); }
+        .callout p { margin: 0; }
+        .callout strong { color: var(--color-text); }
+
+        /* Step grid — reuse .quickstart-grid pattern but allow more steps */
+        .install-steps {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        .install-steps .quickstart-step:last-child:nth-child(odd) {
+            grid-column: 1 / -1;
+        }
+
+        /* Section spacing */
+        .guide-section { padding: 60px 0; }
+        .guide-section.section-alt { padding: 80px 0; }
+        .guide-section h2 {
+            font-size: 1.75rem;
+            letter-spacing: -0.015em;
+            margin-bottom: 0.5rem;
+        }
+        .guide-section .section-intro {
+            color: var(--color-text-muted);
+            margin-bottom: 2rem;
+            max-width: 720px;
+            line-height: 1.6;
+        }
+
+        /* Gotchas list */
+        .gotchas {
+            display: grid;
+            gap: 0.875rem;
+            margin-top: 1.5rem;
+        }
+        .gotcha {
+            padding: 1.125rem 1.25rem;
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border);
+            border-left: 3px solid var(--color-accent);
+            border-radius: 8px;
+        }
+        .gotcha h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--color-text);
+            margin-bottom: 0.35rem;
+        }
+        .gotcha p {
+            font-size: 0.875rem;
+            color: var(--color-text-muted);
+            line-height: 1.55;
+            margin: 0;
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .install-steps { grid-template-columns: 1fr; }
+            .compare { font-size: 0.8rem; }
+            .compare th, .compare td { padding: 0.6rem 0.5rem; }
+            .diagram-wrap { padding: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation (matches index.html) -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span class="logo-primary">Saltify</span>
+                <span class="logo-secondary">Pty Ltd</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html#services" class="nav-link">Services</a></li>
+                <li><a href="index.html#salt101" class="nav-link">Salt 101</a></li>
+                <li><a href="install-guide.html" class="nav-link" aria-current="page">Install Guide</a></li>
+                <li><a href="index.html#about" class="nav-link">About</a></li>
+                <li><a href="index.html#contact" class="nav-link nav-cta">Let's talk →</a></li>
+            </ul>
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" aria-pressed="false">
+                    <i class="fas fa-sun" id="themeIcon" aria-hidden="true"></i>
+                </button>
+                <button class="hamburger" aria-label="Toggle menu" aria-expanded="false">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="guide-hero">
+        <div class="container">
+            <p class="crumb">Install Guide</p>
+            <h1>VCF Salt — build it the right way</h1>
+            <p class="lead">Never roll back a database again. Build once, put everything in Git, and stop firefighting. <strong>The rule we live by:</strong> if Salt breaks and you can't fix it in 30 minutes — don't troubleshoot, rebuild. Blue/green swap or full rebuild from Git: ten minutes either way.</p>
+
+            <div class="tldr">
+                <h2>TL;DR</h2>
+                <ul>
+                    <li><strong>3 servers per deployment.</strong> 1 for RaaS + database + Valkey. 2 for Salt masters.</li>
+                    <li><strong>Masters are HA inside the deployment</strong> — mirrored keys + auto-accept.</li>
+                    <li><strong>Blue/green = swap the whole 3-server stack.</strong> Or rebuild from Git. Both take ten minutes.</li>
+                    <li><strong>Everything in Git.</strong> Pillar, states, secrets (encrypted with GPG). Stack is reproducible by definition.</li>
+                    <li><strong>Air-gapped install</strong> only differs in one place: the pip wheels.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- 1. What you're building -->
+    <section class="guide-section">
+        <div class="container">
+            <h2>1. What you're building</h2>
+            <p class="section-intro">One stack is three servers. Inside the stack, two masters keep things running if one dies. The data layer (RaaS, PostgreSQL, Valkey) sits on its own box.</p>
+
+            <div class="diagram-wrap">
+                <svg viewBox="0 -30 720 390" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="arch-title arch-desc">
+                    <title id="arch-title">3-server VCF Salt stack</title>
+                    <desc id="arch-desc">Minions connect to two Salt masters (HA pair). Both masters pull /srv/salt from a Git repository. Both masters connect to a single RaaS plus PostgreSQL plus Valkey node.</desc>
+                    <defs>
+                        <style>
+                            .box { fill: var(--color-bg-card); stroke: var(--color-border); stroke-width: 1.5; }
+                            .box-master { fill: var(--color-bg-featured); stroke: var(--color-accent-mid); }
+                            .box-data { fill: var(--color-accent-softer); stroke: var(--color-accent-mid); }
+                            .lbl { font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; fill: var(--color-text); }
+                            .lbl-sub { font-family: 'Inter', sans-serif; font-size: 11px; fill: var(--color-text-muted); }
+                            .lbl-tag { font-family: 'JetBrains Mono', monospace; font-size: 10px; fill: var(--color-accent); letter-spacing: 0.04em; }
+                            .conn { stroke: var(--color-accent); stroke-width: 1.5; fill: none; opacity: 0.6; }
+                        </style>
+                    </defs>
+
+                    <!-- Minions row -->
+                    <text x="360" y="30" class="lbl-tag" text-anchor="middle">YOUR FLEET</text>
+                    <rect x="60"  y="50" width="120" height="48" rx="8" class="box"/>
+                    <text x="120" y="78" class="lbl"     text-anchor="middle">Minions</text>
+                    <text x="120" y="92" class="lbl-sub" text-anchor="middle">linux + windows</text>
+                    <rect x="220" y="50" width="120" height="48" rx="8" class="box"/>
+                    <text x="280" y="78" class="lbl"     text-anchor="middle">Minions</text>
+                    <text x="280" y="92" class="lbl-sub" text-anchor="middle">linux + windows</text>
+                    <rect x="380" y="50" width="120" height="48" rx="8" class="box"/>
+                    <text x="440" y="78" class="lbl"     text-anchor="middle">Minions</text>
+                    <text x="440" y="92" class="lbl-sub" text-anchor="middle">linux + windows</text>
+                    <rect x="540" y="50" width="120" height="48" rx="8" class="box"/>
+                    <text x="600" y="78" class="lbl"     text-anchor="middle">Minions</text>
+                    <text x="600" y="92" class="lbl-sub" text-anchor="middle">linux + windows</text>
+
+                    <!-- Connections minions → masters -->
+                    <path d="M120,98 C120,140 220,140 220,170" class="conn"/>
+                    <path d="M280,98 C280,140 240,140 240,170" class="conn"/>
+                    <path d="M440,98 C440,140 480,140 480,170" class="conn"/>
+                    <path d="M600,98 C600,140 500,140 500,170" class="conn"/>
+
+                    <!-- Masters -->
+                    <text x="360" y="160" class="lbl-tag" text-anchor="middle">HA INSIDE THIS DEPLOYMENT</text>
+                    <rect x="160" y="170" width="170" height="64" rx="10" class="box-master"/>
+                    <text x="245" y="198" class="lbl"     text-anchor="middle">Salt Master 1</text>
+                    <text x="245" y="218" class="lbl-sub" text-anchor="middle">mirrored keys · auto-accept</text>
+                    <rect x="390" y="170" width="170" height="64" rx="10" class="box-master"/>
+                    <text x="475" y="198" class="lbl"     text-anchor="middle">Salt Master 2</text>
+                    <text x="475" y="218" class="lbl-sub" text-anchor="middle">mirrored keys · auto-accept</text>
+
+                    <!-- Connections masters → data layer -->
+                    <path d="M245,234 C245,270 360,270 360,290" class="conn"/>
+                    <path d="M475,234 C475,270 360,270 360,290" class="conn"/>
+
+                    <!-- Data layer -->
+                    <rect x="200" y="290" width="320" height="56" rx="10" class="box-data"/>
+                    <text x="360" y="316" class="lbl"     text-anchor="middle">RaaS · PostgreSQL · Valkey</text>
+                    <text x="360" y="334" class="lbl-sub" text-anchor="middle">single data-layer node</text>
+
+                    <!-- Git source (left of masters) -->
+                    <rect x="10" y="178" width="120" height="48" rx="8" class="box-data" style="fill: rgba(120, 200, 140, 0.14); stroke: rgba(110, 200, 130, 0.55);"/>
+                    <text x="70" y="200" class="lbl"     text-anchor="middle">Git</text>
+                    <text x="70" y="216" class="lbl-sub" text-anchor="middle">states + pillar</text>
+
+                    <!-- Arrow Git → Master 1 (short horizontal) -->
+                    <path d="M130,202 L158,202" class="conn"/>
+
+                    <!-- Arrow Git → Master 2 (arcs over master 1) -->
+                    <path d="M130,190 C250,-10 400,-10 475,168" class="conn"/>
+
+                    <!-- Label "git pull" above the arc -->
+                    <text x="300" y="20" class="lbl-tag" text-anchor="middle" font-size="10">git pull /srv/salt</text>
+                    <text x="300" y="33" class="lbl-sub" text-anchor="middle" font-size="9" font-style="italic">every 10 min</text>
+                </svg>
+            </div>
+            <p class="diagram-caption">Three servers. Two masters for HA. One data layer. <strong>Git is the source of truth.</strong></p>
+
+            <div class="callout callout-tip">
+                <i class="fas fa-lightbulb"></i>
+                <p><strong>Why three, not two or four?</strong> Two servers (the official Basic Enterprise model) means one master — fragile. Four servers (Distributed Enterprise) is overkill below ~10,000 minions. Three is the sweet spot: HA where you need it, simple where you don't.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 2. Blue/green — the whole point -->
+    <section class="guide-section section-alt">
+        <div class="container">
+            <h2>2. Blue/green — the whole point</h2>
+            <p class="section-intro">This is the architecture's whole reason for existing. <strong>Blue/green isn't between the two masters in one stack. It's between two whole stacks.</strong> The 3-server stack from §1 is the unit you swap.</p>
+
+            <div class="diagram-wrap">
+                <svg viewBox="0 -50 760 370" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="bg-title bg-desc">
+                    <title id="bg-title">Blue/green deployment swap</title>
+                    <desc id="bg-desc">Both blue and green stacks pull from the same Git repository, so they're identical by definition. Minions point at a CNAME. The CNAME points at the blue stack. To cut over, you flip the CNAME to the green stack.</desc>
+                    <defs>
+                        <style>
+                            .bg-box { fill: var(--color-bg-card); stroke: var(--color-border); stroke-width: 1.5; }
+                            .bg-blue { fill: rgba(70, 120, 180, 0.18); stroke: rgba(70, 140, 200, 0.6); }
+                            .bg-green { fill: rgba(120, 200, 140, 0.14); stroke: rgba(110, 200, 130, 0.55); }
+                            .bg-cname { fill: var(--color-accent-soft); stroke: var(--color-accent); stroke-width: 2; }
+                            .bg-lbl { font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 600; fill: var(--color-text); }
+                            .bg-sub { font-family: 'Inter', sans-serif; font-size: 11px; fill: var(--color-text-muted); }
+                            .bg-tag { font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.05em; }
+                            .bg-arrow { stroke: var(--color-accent); stroke-width: 2; fill: none; }
+                            .bg-arrow-dim { stroke: var(--color-text-dim); stroke-width: 1.5; fill: none; stroke-dasharray: 4 4; }
+                        </style>
+                        <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+                            <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--color-accent)"/>
+                        </marker>
+                        <marker id="arr-dim" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+                            <path d="M 0 0 L 10 5 L 0 10 z" fill="var(--color-text-dim)"/>
+                        </marker>
+                    </defs>
+
+                    <!-- Minions -->
+                    <rect x="40" y="135" width="140" height="50" rx="8" class="bg-box"/>
+                    <text x="110" y="160" class="bg-lbl" text-anchor="middle">Minions</text>
+                    <text x="110" y="178" class="bg-sub" text-anchor="middle">point at CNAME</text>
+
+                    <!-- CNAME -->
+                    <rect x="240" y="125" width="140" height="70" rx="10" class="bg-cname"/>
+                    <text x="310" y="148" class="bg-tag" text-anchor="middle" fill="var(--color-accent)">DNS CNAME</text>
+                    <text x="310" y="170" class="bg-lbl" text-anchor="middle">salt-master</text>
+                    <text x="310" y="186" class="bg-sub" text-anchor="middle">.example.com</text>
+
+                    <!-- Connection minion → CNAME -->
+                    <line x1="180" y1="160" x2="240" y2="160" class="bg-arrow" marker-end="url(#arr)"/>
+
+                    <!-- BLUE stack (active) -->
+                    <text x="585" y="55" class="bg-tag" fill="rgba(70, 140, 200, 0.9)" text-anchor="middle">BLUE — ACTIVE</text>
+                    <rect x="440" y="65" width="290" height="105" rx="12" class="bg-blue"/>
+                    <rect x="455" y="78" width="120" height="34" rx="6" class="bg-box"/>
+                    <text x="515" y="100" class="bg-sub" text-anchor="middle">Master 1</text>
+                    <rect x="595" y="78" width="120" height="34" rx="6" class="bg-box"/>
+                    <text x="655" y="100" class="bg-sub" text-anchor="middle">Master 2</text>
+                    <rect x="495" y="124" width="180" height="34" rx="6" class="bg-box"/>
+                    <text x="585" y="146" class="bg-sub" text-anchor="middle">RaaS · PG · Valkey</text>
+
+                    <!-- Connection CNAME → BLUE (active) -->
+                    <line x1="380" y1="155" x2="440" y2="115" class="bg-arrow" marker-end="url(#arr)"/>
+
+                    <!-- GREEN stack (standby) -->
+                    <text x="585" y="200" class="bg-tag" fill="rgba(110, 200, 130, 0.85)" text-anchor="middle">GREEN — STANDBY · same keys</text>
+                    <rect x="440" y="210" width="290" height="105" rx="12" class="bg-green"/>
+                    <rect x="455" y="223" width="120" height="34" rx="6" class="bg-box"/>
+                    <text x="515" y="245" class="bg-sub" text-anchor="middle">Master 1</text>
+                    <rect x="595" y="223" width="120" height="34" rx="6" class="bg-box"/>
+                    <text x="655" y="245" class="bg-sub" text-anchor="middle">Master 2</text>
+                    <rect x="495" y="269" width="180" height="34" rx="6" class="bg-box"/>
+                    <text x="585" y="291" class="bg-sub" text-anchor="middle">RaaS · PG · Valkey</text>
+
+                    <!-- Pending arrow CNAME → GREEN (dashed) -->
+                    <path d="M 380 165 Q 410 240 440 260" class="bg-arrow-dim" marker-end="url(#arr-dim)"/>
+                    <text x="395" y="225" class="bg-tag" fill="var(--color-text-muted)">flip the CNAME</text>
+
+                    <!-- Git source above stacks -->
+                    <rect x="470" y="-40" width="180" height="32" rx="6" fill="var(--color-accent-softer)" stroke="var(--color-accent)" stroke-width="1.5"/>
+                    <text x="560" y="-23" class="bg-tag" text-anchor="middle" fill="var(--color-accent)">GIT — SOURCE OF TRUTH</text>
+                    <text x="560" y="-10" class="bg-sub" text-anchor="middle">states + pillar</text>
+
+                    <!-- Arrow Git → Blue stack (active stack pulls from Git) -->
+                    <line x1="510" y1="-8" x2="510" y2="65" class="bg-arrow" marker-end="url(#arr)"/>
+
+                    <!-- Arrow Git → Green stack (standby pulls the SAME source — identical by definition) -->
+                    <path d="M 615 -8 C 740 -8 740 205 700 215" class="bg-arrow" marker-end="url(#arr)" fill="none"/>
+
+                    <!-- Helper note between stacks -->
+                    <text x="395" y="190" class="bg-tag" fill="var(--color-text-muted)" font-size="9">both stacks pull → identical</text>
+                </svg>
+            </div>
+            <p class="diagram-caption">Cutover = repoint the CNAME (or swap the LB target). Minions don't notice. <strong>Both stacks pull from the same Git, so they're identical by definition.</strong></p>
+
+            <h3 style="font-size: 1.1rem; margin: 2rem 0 0.75rem;">Why it works seamlessly</h3>
+            <ul style="line-height: 1.8; color: var(--color-text-muted); padding-left: 1.25rem;">
+                <li><strong>Mirrored master keys</strong> — green masters present the same identity as blue. Minions don't notice the swap.</li>
+                <li><strong>Mirrored GPG keys</strong> — pillar secrets decrypt on green just like on blue.</li>
+                <li><strong>auto-accept on green</strong> — when a minion reconnects after the CNAME flips, green accepts its existing key automatically.</li>
+            </ul>
+
+            <div class="callout callout-tip" style="margin-top: 1.5rem;">
+                <i class="fas fa-circle-info"></i>
+                <p><strong>What this gives you:</strong> upgrades become "build a fresh stack on the new version, flip DNS." Failed install? Don't troubleshoot — rebuild. The 3-server stack is cheap and reproducible because everything's in Git. <a href="#cutover-steps" style="color: var(--color-accent); font-weight: 600;">→ Jump to the cutover steps in §7</a> when you're ready to actually do one.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. What you need before you start -->
+    <section class="guide-section section-alt">
+        <div class="container">
+            <h2>3. What you need before you start</h2>
+            <p class="section-intro">Line these up first. Most install pain comes from skipping prereqs.</p>
+
+            <div class="divider-grid" style="grid-template-columns: repeat(2, 1fr);">
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">SERVERS</span>
+                    <h4>Three RHEL 8 or 9 VMs</h4>
+                    <p>Minimal install profile. Static IPs. Hostnames set. Latest patches.</p>
+                    <ul style="font-size: 0.875rem; color: var(--color-text-muted); padding-left: 1.25rem; margin: 0.5rem 0 0; line-height: 1.7;">
+                        <li>Masters: 16 vCPU / 16 GB / 200 GB each</li>
+                        <li>Data layer: 16 vCPU / 16 GB / 500 GB</li>
+                    </ul>
+                </article>
+
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">ACCESS</span>
+                    <h4>Broadcom account + license</h4>
+                    <p>You need a Broadcom Support Portal account and a current VCF Salt license — Aria Suite (Standard Plus / Advanced / Enterprise) or VCF Advanced Cyber Compliance.</p>
+                </article>
+
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">BUNDLE</span>
+                    <h4>Download the installer</h4>
+                    <p>Pull from the Broadcom Support Portal. Match your RHEL version.</p>
+                    <pre style="margin-top: auto;"><code><span class="code-comment"># RHEL 8</span>
+VMware_Salt_Raas-&lt;ver&gt;-&lt;build&gt;.el8_Installer.tar.gz
+
+<span class="code-comment"># RHEL 9</span>
+VMware_Salt_Raas-&lt;ver&gt;-&lt;build&gt;.el9_Installer.tar.gz</code></pre>
+                </article>
+
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">FIREWALL</span>
+                    <h4>Open these ports</h4>
+                    <pre style="margin-top: auto;"><code><span class="code-comment"># to RaaS</span>
+443/tcp     <span class="code-comment"># UI + API</span>
+5432/tcp    <span class="code-comment"># PostgreSQL</span>
+6379/tcp    <span class="code-comment"># Valkey</span>
+
+<span class="code-comment"># to masters</span>
+4505/tcp    <span class="code-comment"># publish</span>
+4506/tcp    <span class="code-comment"># return</span></code></pre>
+                </article>
+
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">DNS</span>
+                    <h4>Use a CNAME for the masters</h4>
+                    <p>Don't point minions at master FQDNs. Point them at <code>salt-master.example.com</code>. When you do blue/green later, you flip the CNAME — minions don't need to be touched.</p>
+                </article>
+
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">PACKAGES</span>
+                    <h4>Install on every node</h4>
+                    <pre style="margin-top: auto;"><code>sudo yum install -y \
+  libsodium openssl \
+  git java unzip pinentry</code></pre>
+                </article>
+
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">REPO</span>
+                    <h4>Git repo for your states</h4>
+                    <p>Have an empty Git repo ready. <code>/srv/salt</code> on each master will clone from it. This is what makes the whole thing rebuildable.</p>
+                </article>
+
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">CERT</span>
+                    <h4>SSL cert for the RaaS UI</h4>
+                    <p>Get a cert + key for <code>raas.example.com</code>. Self-signed works for a lab; use your internal CA for prod.</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- 4. Air-gapped — the one extra step -->
+    <section class="guide-section">
+        <div class="container">
+            <h2>4. Air-gapped? One extra step.</h2>
+            <p class="section-intro">The architecture is identical. The install steps are identical. Only one thing changes.</p>
+
+            <div class="callout callout-tip" style="margin-top: 0;">
+                <i class="fas fa-plug"></i>
+                <p><strong>If your servers have internet</strong> (or an internal PyPI proxy like Nexus / Artifactory), the Python dependencies install themselves: <code>salt-pip install PyJWT pika pyspnego smbprotocol pypsexec</code>.</p>
+            </div>
+
+            <div class="callout callout-warn">
+                <i class="fas fa-shield-halved"></i>
+                <p><strong>If your servers are air-gapped</strong>, those wheels don't exist on the box yet. The bundle ships them in its <code>pip/</code> folder — you install them manually. <strong>This is step 09 in the install below.</strong></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 5. Step-by-step install -->
+    <section class="guide-section section-alt">
+        <div class="container">
+            <h2>5. The install — eleven steps</h2>
+            <p class="section-intro">Run on the boxes from §3. The first 3 steps are on every server. After that, each step says where to run. <strong>Steps 1–7 install Salt by hand. Step 8 is the pivot — from there, Salt configures itself.</strong></p>
+
+            <div class="quickstart-grid divider-grid install-steps">
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">01</span>
+                    <h4>Get the bundle</h4>
+                    <p>Download <code>VMware_Salt_Raas-&lt;VERSION&gt;-XXXXXXXX.el8_Installer.tar.gz</code> from the Broadcom Support Portal. Verify with <code>sha256sum</code>. Stage on every node.</p>
+                    <pre><code>tar -xzvf VMware_Salt_Raas-*.tar.gz
+cd Config-*/sse-installer
+sudo rpmkeys --import keys/*.asc</code></pre>
+                </article>
+
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">02</span>
+                    <h4>Install Salt — masters</h4>
+                    <p>Run on <strong>both master boxes</strong>.</p>
+                    <pre><code>cd ~/Config-*/rpm
+sudo rpm -ivh salt-*.rpm
+sudo rpm -ivh salt-master-*.rpm
+sudo rpm -ivh salt-minion-*.rpm
+sudo rpm -ivh salt-cloud-*.rpm
+sudo rpm -ivh salt-api-*.rpm</code></pre>
+                </article>
+
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">03</span>
+                    <h4>Install Salt — data node</h4>
+                    <p>Run on the <strong>RaaS + DB + Valkey box</strong>. Just the minion — no master here.</p>
+                    <pre><code>cd ~/Config-*/rpm
+sudo rpm -ivh salt-*.rpm
+sudo rpm -ivh salt-minion-*.rpm</code></pre>
+                </article>
+
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">04</span>
+                    <h4>Mirror master keys</h4>
+                    <p>This is the magic. Both masters use the <em>same</em> <code>master.pem</code> and <code>master.pub</code>. That's how a minion can talk to either master without re-keying — and how blue/green works later.</p>
+                    <pre><code><span class="code-comment"># on master 1 — generate the keys (first time only)</span>
+<span class="code-comment"># the files don't exist until you start the service once</span>
+sudo systemctl start salt-master
+sudo systemctl stop salt-master
+
+<span class="code-comment"># on master 2 — paste in master 1's content</span>
+sudo chmod 600 /etc/salt/pki/master/master.pem
+sudo vim   /etc/salt/pki/master/master.pem
+sudo chmod 400 /etc/salt/pki/master/master.pem
+
+sudo vim   /etc/salt/pki/master/master.pub</code></pre>
+                    <p style="font-size: 0.85rem;">Treat <code>master.pem</code> like a root password. Use a vault or out-of-band transfer — never commit it.</p>
+                </article>
+
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">05</span>
+                    <h4>Set auto-accept</h4>
+                    <p>The other half of the magic. Edit <code>/etc/salt/master</code> on both masters.</p>
+                    <pre><code>user: root
+auto_accept: True</code></pre>
+                    <p style="font-size: 0.85rem;">If your security policy bans blanket auto-accept, use <code>auto_accept_grain</code> patterns — but the rule must match on both masters.</p>
+                </article>
+
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">06</span>
+                    <h4>Configure minions and start</h4>
+                    <p>Three things on each box: tell it about the masters, give it a name, start the right services.</p>
+
+                    <p style="margin-top: 0.5rem; font-weight: 600;">a) Point at both masters — same file on <em>every</em> box</p>
+                    <pre><code><span class="code-comment"># /etc/salt/minion.d/master.conf</span>
+master:
+  - prod-master1.example.com
+  - prod-master2.example.com</code></pre>
+
+                    <p style="margin-top: 0.5rem; font-weight: 600;">b) Set the minion ID — different on each box</p>
+                    <p style="font-size: 0.85rem;">Names are your choice. Pick something that describes the role, not the hostname. The IDs appear later in the pillar (step 8). A good convention: <code>&lt;env&gt;-&lt;role&gt;&lt;N&gt;</code>.</p>
+                    <pre><code><span class="code-comment"># on master 1</span>
+echo "prod-master1" | sudo tee /etc/salt/minion_id
+
+<span class="code-comment"># on master 2</span>
+echo "prod-master2" | sudo tee /etc/salt/minion_id
+
+<span class="code-comment"># on the data node (RaaS + PG + Valkey)</span>
+echo "prod-raas" | sudo tee /etc/salt/minion_id</code></pre>
+
+                    <p style="margin-top: 0.5rem; font-weight: 600;">c) Start services — masters run three, data node runs one</p>
+                    <pre><code><span class="code-comment"># on both masters</span>
+sudo systemctl enable --now \
+  salt-master salt-minion salt-api
+
+<span class="code-comment"># on the data node</span>
+sudo systemctl enable --now salt-minion</code></pre>
+                </article>
+
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">07</span>
+                    <h4>Verify keys and ping</h4>
+                    <p>From <strong>master 1</strong>. Accept all pending keys and confirm every minion answers.</p>
+                    <pre><code>sudo salt-key -L     <span class="code-comment"># list pending</span>
+sudo salt-key -A     <span class="code-comment"># accept all</span>
+sudo salt '*' test.ping</code></pre>
+                    <p style="font-size: 0.85rem;">All three minions (both masters + the data node) should return <code>True</code>. If not, restart <code>salt-minion</code> on the silent box and retry.</p>
+                </article>
+
+                <article class="quickstart-step fade-in" style="grid-column: 1 / -1; background: var(--color-bg-featured); border-left: 3px solid var(--color-accent); padding: 2rem 2.25rem;">
+                    <span class="step-number"><i class="fas fa-wand-magic-sparkles" style="margin-right: 0.4rem; color: var(--color-accent);"></i>08 — THE PIVOT</span>
+                    <h4>Set up the pillar — the recipe Salt will read</h4>
+                    <p><strong>This is the moment Salt starts configuring itself.</strong> Pillar is the data Salt reads to know what to build. Once you write these files, master 1 has the recipe — the highstate in step 10 reads them and uses them to install PostgreSQL, Valkey, and RaaS on the data node, and the master plugin on both masters. Steps 1–7 were hand-install. From here on, you write config and Salt does the rest.</p>
+
+                    <h5 style="font-size: 0.95rem; font-weight: 600; margin: 1.75rem 0 0.5rem; color: var(--color-text);">8.1 — Stage the installer files</h5>
+                    <p>On <strong>master 1 only</strong>:</p>
+                    <pre><code>cd ~/Config-*/sse-installer
+sudo mkdir -p /srv/salt /srv/pillar
+sudo cp -r salt/sse        /srv/salt/
+sudo cp -r salt/top.sls    /srv/salt/
+sudo cp -r pillar/sse      /srv/pillar/
+sudo cp -r pillar/top.sls  /srv/pillar/</code></pre>
+
+                    <h5 style="font-size: 0.95rem; font-weight: 600; margin: 1.5rem 0 0.5rem; color: var(--color-text);">8.2 — Edit <code>/srv/pillar/top.sls</code></h5>
+                    <p>List the minion IDs of every box in this deployment. Salt uses this to know which boxes get the SSE pillar data.</p>
+                    <pre><code>{# Pillar Top File #}
+
+{# Define VCF Salt servers #}
+{% load_yaml as sse_servers %}
+  - prod-raas
+  - prod-master1
+  - prod-master2
+{% endload %}
+
+base:
+  {# Assign pillar data to each server #}
+  {% for server in sse_servers %}
+  '{{ server }}':
+    - sse
+  {% endfor %}</code></pre>
+
+                    <h5 style="font-size: 0.95rem; font-weight: 600; margin: 1.5rem 0 0.5rem; color: var(--color-text);">8.3 — Edit <code>/srv/pillar/sse/sse_settings.yaml</code></h5>
+                    <p>The file has five sections. <strong>Most fields are fine at default.</strong> The fields you actually need to set are highlighted <span style="color: var(--color-accent); font-weight: 600;">in cyan</span> below.</p>
+
+                    <div style="margin: 1rem 0 1.25rem; padding: 1rem 1.25rem; background: rgba(0,0,0,0.2); border-radius: 8px;">
+                        <p style="font-size: 0.875rem; margin: 0 0 0.5rem;"><strong style="color: var(--color-accent); font-size: 0.75rem; letter-spacing: 0.1em;">WHAT YOU EDIT:</strong></p>
+                        <ul style="font-size: 0.875rem; line-height: 1.7; color: var(--color-text-muted); margin: 0; padding-left: 1.25rem;">
+                            <li><strong>Section 1</strong> — replace 4 minion IDs with the names you set in step 06.</li>
+                            <li><strong>Sections 2, 3, 4</strong> — set <code>pg_endpoint</code>, <code>redis_endpoint</code>, <code>eapi_endpoint</code> to the data node's IP or DNS. <strong>All three point to the same box</strong> — PG, Valkey, and RaaS all live there.</li>
+                            <li><strong>Section 4</strong> — generate <code>eapi_key</code> with the helper below.</li>
+                            <li><strong>Section 5</strong> — generate <code>customer_id</code> with the helper below.</li>
+                            <li>Everything else (passwords, ports, SSL toggles, <code>eapi_standalone</code>, <code>eapi_failover_master</code>) — keep defaults for now. Change passwords after install.</li>
+                        </ul>
+                    </div>
+
+                    <pre><code><span class="code-comment"># Section 1: Servers — which minion does what (use minion IDs from step 06)</span>
+servers:
+  pg_server:    <span style="color: var(--color-accent); font-weight: 600;">prod-raas</span>
+  redis_server: <span style="color: var(--color-accent); font-weight: 600;">prod-raas</span>       <span class="code-comment"># variable retained — actual DB is Valkey</span>
+  eapi_servers:
+    - <span style="color: var(--color-accent); font-weight: 600;">prod-raas</span>
+  salt_masters:
+    - <span style="color: var(--color-accent); font-weight: 600;">prod-master1</span>
+    - <span style="color: var(--color-accent); font-weight: 600;">prod-master2</span>           <span class="code-comment"># comment out for single-master</span>
+
+<span class="code-comment"># Section 2: PostgreSQL — endpoint is IP or DNS of the data node</span>
+pg:
+  pg_endpoint: <span style="color: var(--color-accent); font-weight: 600;">raas.example.com</span>
+  pg_port: 5432
+  pg_username: salteapi
+  pg_password: abc123                 <span class="code-comment"># default — change after install</span>
+  pg_hba_by_ip: True
+  pg_hba_by_fqdn: True
+  pg_cert_cn: localhost
+  pg_cert_name: localhost
+
+<span class="code-comment"># Section 3: Valkey — same data node as PostgreSQL</span>
+redis:
+  redis_endpoint: <span style="color: var(--color-accent); font-weight: 600;">raas.example.com</span>
+  redis_port: 6379
+  redis_username: saltredis
+  redis_password: def456              <span class="code-comment"># default — change after install</span>
+
+<span class="code-comment"># Section 4: eAPI / RaaS service</span>
+eapi:
+  eapi_username: root                 <span class="code-comment"># default — change after install</span>
+  eapi_password: salt                 <span class="code-comment"># default — change after install</span>
+  eapi_endpoint: <span style="color: var(--color-accent); font-weight: 600;">raas.example.com</span>
+  eapi_ssl_enabled: True
+  eapi_ssl_validation: False
+  eapi_standalone: False              <span class="code-comment"># multi-node deploy = False</span>
+  eapi_failover_master: False         <span class="code-comment"># False = active/active (recommended)</span>
+  eapi_key: <span style="color: var(--color-accent); font-weight: 600;">&lt;openssl rand -hex 32&gt;</span>
+  eapi_server_cert_cn: localhost
+  eapi_server_cert_name: localhost
+
+<span class="code-comment"># Section 5: Identifiers — must be unique per install</span>
+ids:
+  customer_id: <span style="color: var(--color-accent); font-weight: 600;">&lt;uuidgen&gt;</span>
+  cluster_id: <span style="color: var(--color-accent); font-weight: 600;">saltmaster_cluster_1</span></code></pre>
+
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1rem; margin-top: 1.25rem; font-size: 0.875rem;">
+                        <div style="padding: 0.75rem 1rem; background: rgba(0,0,0,0.15); border-radius: 6px;">
+                            <strong style="color: var(--color-accent); font-size: 0.7rem; letter-spacing: 0.1em;">GENERATE EAPI_KEY</strong>
+                            <pre style="margin-top: 0.4rem; font-size: 0.75rem; padding: 0.5rem 0.75rem;"><code>openssl rand -hex 32</code></pre>
+                        </div>
+                        <div style="padding: 0.75rem 1rem; background: rgba(0,0,0,0.15); border-radius: 6px;">
+                            <strong style="color: var(--color-accent); font-size: 0.7rem; letter-spacing: 0.1em;">GENERATE CUSTOMER_ID</strong>
+                            <pre style="margin-top: 0.4rem; font-size: 0.75rem; padding: 0.5rem 0.75rem;"><code>cat /proc/sys/kernel/random/uuid</code></pre>
+                        </div>
+                        <div style="padding: 0.75rem 1rem; background: rgba(0,0,0,0.15); border-radius: 6px;">
+                            <strong style="color: var(--color-accent); font-size: 0.7rem; letter-spacing: 0.1em;">CLUSTER_ID</strong>
+                            <p style="margin-top: 0.4rem; color: var(--color-text-muted); line-height: 1.5;">Ties masters together in the RaaS UI. Same value on both masters in this stack.</p>
+                        </div>
+                    </div>
+
+                    <p style="font-size: 0.85rem; margin-top: 1.25rem;">The variable is still <code>redis_server</code> — the database is Valkey, but don't rename it. Both <code>eapi_key</code> and <code>customer_id</code> must be unique per install.</p>
+                </article>
+
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">09</span>
+                    <h4>Install the pip wheels (air-gap)</h4>
+                    <p>Run on <strong>every node</strong>. The bundle ships these wheels in the <code>pip/</code> folder. The SSEAPE master plugin is in <code>sse-installer/</code>.</p>
+                    <pre><code>cd ~/Config-*/pip
+sudo salt-pip install PyJWT-*.whl
+sudo salt-pip install pika-*.whl
+sudo salt-pip install pyspnego-*.whl
+sudo salt-pip install smbprotocol-*.whl
+sudo salt-pip install pypsexec-*.whl
+
+<span class="code-comment"># master plugin — both masters only</span>
+cd ~/Config-*/sse-installer/salt/sse/eapi_plugin/files
+sudo salt-pip install SSEAPE-*-py3-none-any.whl</code></pre>
+                    <p style="font-size: 0.85rem;">If you have internet (and a configured PyPI proxy), <code>sudo salt-pip install PyJWT pika pyspnego smbprotocol pypsexec</code> works the same way.</p>
+                </article>
+
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">10</span>
+                    <h4>Run the highstate</h4>
+                    <p>Data layer first, then masters. From <strong>master 1</strong>.</p>
+                    <pre><code>sudo salt '*' saltutil.refresh_grains
+sudo salt '*' saltutil.refresh_pillar
+sudo salt prod-raas    state.highstate
+sudo salt prod-master1 state.highstate
+sudo salt prod-master2 state.highstate</code></pre>
+                    <p style="font-size: 0.85rem;">Watch <code>tail -f /var/log/messages</code> on the data node. If a master highstate fails, bounce its <code>salt-minion</code> and retry. <strong>Tip:</strong> snapshot the VMs before this step.</p>
+                </article>
+
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">11</span>
+                    <h4>Lock it down</h4>
+                    <p>Post-install cleanup. Each master should now point at <em>itself</em>, and the install-time cross-keys can go.</p>
+                    <pre><code><span class="code-comment"># on each master</span>
+echo "master: localhost" | sudo tee \
+  /etc/salt/minion.d/master.conf
+sudo systemctl restart salt-master salt-minion
+
+<span class="code-comment"># delete the other master's key</span>
+sudo salt-key -d &lt;other-master-id&gt;
+
+<span class="code-comment"># on RaaS: remove install-time autoaccept</span>
+sudo sed -i '/master_autoaccept: true/d' /etc/raas/raas
+sudo systemctl restart raas</code></pre>
+                </article>
+            </div>
+
+            <div class="callout callout-warn">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p><strong>During highstate only:</strong> set <code>master_autoaccept: true</code> in <code>/etc/raas/raas</code> on the RaaS node so the master plugin can register, and <code>systemctl restart raas</code>. Step 11 removes it. Leaving it on is a security hole.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 6. After install -->
+    <section class="guide-section">
+        <div class="container">
+            <h2>6. After install — make it production</h2>
+            <p class="section-intro">A working stack isn't a production stack. Six things to do before you point real fleet at it.</p>
+
+            <div class="quickstart-grid divider-grid" style="grid-template-columns: repeat(2, 1fr);">
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">LICENSE</span>
+                    <h4>Install the license key</h4>
+                    <p>On the RaaS node. The filename must end in <code>_license</code>.</p>
+                    <pre style="margin-top: auto;"><code>echo "&lt;license-key&gt;" | sudo tee \
+  /etc/raas/saltstack_license
+sudo chown raas:raas \
+  /etc/raas/saltstack_license
+sudo systemctl restart raas</code></pre>
+                </article>
+
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">SSL</span>
+                    <h4>Trusted cert for the UI</h4>
+                    <p>Drop your cert + key in <code>/etc/pki/raas/certs/</code>, then point <code>/etc/raas/raas</code> at them.</p>
+                    <pre style="margin-top: auto;"><code><span class="code-comment"># in /etc/raas/raas</span>
+tls_crt: /etc/pki/raas/certs/&lt;name&gt;.crt
+tls_key: /etc/pki/raas/certs/&lt;name&gt;.key
+port: 443</code></pre>
+                </article>
+
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">GIT</span>
+                    <h4>Make Git the source of truth</h4>
+                    <p>Replace <code>/srv/salt</code> with a Git checkout on <strong>both masters</strong>. A 10-minute cron pull keeps it fresh.</p>
+                    <pre style="margin-top: auto;"><code>sudo mv /srv/salt ~/install_backup/
+sudo git clone &lt;repo-url&gt; /srv/salt
+cd /srv/salt &amp;&amp; git checkout &lt;branch&gt;
+
+<span class="code-comment"># cron — every 10 min</span>
+*/10 * * * * \
+  git -C /srv/salt pull \
+  &gt; /var/log/salt_git_pull.log 2&gt;&amp;1</code></pre>
+                </article>
+
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">GPG</span>
+                    <h4>Encrypt pillar secrets</h4>
+                    <p>Pillar lives in Git. Secrets in pillar must be encrypted. Generate a GPG keypair on master 1, copy to master 2 (and to any future green stacks).</p>
+                    <p style="font-size: 0.85rem; margin-top: auto;"><a href="#gpg-deep-dive" style="color: var(--color-accent); text-decoration: none; font-weight: 600;">Full GPG walkthrough below ↓</a></p>
+                </article>
+
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">CONFIG</span>
+                    <h4>Wire master config files</h4>
+                    <p>In <code>/etc/salt/master.d/</code>, three files do most of the work:</p>
+                    <ul style="font-size: 0.875rem; color: var(--color-text-muted); padding-left: 1.25rem; line-height: 1.7; margin-top: 0.25rem;">
+                        <li><code>file_roots.conf</code> — env-to-folder map (e.g., <code>prod → /srv/salt/prod</code>)</li>
+                        <li><code>pillar.conf</code> — pillar root per env</li>
+                        <li><code>minion_deploy_delay.conf</code> — Linux 180s, Windows 3600s</li>
+                    </ul>
+                </article>
+
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">CLOUD</span>
+                    <h4>Pre-stage minion bundles</h4>
+                    <p>So Aria / vRA can deploy minions to new VMs at provision time.</p>
+                    <pre style="margin-top: auto;"><code>cd ~/Config-*/minion-bundles
+sudo cp * /etc/salt/cloud.deploy.d/
+
+<span class="code-comment"># /etc/salt/cloud.providers.d/saltify.conf</span>
+saltify_provider:
+  driver: saltify</code></pre>
+                </article>
+            </div>
+
+            <div class="callout callout-tip">
+                <i class="fas fa-circle-info"></i>
+                <p><strong>Run order matters.</strong> License → SSL → Git → GPG → master configs → minion bundles. The Git step assumes you already have a repo with state files; if not, scaffold from <code>~/install_backup</code> and commit.</p>
+            </div>
+
+            <!-- GPG deep dive -->
+            <div id="gpg-deep-dive" style="margin-top: 3rem; padding: 2rem 2.25rem; background: var(--color-bg-featured); border-left: 3px solid var(--color-accent); border-radius: 8px;">
+                <p style="font-size: 0.7rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-accent); margin-bottom: 0.5rem;">
+                    <i class="fas fa-key" style="margin-right: 0.4rem;"></i>GPG — THE FULL SETUP
+                </p>
+                <h3 style="font-size: 1.4rem; font-weight: 600; letter-spacing: -0.01em; color: var(--color-text); margin-bottom: 0.75rem;">Encrypting pillar secrets</h3>
+                <p>Pillar holds your config: passwords, API keys, certs. Pillar lives in Git. So secrets in pillar <strong>must be encrypted</strong>, or you're committing plaintext credentials to a repo. Salt uses GPG to decrypt them at runtime.</p>
+                <p style="margin-top: 0.75rem;">Just like master keys (step 4), the GPG keypair must be <strong>identical on every master in this stack and on every future blue/green stack.</strong> Generate once, copy everywhere.</p>
+
+                <h4 style="font-size: 1.05rem; font-weight: 600; margin: 1.75rem 0 0.5rem; color: var(--color-text);">Case A — Brand-new environment: generate the keypair</h4>
+                <p>On <strong>master 1</strong> only.</p>
+                <pre><code>sudo yum install -y pinentry           <span class="code-comment"># required for the prompt</span>
+mkdir -p /tmp/gpgkeys
+chmod 0700 /tmp/gpgkeys
+gpg --full-generate-key --homedir /tmp/gpgkeys</code></pre>
+                <p style="margin-top: 0.75rem;">The interactive prompt asks five things:</p>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0.75rem; margin-top: 0.75rem;">
+                    <div style="padding: 0.75rem 1rem; background: rgba(0,0,0,0.2); border-radius: 6px; font-size: 0.875rem;">
+                        <strong style="color: var(--color-accent); font-size: 0.7rem; letter-spacing: 0.1em;">KEY TYPE</strong>
+                        <p style="margin-top: 0.3rem; color: var(--color-text-muted); line-height: 1.5;">Choose <code>1</code> — RSA and RSA (default).</p>
+                    </div>
+                    <div style="padding: 0.75rem 1rem; background: rgba(0,0,0,0.2); border-radius: 6px; font-size: 0.875rem;">
+                        <strong style="color: var(--color-accent); font-size: 0.7rem; letter-spacing: 0.1em;">KEY SIZE</strong>
+                        <p style="margin-top: 0.3rem; color: var(--color-text-muted); line-height: 1.5;"><code>2048</code> for large fleets (faster). <code>4096</code> for small fleets (stronger).</p>
+                    </div>
+                    <div style="padding: 0.75rem 1rem; background: rgba(0,0,0,0.2); border-radius: 6px; font-size: 0.875rem;">
+                        <strong style="color: var(--color-accent); font-size: 0.7rem; letter-spacing: 0.1em;">EXPIRY</strong>
+                        <p style="margin-top: 0.3rem; color: var(--color-text-muted); line-height: 1.5;"><code>0</code> — never expires. Rotating GPG = re-encrypting every pillar value.</p>
+                    </div>
+                    <div style="padding: 0.75rem 1rem; background: rgba(0,0,0,0.2); border-radius: 6px; font-size: 0.875rem;">
+                        <strong style="color: var(--color-accent); font-size: 0.7rem; letter-spacing: 0.1em;">NAME / EMAIL / COMMENT</strong>
+                        <p style="margin-top: 0.3rem; color: var(--color-text-muted); line-height: 1.5;">Something descriptive — e.g., <code>Prod Salt Master</code>, <code>salt-ops@example.com</code>.</p>
+                    </div>
+                    <div style="padding: 0.75rem 1rem; background: rgba(179, 84, 84, 0.15); border-radius: 6px; font-size: 0.875rem; border: 1px solid rgba(179, 84, 84, 0.4);">
+                        <strong style="color: var(--color-danger); font-size: 0.7rem; letter-spacing: 0.1em;">PASSPHRASE</strong>
+                        <p style="margin-top: 0.3rem; color: var(--color-text-muted); line-height: 1.5;"><strong>Leave empty.</strong> Salt can't enter a passphrase at runtime — a passphrase here breaks decryption.</p>
+                    </div>
+                </div>
+
+                <p style="margin-top: 1.25rem;">Now export the keys, package them, and install:</p>
+                <pre><code><span class="code-comment"># export the public + secret keys</span>
+gpg --homedir /tmp/gpgkeys --expert --armor \
+    --export &gt; salt_pubkey.asc
+gpg --homedir /tmp/gpgkeys --expert --armor \
+    --export-secret-key &gt; salt_seckey.asc
+
+<span class="code-comment"># package the gpg dir and unpack at /etc/salt/gpgkeys</span>
+cd ..
+tar czvf gpgkeys.tgz gpgkeys
+sudo tar -zxvf /tmp/gpgkeys.tgz -C /etc/salt/
+
+sudo systemctl restart salt-master
+
+<span class="code-comment"># import into the master's keyring + verify</span>
+gpg --homedir /etc/salt/gpgkeys --import \
+    /etc/salt/gpgkeys/salt_pubkey.asc
+gpg --homedir /etc/salt/gpgkeys --import \
+    /etc/salt/gpgkeys/salt_seckey.asc
+gpg --homedir /etc/salt/gpgkeys --list-keys
+gpg --homedir /etc/salt/gpgkeys --list-secret-keys</code></pre>
+
+                <h4 style="font-size: 1.05rem; font-weight: 600; margin: 1.75rem 0 0.5rem; color: var(--color-text);">Case B — Existing environment or seeding green: copy the keypair</h4>
+                <p>On master 2 (and on any future green-stack master), copy the same keys from master 1. Same pattern as mirroring <code>master.pem</code> in step 4.</p>
+                <pre><code><span class="code-comment"># on the new master</span>
+sudo mkdir /etc/salt/gpgkeys
+
+<span class="code-comment"># paste contents from the existing master</span>
+sudo vim /etc/salt/gpgkeys/salt_seckey.asc
+sudo vim /etc/salt/gpgkeys/salt_pubkey.asc
+
+sudo systemctl restart salt-master
+
+<span class="code-comment"># import + verify</span>
+gpg --homedir /etc/salt/gpgkeys --import \
+    /etc/salt/gpgkeys/salt_pubkey.asc
+gpg --homedir /etc/salt/gpgkeys --import \
+    /etc/salt/gpgkeys/salt_seckey.asc
+gpg --homedir /etc/salt/gpgkeys --list-keys</code></pre>
+
+                <h4 style="font-size: 1.05rem; font-weight: 600; margin: 1.75rem 0 0.5rem; color: var(--color-text);">Wire Salt to use the keys</h4>
+                <p>One config file, then refresh.</p>
+                <pre><code><span class="code-comment"># /etc/salt/master.d/gpg.conf</span>
+ssh_minion_opts:
+  gpg_keydir: /etc/salt/gpgkeys</code></pre>
+                <pre style="margin-top: 0.5rem;"><code>sudo systemctl restart salt-master
+sudo salt '*' saltutil.refresh_pillar
+sudo salt '*' pillar.items     <span class="code-comment"># confirm pillar reads</span></code></pre>
+
+                <h4 style="font-size: 1.05rem; font-weight: 600; margin: 1.75rem 0 0.5rem; color: var(--color-text);">Encrypt a value for your pillar</h4>
+                <p>Encrypt secrets one at a time, paste the output into your pillar <code>.sls</code> files, commit to Git.</p>
+                <pre><code>echo -n 'mySuperSecret123' | gpg \
+  --homedir /etc/salt/gpgkeys \
+  --trust-model always \
+  -ear 'Prod Salt Master'</code></pre>
+                <p style="margin-top: 0.75rem;">The output is an armored <code>-----BEGIN PGP MESSAGE-----</code> block. Paste it into pillar like:</p>
+                <pre><code><span class="code-comment"># in your pillar .sls file</span>
+db_password: |
+  -----BEGIN PGP MESSAGE-----
+  hQEMA7...
+  ...
+  -----END PGP MESSAGE-----</code></pre>
+
+                <div class="callout callout-warn" style="margin-top: 1.5rem;">
+                    <i class="fas fa-shield-halved"></i>
+                    <p><strong><code>salt_seckey.asc</code> is your master decryption key.</strong> Treat it like a root password — vault it, transfer out-of-band, never commit it. The public key (<code>salt_pubkey.asc</code>) is fine to share — anyone can encrypt with it, only the private key can decrypt.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 7. Cutover steps -->
+    <section class="guide-section section-alt" id="cutover-steps">
+        <div class="container">
+            <h2>7. Cutover — when you swap</h2>
+            <p class="section-intro">You only need this when you're cutting over to a green stack — for an upgrade, a migration, or a "rebuild instead of troubleshoot." The concept and the diagram are in <a href="#" onclick="document.querySelector('h2').scrollIntoView({behavior:'smooth'}); return false;" style="color: var(--color-accent);">§2 above</a>.</p>
+
+            <div class="quickstart-grid divider-grid" style="grid-template-columns: repeat(2, 1fr);">
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">01</span>
+                    <h4>Build green</h4>
+                    <p>3 fresh VMs. Run §5 on them. Don't connect anything yet.</p>
+                </article>
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">02</span>
+                    <h4>Seed the keys</h4>
+                    <p>Copy <code>master.pem</code>, <code>master.pub</code>, and <code>/etc/salt/gpgkeys/</code> from blue to both green masters. Confirm <code>auto_accept: True</code>.</p>
+                </article>
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">03</span>
+                    <h4>Test green</h4>
+                    <p>Use a canary minion (hostfile override) to point at green. Run <code>test.ping</code>, a highstate, pillar decrypt. Everything must pass.</p>
+                </article>
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">04</span>
+                    <h4>Lower the TTL</h4>
+                    <p>Day before cutover: drop the CNAME's TTL to 60s. Lets the swap propagate fast.</p>
+                </article>
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">05</span>
+                    <h4>Flip the CNAME</h4>
+                    <p>Repoint <code>salt-master.example.com</code> at green's masters. Same for <code>raas.example.com</code>. Or swap the LB pool if you have one.</p>
+                </article>
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">06</span>
+                    <h4>Soak, then retire blue</h4>
+                    <p>Watch the RaaS UI. Minion connect rates, job success rates. Hold blue for 24–72 hours in case of rollback. Then decommission.</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- 8. Common gotchas -->
+    <section class="guide-section">
+        <div class="container">
+            <h2>8. Common gotchas</h2>
+            <p class="section-intro">Things we've hit. Saves you a few late nights.</p>
+
+            <div class="gotchas">
+                <div class="gotcha">
+                    <h4>Forgetting to remove <code>master_autoaccept: true</code></h4>
+                    <p>It's required during install. It's a security hole afterwards. Always remove and restart RaaS once both masters are registered.</p>
+                </div>
+                <div class="gotcha">
+                    <h4><code>master.pem</code> is read-only by default</h4>
+                    <p>Mode 0400. Run <code>chmod 600</code> to edit, then <code>chmod 400</code> back. The file doesn't exist on a brand-new master until you start the service once.</p>
+                </div>
+                <div class="gotcha">
+                    <h4>The variable is named <code>redis_*</code> but the database is Valkey</h4>
+                    <p>Broadcom replaced Redis with Valkey but kept the old variable names for backward compat. Don't rename them. The installer will break.</p>
+                </div>
+                <div class="gotcha">
+                    <h4>Highstate hangs on first boot</h4>
+                    <p>If it sits for more than 30 minutes on the RaaS node, reboot the node and try again. Common when kernel/security baselines are still settling.</p>
+                </div>
+                <div class="gotcha">
+                    <h4>Master 2 fails the highstate</h4>
+                    <p>Bounce <code>salt-minion</code> on master 2, then re-run the highstate from master 1. Sometimes needs two passes.</p>
+                </div>
+                <div class="gotcha">
+                    <h4>Blue/green cutover stalls</h4>
+                    <p>Means at least one of: master keys drifted between stacks, GPG keys drifted, or auto-accept is off somewhere. All three must be in lockstep.</p>
+                </div>
+                <div class="gotcha">
+                    <h4>Windows minions take longer to deploy</h4>
+                    <p>Set <code>sseapi_windows_minion_deploy_delay: 3600</code> in the master config. Default is too short for Windows 2022.</p>
+                </div>
+                <div class="gotcha">
+                    <h4>Reusing VM names or IPs?</h4>
+                    <p>Clear the old SSH host fingerprint first: <code>ssh-keygen -R &lt;old-fqdn-or-ip&gt;</code>. Otherwise SCP and Ansible-style tooling will fail with host-key warnings.</p>
+                </div>
+                <div class="gotcha">
+                    <h4>Disable <code>cloud-init</code> on long-lived servers</h4>
+                    <p>If your RHEL template runs cloud-init, it can rewrite networking on reboot. <code>sudo touch /etc/cloud/cloud-init.disabled</code> on every Salt node.</p>
+                </div>
+                <div class="gotcha">
+                    <h4><code>pinentry</code> not installed → GPG key generation hangs</h4>
+                    <p><code>sudo yum install -y pinentry</code> first. The interactive prompt for the passphrase needs it.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="contact">
+        <div class="container">
+            <div class="contact-content fade-in">
+                <h2>Want this done by people who've done it before?</h2>
+                <p class="contact-sub">We build it, hand it back, and turn your team into the experts on the way out.</p>
+                <a href="mailto:sales@saltify.work" class="contact-email">sales@saltify.work</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-inner">
+                <p class="footer-logo">
+                    <span class="logo-primary">Saltify</span>
+                    <span class="logo-secondary">Pty Ltd</span>
+                </p>
+                <p class="footer-tagline">Enterprise Salt for teams that can't afford fragile infrastructure. Based in Australia.</p>
+                <p class="footer-copy">© 2026 Saltify Pty Ltd</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

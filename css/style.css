@@ -1491,3 +1491,316 @@ pre code {
         padding: 0.75rem;
     }
 }
+
+/* ================================
+   Install Guide promo (home page)
+   ================================ */
+.install-promo {
+    padding: 100px 0;
+    background: var(--color-bg);
+}
+
+.install-promo-card {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 3rem 2.5rem;
+    background: linear-gradient(160deg, var(--color-bg-featured) 0%, var(--color-bg-card) 100%);
+    border: 1px solid var(--color-accent-mid);
+    border-radius: var(--radius);
+    text-align: center;
+}
+
+.install-promo-eyebrow {
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    color: var(--color-accent);
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+}
+
+.install-promo-card h2 {
+    font-size: clamp(1.75rem, 3.2vw, 2.25rem);
+    letter-spacing: -0.015em;
+    color: var(--color-text);
+    margin-bottom: 0.875rem;
+}
+
+.install-promo-lead {
+    font-size: 1.0625rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    margin: 0 auto 2rem;
+    max-width: 580px;
+}
+
+.install-promo-stats {
+    display: flex;
+    justify-content: center;
+    gap: 3rem;
+    margin: 2rem 0 2.25rem;
+    flex-wrap: wrap;
+}
+
+.install-promo-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 80px;
+}
+
+.install-promo-stat-num {
+    font-family: var(--font-mono);
+    font-size: 2.5rem;
+    font-weight: 600;
+    color: var(--color-accent);
+    line-height: 1;
+}
+
+.install-promo-stat-unit {
+    font-size: 0.55em;
+    font-weight: 500;
+    margin-left: 0.05em;
+    opacity: 0.85;
+}
+
+.install-promo-stat-label {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    margin-top: 0.5rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+}
+
+.install-promo-note {
+    margin-top: 1.25rem;
+    font-size: 0.85rem;
+    color: var(--color-text-dim);
+    font-style: italic;
+}
+
+@media (max-width: 600px) {
+    .install-promo { padding: 60px 0; }
+    .install-promo-card { padding: 2rem 1.5rem; }
+    .install-promo-stats { gap: 2rem; }
+    .install-promo-stat-num { font-size: 2rem; }
+}
+
+/* ================================
+   Install guide toast (animated, dismissable)
+   ================================ */
+.install-toast {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    width: 320px;
+    background: linear-gradient(160deg, var(--color-bg-featured) 0%, var(--color-bg-card) 100%);
+    border: 1px solid var(--color-accent-mid);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(6, 182, 212, 0.05);
+    z-index: 1000;
+    transform: translateX(0);
+    opacity: 1;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+    animation: install-toast-slide-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.8s both,
+               install-toast-glow 2.4s ease-out 1.6s 1;
+}
+
+@keyframes install-toast-slide-in {
+    from { transform: translateX(calc(100% + 2rem)); opacity: 0; }
+    to   { transform: translateX(0); opacity: 1; }
+}
+
+.install-toast--hidden {
+    transform: translateX(calc(100% + 2rem));
+    opacity: 0;
+    pointer-events: none;
+    animation: none;
+}
+
+@keyframes install-toast-glow {
+    0%   { box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(6, 182, 212, 0.05); }
+    50%  { box-shadow: 0 12px 50px rgba(0, 0, 0, 0.45), 0 0 0 1px rgba(6, 182, 212, 0.4), 0 0 30px rgba(6, 182, 212, 0.25); }
+    100% { box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(6, 182, 212, 0.05); }
+}
+
+.install-toast-close {
+    position: absolute;
+    top: 0.4rem;
+    right: 0.6rem;
+    background: transparent;
+    border: none;
+    color: var(--color-text-muted);
+    font-size: 1.4rem;
+    cursor: pointer;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    border-radius: 6px;
+    transition: color var(--transition), background var(--transition);
+    padding: 0;
+}
+
+.install-toast-close:hover {
+    color: var(--color-text);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.install-toast-body {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.install-toast-doc {
+    flex-shrink: 0;
+    width: 48px;
+}
+
+.install-toast-doc svg {
+    display: block;
+    overflow: visible;
+}
+
+/* Paper body */
+.doc-paper {
+    fill: var(--color-bg-card);
+    stroke: var(--color-accent);
+    stroke-width: 1.4;
+    opacity: 0;
+    animation: doc-paper-in 0.4s ease-out 0.6s forwards;
+}
+
+[data-theme="light"] .doc-paper {
+    fill: #ffffff;
+}
+
+@keyframes doc-paper-in {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Folded corner */
+.doc-fold {
+    fill: var(--color-accent-soft);
+    stroke: var(--color-accent);
+    stroke-width: 1.4;
+    opacity: 0;
+    animation: doc-paper-in 0.4s ease-out 0.7s forwards;
+}
+
+/* Animated text lines (drawn in sequence) */
+.doc-line {
+    stroke: var(--color-text-muted);
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    stroke-dasharray: 50;
+    stroke-dashoffset: 50;
+    opacity: 0;
+    animation: doc-write 0.5s ease-out forwards;
+    animation-delay: calc(0.9s + var(--d, 0s));
+}
+
+@keyframes doc-write {
+    0%   { stroke-dashoffset: 50; opacity: 0; }
+    20%  { opacity: 1; }
+    100% { stroke-dashoffset: 0; opacity: 1; }
+}
+
+/* Check badge background */
+.doc-check-bg {
+    fill: var(--color-accent);
+    transform-origin: 46px 56px;
+    transform: scale(0);
+    animation: doc-check-pop 0.45s cubic-bezier(0.68, -0.4, 0.265, 1.55) 1.7s forwards;
+}
+
+@keyframes doc-check-pop {
+    0%   { transform: scale(0); }
+    70%  { transform: scale(1.18); }
+    100% { transform: scale(1); }
+}
+
+/* Check mark stroke (drawn) */
+.doc-check-mark {
+    stroke: #ffffff;
+    stroke-width: 2;
+    fill: none;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-dasharray: 16;
+    stroke-dashoffset: 16;
+    animation: doc-check-draw 0.3s ease-out 1.95s forwards;
+}
+
+@keyframes doc-check-draw {
+    to { stroke-dashoffset: 0; }
+}
+
+.install-toast-text {
+    flex: 1;
+    min-width: 0;
+}
+
+.install-toast-eyebrow {
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    color: var(--color-accent);
+    margin-bottom: 0.45rem;
+    text-transform: uppercase;
+}
+
+.install-toast-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--color-text);
+    margin-bottom: 0.35rem;
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+}
+
+.install-toast-sub {
+    font-size: 0.8125rem;
+    color: var(--color-text-muted);
+    margin-bottom: 0.875rem;
+    line-height: 1.45;
+    font-family: var(--font-mono);
+}
+
+.install-toast-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--color-accent);
+    text-decoration: none;
+    transition: color var(--transition);
+}
+
+.install-toast-cta:hover {
+    color: var(--color-accent-hover);
+}
+
+.install-toast-arrow {
+    transition: transform var(--transition);
+    display: inline-block;
+}
+
+.install-toast-cta:hover .install-toast-arrow {
+    transform: translateX(3px);
+}
+
+@media (max-width: 600px) {
+    .install-toast {
+        bottom: 1rem;
+        right: 1rem;
+        left: 1rem;
+        width: auto;
+    }
+}

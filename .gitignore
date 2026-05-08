@@ -1,0 +1,18 @@
+# Local-only reference materials — never push (contains secrets)
+Documentation/
+
+# Office-format runbooks — defensive, never accidentally commit
+*.docx
+*.rtf
+
+# Editor / OS noise
+*.swp
+*~
+.idea/
+.vscode/
+
+# Jekyll build output (if anyone runs it locally)
+_site/
+.sass-cache/
+.jekyll-cache/
+.jekyll-metadata

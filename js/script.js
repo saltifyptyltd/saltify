@@ -8,7 +8,27 @@ document.addEventListener('DOMContentLoaded', () => {
     initNavigation();
     initAnimations();
     initSaltFeed();
+    initInstallToast();
 });
+
+function initInstallToast() {
+    const toast = document.getElementById('installToast');
+    const closeBtn = document.getElementById('installToastClose');
+    if (!toast || !closeBtn) return;
+
+    const DISMISSED_KEY = 'saltifyInstallToastDismissed';
+    if (localStorage.getItem(DISMISSED_KEY)) {
+        toast.classList.add('install-toast--hidden');
+        return;
+    }
+    toast.setAttribute('aria-hidden', 'false');
+
+    closeBtn.addEventListener('click', () => {
+        toast.classList.add('install-toast--hidden');
+        toast.setAttribute('aria-hidden', 'true');
+        localStorage.setItem(DISMISSED_KEY, '1');
+    });
+}
 
 function initTheme() {
     const toggle = document.getElementById('themeToggle');
