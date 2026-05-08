@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salt Cheat Sheet — Every command worth knowing | Saltify</title>
+    <meta name="description" content="The Salt commands you'll actually run, organized by category. Vibe checks, keys, targeting, states, debug, jobs, network. Copy-paste ready. Bookmark this page.">
+    <link rel="icon" type="image/png" href="logo/saltify-logo-large-transparent.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="stylesheet" href="css/style.css?v=3">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Hero — same shape as install-guide / getting-started */
+        .guide-hero {
+            padding: 140px 0 60px;
+            text-align: center;
+        }
+        .guide-hero h1 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            letter-spacing: -0.02em;
+            margin-bottom: 1rem;
+        }
+        .guide-hero .lead {
+            font-size: 1.125rem;
+            color: var(--color-text-muted);
+            max-width: 640px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        .guide-hero .crumb {
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--color-accent);
+            margin-bottom: 1.25rem;
+        }
+        .bookmark-hint {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-size: 0.85rem;
+            color: var(--color-text-muted);
+            margin-top: 1.5rem;
+            padding: 0.5rem 1rem;
+            background: var(--color-accent-softer);
+            border: 1px solid var(--color-accent-mid);
+            border-radius: 999px;
+        }
+        .bookmark-hint i { color: var(--color-accent); }
+
+        /* Override .salt101 padding since we're not using its hero */
+        .cheat-section {
+            padding: 30px 0 60px;
+        }
+
+        /* Beef up cmd-label so icons sit nicely */
+        .cmd-card .cmd-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .cmd-card .cmd-label i {
+            color: var(--color-accent);
+            font-size: 0.95rem;
+            opacity: 0.9;
+        }
+
+        /* Pro tips */
+        .pro-tips {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+        .pro-tip {
+            padding: 1.125rem 1.25rem;
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border);
+            border-left: 3px solid var(--color-accent);
+            border-radius: 8px;
+        }
+        .pro-tip-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            color: var(--color-accent);
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .pro-tip p {
+            font-size: 0.875rem;
+            color: var(--color-text-muted);
+            line-height: 1.55;
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            .pro-tips { grid-template-columns: 1fr; }
+        }
+
+        /* Credit footer */
+        .source-credit {
+            text-align: center;
+            margin-top: 2.5rem;
+            font-size: 0.85rem;
+            color: var(--color-text-dim);
+        }
+        .source-credit a {
+            color: var(--color-text-muted);
+            border-bottom: 1px dashed var(--color-text-dim);
+            transition: color var(--transition);
+        }
+        .source-credit a:hover {
+            color: var(--color-accent);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span class="logo-primary">Saltify</span>
+                <span class="logo-secondary">Pty Ltd</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html#services" class="nav-link">Services</a></li>
+                <li class="nav-dropdown">
+                    <a href="#" class="nav-link nav-dropdown-toggle" aria-haspopup="true" aria-expanded="false" onclick="event.preventDefault();">Learn Salt <span class="nav-caret">▾</span></a>
+                    <ul class="nav-dropdown-menu" aria-label="Learn submenu">
+                        <li><a href="salt-cheat-sheet.html" class="nav-link" aria-current="page">Cheat Sheet</a></li>
+                        <li><a href="install-guide.html" class="nav-link">Install Guide</a></li>
+                        <li><a href="getting-started.html" class="nav-link">Getting Started</a></li>
+                    </ul>
+                </li>
+                <li><a href="index.html#about" class="nav-link">About</a></li>
+                <li><a href="index.html#contact" class="nav-link nav-cta">Let's talk →</a></li>
+            </ul>
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" aria-pressed="false">
+                    <i class="fas fa-sun" id="themeIcon" aria-hidden="true"></i>
+                </button>
+                <button class="hamburger" aria-label="Toggle menu" aria-expanded="false">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="guide-hero">
+        <div class="container">
+            <p class="crumb">Learn Salt</p>
+            <h1>Salt Cheat Sheet.</h1>
+            <p class="lead">Every Salt command worth knowing, organized by category. The 60-ish you'll actually run.</p>
+            <p class="bookmark-hint"><i class="fas fa-bookmark"></i> <strong>Cmd+D this page.</strong> You'll be back.</p>
+        </div>
+    </section>
+
+    <!-- The cheat sheet grid -->
+    <section class="cheat-section">
+        <div class="container">
+            <div class="commands-grid divider-grid">
+
+                <article class="cmd-card hover-card fade-in">
+                    <div class="cmd-label"><i class="fas fa-bolt"></i> Vibe check</div>
+                    <pre><code>salt '*' test.ping
+salt '*' test.version
+salt --versions-report</code></pre>
+                    <p>The "is anyone home?" set. First thing you run, every session.</p>
+                </article>
+
+                <article class="cmd-card hover-card fade-in">
+                    <div class="cmd-label"><i class="fas fa-key"></i> Keys</div>
+                    <pre><code>salt-key -L              <span class="code-comment"># list everything</span>
+salt-key -A              <span class="code-comment"># accept all pending</span>
+salt-key -a my-minion    <span class="code-comment"># accept just one</span>
+salt-key -d old-minion   <span class="code-comment"># delete</span></code></pre>
+                    <p>Key lifecycle, no drama.</p>
+                </article>
+
+                <article class="cmd-card hover-card fade-in">
+                    <div class="cmd-label"><i class="fas fa-crosshairs"></i> Targeting</div>
+                    <pre><code>salt 'web1' …                    <span class="code-comment"># exact</span>
+salt 'web*' …                    <span class="code-comment"># glob</span>
+salt -G 'os:Windows' …           <span class="code-comment"># grain</span>
+salt -L 'web1,web2' …            <span class="code-comment"># list</span>
+salt -C 'web* and G@env:prod' …  <span class="code-comment"># compound</span></code></pre>
+                    <p>Five ways to pick a target. Compound (<code>-C</code>) is overkill until it isn't.</p>
+                </article>
+
+                <article class="cmd-card hover-card fade-in">
+                    <div class="cmd-label"><i class="fas fa-terminal"></i> Run anything</div>
+                    <pre><code>salt '*' cmd.run 'uptime'
+salt 'web*' cmd.run 'systemctl status nginx'
+salt '*' test.version --async</code></pre>
+                    <p>Fleet-wide shell. Use sparingly — states are better.</p>
+                </article>
+
+                <article class="cmd-card hover-card fade-in">
+                    <div class="cmd-label"><i class="fas fa-cube"></i> Apply states</div>
+                    <pre><code>salt '*' state.highstate
+salt 'web*' state.apply nginx
+salt '*' state.highstate test=True   <span class="code-comment"># dry run!</span>
+salt '*' state.show_sls nginx        <span class="code-comment"># peek at compiled</span></code></pre>
+                    <p><code>test=True</code> is your friend. Always dry-run first in prod.</p>
+                </article>
+
+                <article class="cmd-card hover-card fade-in">
+                    <div class="cmd-label"><i class="fas fa-magnifying-glass"></i> Inspect facts</div>
+                    <pre><code>salt '*' grains.items
+salt '*' grains.get os
+salt '*' pillar.items
+salt '*' saltutil.refresh_pillar
+salt '*' saltutil.sync_grains</code></pre>
+                    <p>Grains = host facts (from the minion). Pillar = your data (from the master).</p>
+                </article>
+
+                <article class="cmd-card hover-card fade-in">
+                    <div class="cmd-label"><i class="fas fa-box"></i> Packages</div>
+                    <pre><code>salt '*' pkg.install nginx
+salt '*' pkg.upgrade
+salt '*' pkg.list_upgrades
+salt '*' pkg.remove nginx
+salt '*' pkg.purge nginx           <span class="code-comment"># pkg + config</span></code></pre>
+                    <p>Same command on RHEL, Debian, Windows. Cross-OS magic.</p>
+                </article>
+
+                <article class="cmd-card hover-card fade-in">
+                    <div class="cmd-label"><i class="fas fa-gears"></i> Services</div>
+                    <pre><code>salt '*' service.status nginx
+salt '*' service.start nginx
+salt '*' service.restart nginx
+salt '*' service.stop nginx
+salt '*' service.available nginx</code></pre>
+                    <p><code>systemctl</code>, but for the whole fleet.</p>
+                </article>
+
+                <article class="cmd-card hover-card fade-in">
+                    <div class="cmd-label"><i class="fas fa-network-wired"></i> Network</div>
+                    <pre><code>salt '*' network.ip_addrs
+salt '*' network.connect google.com port=53
+salt '*' network.dig saltify.work
+salt '*' network.default_route
+salt '*' network.interface eth0</code></pre>
+                    <p>Quick fleet-wide network sanity. Saved me hours when DNS was lying.</p>
+                </article>
+
+                <article class="cmd-card hover-card fade-in">
+                    <div class="cmd-label"><i class="fas fa-list-check"></i> Jobs</div>
+                    <pre><code>salt-run jobs.active                 <span class="code-comment"># running NOW</span>
+salt-run jobs.list_jobs              <span class="code-comment"># history</span>
+salt-run jobs.lookup_jid 20240101...
+salt 'minion' saltutil.kill_job &lt;jid&gt;</code></pre>
+                    <p>Async ran sideways? Find it. Kill it.</p>
+                </article>
+
+                <article class="cmd-card hover-card fade-in">
+                    <div class="cmd-label"><i class="fas fa-bug"></i> Debug</div>
+                    <pre><code>salt-master -l debug                 <span class="code-comment"># foreground</span>
+salt-minion -l debug
+salt-run state.event pretty=True     <span class="code-comment"># tail event bus</span>
+salt '*' saltutil.clear_cache
+salt '*' saltutil.sync_all           <span class="code-comment"># nuclear</span></code></pre>
+                    <p>When stuff is weird. <code>state.event pretty=True</code> on the master is the first window you open.</p>
+                </article>
+
+                <article class="cmd-card hover-card fade-in">
+                    <div class="cmd-label"><i class="fas fa-book"></i> Discover</div>
+                    <pre><code>salt '*' sys.doc                     <span class="code-comment"># EVERYTHING</span>
+salt '*' sys.doc pkg                 <span class="code-comment"># one module</span>
+salt '*' sys.list_modules
+salt '*' sys.list_functions
+salt-call sys.list_state_modules</code></pre>
+                    <p>Built-in docs. Lazier than Googling.</p>
+                </article>
+
+                <article class="cmd-card hover-card fade-in">
+                    <div class="cmd-label"><i class="fas fa-power-off"></i> System</div>
+                    <pre><code>salt '*' status.uptime
+salt '*' system.reboot               <span class="code-comment"># the big red button</span>
+salt 'web*' system.shutdown 5</code></pre>
+                    <p>Reboot the fleet. Test on one box first. Always.</p>
+                </article>
+
+                <article class="cmd-card hover-card fade-in">
+                    <div class="cmd-label"><i class="fas fa-clock"></i> Schedule</div>
+                    <pre><code>salt '*' schedule.add nightly_pull \
+  function='cmd.run' \
+  job_args="['git -C /srv/salt pull']" \
+  hours=24
+salt '*' schedule.list
+salt '*' schedule.disable_job nightly_pull</code></pre>
+                    <p>Cron-style scheduling without leaving Salt.</p>
+                </article>
+
+                <article class="cmd-card hover-card fade-in">
+                    <div class="cmd-label"><i class="fas fa-globe"></i> HTTP</div>
+                    <pre><code>salt-run http.query https://api.github.com/zen
+salt '*' http.query http://example.com/ \
+  method=POST params='k=v'</code></pre>
+                    <p>Lightweight HTTP from inside Salt. Useful for webhooks and health checks.</p>
+                </article>
+
+                <article class="cmd-card hover-card fade-in">
+                    <div class="cmd-label"><i class="fas fa-laptop"></i> Local mode</div>
+                    <pre><code>salt-call --local state.apply test=True
+salt-call --local grains.items
+salt-call --local pkg.install nginx</code></pre>
+                    <p>Run from the minion alone, no master. Master's down? You're not stuck.</p>
+                </article>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Pro tips -->
+    <section class="cheat-section section-alt" style="padding: 60px 0;">
+        <div class="container">
+            <header class="section-header">
+                <h2>Pro tips</h2>
+                <p>The non-obvious stuff that saves hours.</p>
+            </header>
+
+            <div class="pro-tips">
+                <div class="pro-tip">
+                    <p class="pro-tip-label"><i class="fas fa-lightbulb"></i> Tip 01</p>
+                    <p><code>test.ping</code> returns nothing? Check <code>salt-key -L</code> first. New minion = unaccepted key = silent treatment. Salt won't yell at you.</p>
+                </div>
+                <div class="pro-tip">
+                    <p class="pro-tip-label"><i class="fas fa-lightbulb"></i> Tip 02</p>
+                    <p>Always run states with <code>test=True</code> in prod. Salt prints what it <em>would</em> change. Catch typos before they hit your fleet.</p>
+                </div>
+                <div class="pro-tip">
+                    <p class="pro-tip-label"><i class="fas fa-lightbulb"></i> Tip 03</p>
+                    <p>Master down? <code>salt-call --local state.apply</code> runs straight from the minion. No master, no waiting. Useful when you're rebuilding the master itself.</p>
+                </div>
+                <div class="pro-tip">
+                    <p class="pro-tip-label"><i class="fas fa-lightbulb"></i> Tip 04</p>
+                    <p>Edit pillar, run <code>salt '*' saltutil.refresh_pillar</code>. Without it, minions cache the old data and you'll wonder why your change didn't land.</p>
+                </div>
+                <div class="pro-tip">
+                    <p class="pro-tip-label"><i class="fas fa-lightbulb"></i> Tip 05</p>
+                    <p>Forget a module's options? <code>salt '*' sys.doc &lt;module&gt;</code> dumps every function and arg. Faster than Googling, no tab switch.</p>
+                </div>
+                <div class="pro-tip">
+                    <p class="pro-tip-label"><i class="fas fa-lightbulb"></i> Tip 06</p>
+                    <p>Two terminals open: one running your command, the other tailing <code>salt-run state.event pretty=True</code>. You see what Salt is actually doing in real time.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Further reading -->
+    <section class="cheat-section">
+        <div class="container">
+            <header class="section-header">
+                <h2>Further reading</h2>
+                <p>When you hit the edges of this page.</p>
+            </header>
+
+            <ul class="links-row">
+                <li><a href="https://saltproject.io/" target="_blank" rel="noopener">Salt Project ↗</a></li>
+                <li><a href="https://docs.saltproject.io/" target="_blank" rel="noopener">Official docs ↗</a></li>
+                <li><a href="https://docs.saltproject.io/en/3007/ref/states/all/index.html" target="_blank" rel="noopener">Every state module ↗</a></li>
+                <li><a href="https://github.com/saltstack/salt" target="_blank" rel="noopener">Salt on GitHub ↗</a></li>
+                <li><a href="install-guide.html">Install Guide</a></li>
+                <li><a href="getting-started.html">Getting Started</a></li>
+            </ul>
+
+            <p class="source-credit">Inspired by <a href="https://github.com/eon01/SaltStackCheatSheet" target="_blank" rel="noopener">eon01's SaltStack Cheat Sheet</a>, with our additions and field notes.</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-inner">
+                <p class="footer-logo">
+                    <span class="logo-primary">Saltify</span>
+                    <span class="logo-secondary">Pty Ltd</span>
+                </p>
+                <p class="footer-tagline">Enterprise Salt for teams that can't afford fragile infrastructure. Based in Australia.</p>
+                <p class="footer-copy">© 2026 Saltify Pty Ltd</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/script.js?v=3"></script>
+</body>
+</html>
