@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Getting Started with Salt — Your first state files | Saltify</title>
+    <meta name="description" content="A hands-on tutorial picking up where the install guide ends. Set up the folder structure on your Salt master and write your first states for Windows and Linux.">
+    <link rel="icon" type="image/png" href="logo/saltify-logo-large-transparent.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Page-specific styles — keep small, reuse existing classes where possible */
+        .guide-hero {
+            padding: 140px 0 60px;
+            text-align: center;
+        }
+        .guide-hero h1 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            letter-spacing: -0.02em;
+            margin-bottom: 1rem;
+        }
+        .guide-hero .lead {
+            font-size: 1.125rem;
+            color: var(--color-text-muted);
+            max-width: 640px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        .guide-hero .crumb {
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--color-accent);
+            margin-bottom: 1.25rem;
+        }
+
+        /* TL;DR card */
+        .tldr {
+            max-width: 760px;
+            margin: 1.5rem auto 0;
+            padding: 1.5rem 1.75rem;
+            background: var(--color-accent-softer);
+            border: 1px solid var(--color-accent-mid);
+            border-radius: var(--radius);
+            text-align: left;
+        }
+        .tldr h2 {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: var(--color-accent);
+            margin-bottom: 0.75rem;
+        }
+        .tldr ul { padding-left: 1.25rem; margin: 0; }
+        .tldr li { color: var(--color-text); margin-bottom: 0.4rem; line-height: 1.55; }
+
+        /* Section headings */
+        .guide-section { padding: 60px 0; }
+        .guide-section.section-alt { padding: 80px 0; }
+        .guide-section h2 {
+            font-size: 1.75rem;
+            letter-spacing: -0.015em;
+            margin-bottom: 0.5rem;
+        }
+        .guide-section .section-intro {
+            color: var(--color-text-muted);
+            margin-bottom: 2rem;
+            max-width: 720px;
+            line-height: 1.6;
+        }
+
+        /* Step grid — same pattern as install-guide */
+        .gs-steps {
+            grid-template-columns: repeat(2, 1fr);
+        }
+        .gs-steps .quickstart-step:last-child:nth-child(odd) {
+            grid-column: 1 / -1;
+        }
+
+        /* Platform-tagged step header (a small Windows/Linux pill) */
+        .platform-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+            font-family: var(--font-mono);
+            font-size: 0.65rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            padding: 0.2rem 0.55rem;
+            border-radius: 4px;
+            text-transform: uppercase;
+            background: var(--color-accent-soft);
+            color: var(--color-accent);
+            border: 1px solid var(--color-accent-mid);
+            margin-left: 0.5rem;
+            vertical-align: middle;
+        }
+
+        /* Stack two code blocks vertically with a small gap */
+        .quickstart-step pre + pre {
+            margin-top: 0.625rem;
+        }
+
+        /* "Apply it:" mini-block at the bottom of state cards */
+        .apply-box {
+            margin-top: 1rem;
+            padding: 0.875rem 1rem;
+            background: var(--color-accent-softer);
+            border-left: 2px solid var(--color-accent);
+            border-radius: 0 6px 6px 0;
+        }
+        .apply-box pre { margin: 0 0 0.5rem; }
+        .apply-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--color-accent);
+            margin: 0 0 0.5rem !important;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .apply-hint {
+            font-size: 0.8125rem;
+            color: var(--color-text-muted);
+            margin: 0 !important;
+            line-height: 1.5;
+        }
+        .apply-hint code {
+            font-size: 0.8em;
+        }
+
+        /* Callouts (reused) */
+        .callout {
+            display: flex;
+            gap: 1rem;
+            padding: 1.125rem 1.25rem;
+            border-radius: 10px;
+            margin: 1.5rem 0;
+            font-size: 0.925rem;
+            line-height: 1.55;
+            align-items: flex-start;
+        }
+        .callout i { font-size: 1.1rem; margin-top: 0.15rem; flex-shrink: 0; }
+        .callout-tip {
+            background: var(--color-accent-softer);
+            border: 1px solid var(--color-accent-mid);
+        }
+        .callout-tip i { color: var(--color-accent); }
+        .callout p { margin: 0; }
+        .callout strong { color: var(--color-text); }
+
+        /* Coming next — reused gotcha pattern */
+        .coming-next {
+            display: grid;
+            gap: 0.875rem;
+            margin-top: 1.5rem;
+        }
+        .coming-next-item {
+            padding: 1.125rem 1.25rem;
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border);
+            border-left: 3px solid var(--color-accent);
+            border-radius: 8px;
+        }
+        .coming-next-item h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--color-text);
+            margin-bottom: 0.35rem;
+        }
+        .coming-next-item p {
+            font-size: 0.875rem;
+            color: var(--color-text-muted);
+            line-height: 1.55;
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            .gs-steps { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation (matches index.html) -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span class="logo-primary">Saltify</span>
+                <span class="logo-secondary">Pty Ltd</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html#services" class="nav-link">Services</a></li>
+                <li><a href="index.html#salt101" class="nav-link">Salt 101</a></li>
+                <li><a href="install-guide.html" class="nav-link">Install Guide</a></li>
+                <li><a href="getting-started.html" class="nav-link" aria-current="page">Getting Started</a></li>
+                <li><a href="index.html#about" class="nav-link">About</a></li>
+                <li><a href="index.html#contact" class="nav-link nav-cta">Let's talk →</a></li>
+            </ul>
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" aria-pressed="false">
+                    <i class="fas fa-sun" id="themeIcon" aria-hidden="true"></i>
+                </button>
+                <button class="hamburger" aria-label="Toggle menu" aria-expanded="false">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="guide-hero">
+        <div class="container">
+            <p class="crumb">Getting Started</p>
+            <h1>Your first Salt state.</h1>
+            <p class="lead">Salt is installed. The masters are talking to the data layer. Now what? <strong>This is what you do next.</strong> A hands-on tutorial that picks up exactly where the <a href="install-guide.html" style="color: var(--color-accent);">install guide</a> ends.</p>
+
+            <div class="tldr">
+                <h2>What you'll do</h2>
+                <ul>
+                    <li><strong>Create the folder structure</strong> Salt expects under <code>/srv/salt</code> and <code>/srv/pillar</code>.</li>
+                    <li><strong>Write the two top files</strong> that tell Salt which states apply to which minions.</li>
+                    <li><strong>Write your first state for Windows</strong> — make a folder, drop a file in it.</li>
+                    <li><strong>Write your first state for Linux</strong> — same idea, native paths.</li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mental shift before the walk-through -->
+    <section class="guide-section">
+        <div class="container">
+            <div class="callout callout-tip" style="max-width: 760px; margin: 0 auto;">
+                <i class="fas fa-brain"></i>
+                <p><strong>One mental shift before you start.</strong> Stop thinking <em>"install nginx on the minion."</em> Start thinking <em>"nginx should be installed on the minion."</em> Salt is declarative — you describe the desired state, Salt makes it true and keeps it that way. <strong>From here on, manage minions from the master. Stop SSHing into them.</strong></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- §1 The walk-through -->
+    <section class="guide-section section-alt">
+        <div class="container">
+            <h2>Five steps. Run them on master 1.</h2>
+            <p class="section-intro">SSH to your Salt master from the install guide. Become root. Then walk through these five steps in order. Everything happens under <code>/srv/salt</code> and <code>/srv/pillar</code>.</p>
+
+            <div class="callout callout-tip" style="margin-bottom: 2rem;">
+                <i class="fas fa-book-bookmark"></i>
+                <p><strong>The full module reference lives at <a href="https://docs.saltproject.io/en/3007/ref/states/" target="_blank" rel="noopener" style="color: var(--color-accent); font-weight: 600;">docs.saltproject.io</a>.</strong> Every module we touch here has dozens more options. We're showing the patterns we actually run in production — when you need the full surface area of <code>file.managed</code>, <code>pkg.installed</code>, or anything else, that's the canonical reference. We've linked the modules we use at <a href="#modules-reference" style="color: var(--color-accent);">the bottom of this page ↓</a>.</p>
+            </div>
+
+            <div class="quickstart-grid divider-grid gs-steps">
+
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">01</span>
+                    <h4>Set up the folders</h4>
+                    <p>Create the two roots Salt reads from. <code>/srv/salt</code> holds your states. <code>/srv/pillar</code> holds your config data.</p>
+                    <pre><code><span class="code-comment"># on master 1, as root</span>
+sudo su
+cd /srv/salt
+mkdir -p windows linux
+
+mkdir -p /srv/pillar
+cd /srv/pillar
+
+<span class="code-comment"># final tree</span>
+tree /srv/salt /srv/pillar
+<span class="code-comment">#  /srv/salt
+#  ├── linux/
+#  └── windows/
+#  /srv/pillar/</span></code></pre>
+                </article>
+
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">02</span>
+                    <h4>Create <code>/srv/salt/top.sls</code></h4>
+                    <p>The top file is Salt's routing table. It says "for each minion, which states apply?" Right now we'll send the Windows state to Windows boxes and the Linux state to everything else.</p>
+                    <pre><code><span class="code-comment"># /srv/salt/top.sls</span>
+base:
+  'os_family:Windows':
+    - match: grain
+    - windows.hello
+
+  'os_family:RedHat':
+    - match: grain
+    - linux.hello</code></pre>
+                </article>
+
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">03</span>
+                    <h4>Create <code>/srv/pillar/top.sls</code></h4>
+                    <p>Same idea, but for pillar data. Empty for now — we'll add data here in a later section.</p>
+                    <pre><code><span class="code-comment"># /srv/pillar/top.sls</span>
+base:
+  '*': []</code></pre>
+                </article>
+
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">04</span>
+                    <h4>First Windows state <span class="platform-tag"><i class="fab fa-windows" aria-hidden="true"></i> Windows</span></h4>
+                    <p>Create a folder at <code>C:\saltdemo</code> and a text file inside it. The simplest possible thing — but it proves Salt can write to a Windows box.</p>
+                    <pre><code><span class="code-comment"># create the file</span>
+vi /srv/salt/windows/hello.sls</code></pre>
+                    <pre><code><span class="code-comment"># /srv/salt/windows/hello.sls</span>
+hello_folder:
+  file.directory:
+    - name: C:\saltdemo
+    - makedirs: True
+
+hello_file:
+  file.managed:
+    - name: C:\saltdemo\hello.txt
+    - contents: |
+        Hello from Salt — Windows edition.
+        This file came from /srv/salt/windows/hello.sls
+    - require:
+      - file: hello_folder</code></pre>
+                    <div class="apply-box">
+                        <p class="apply-label"><i class="fas fa-play"></i> Apply it</p>
+                        <pre><code>sudo salt '&lt;your minion id&gt;' state.apply windows.hello</code></pre>
+                        <p class="apply-hint">→ Should create <code>C:\saltdemo\hello.txt</code>. Replace <code>&lt;your minion id&gt;</code> with your Windows minion's actual ID (whatever you set in the install guide). Re-run it — second run reports <em>"no changes."</em></p>
+                    </div>
+                </article>
+
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">05</span>
+                    <h4>First Linux state <span class="platform-tag" style="background: rgba(212, 168, 94, 0.12); color: #d4a85e; border-color: rgba(212, 168, 94, 0.35);"><i class="fab fa-linux" aria-hidden="true"></i> Linux</span></h4>
+                    <pre><code><span class="code-comment"># create the file</span>
+vi /srv/salt/linux/hello.sls</code></pre>
+                    <pre><code><span class="code-comment"># /srv/salt/linux/hello.sls</span>
+hello_folder:
+  file.directory:
+    - name: /opt/saltdemo
+    - makedirs: True
+    - mode: 755
+
+hello_file:
+  file.managed:
+    - name: /opt/saltdemo/hello.txt
+    - mode: 644
+    - contents: |
+        Hello from Salt — Linux edition.
+        This file came from /srv/salt/linux/hello.sls
+    - require:
+      - file: hello_folder</code></pre>
+                    <div class="apply-box">
+                        <p class="apply-label"><i class="fas fa-play"></i> Apply it</p>
+                        <pre><code>sudo salt '&lt;your minion id&gt;' state.apply linux.hello</code></pre>
+                        <p class="apply-hint">→ Creates <code>/opt/saltdemo/hello.txt</code> on the target minion. Idempotent — re-run safely.</p>
+                    </div>
+                </article>
+            </div>
+
+            <div class="callout callout-tip">
+                <i class="fas fa-circle-info"></i>
+                <p><strong>Why two states?</strong> Same intent (folder + file), different operating system, different paths. Same Salt module (<code>file.directory</code>, <code>file.managed</code>) — Salt translates to whatever the OS needs underneath. That cross-platform parity is one of the reasons Salt exists.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- §2 Real-world examples -->
+    <section class="guide-section">
+        <div class="container">
+            <h2>Real-world states. Going further.</h2>
+            <p class="section-intro">Five patterns you'll reach for in week one. Four for Windows, one for Linux. Each one is a self-contained <code>.sls</code> file you can drop in the right folder and run.</p>
+
+            <!-- Windows divider -->
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin: 2rem 0 1rem;">
+                <span class="platform-tag" style="margin-left: 0;"><i class="fab fa-windows" aria-hidden="true"></i> Windows</span>
+                <span style="flex: 1; height: 1px; background: var(--color-border);"></span>
+            </div>
+
+            <div class="quickstart-grid divider-grid gs-steps">
+
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">06</span>
+                    <h4>Run PowerShell inline</h4>
+                    <p>For one-liners and short snippets. The <code>unless:</code> clause makes <code>cmd.run</code> idempotent — only runs if the condition is false.</p>
+                    <pre><code><span class="code-comment"># /srv/salt/windows/hostname.sls</span>
+record_hostname:
+  cmd.run:
+    - name: '$env:COMPUTERNAME | Out-File C:\saltdemo\hostname.txt'
+    - shell: powershell
+    - unless: 'Test-Path C:\saltdemo\hostname.txt'</code></pre>
+                    <div class="apply-box">
+                        <p class="apply-label"><i class="fas fa-play"></i> Apply it</p>
+                        <pre><code>sudo salt '&lt;your minion id&gt;' state.apply windows.hostname</code></pre>
+                        <p class="apply-hint">→ <code>C:\saltdemo\hostname.txt</code> appears with the box's hostname. Idempotent because of the <code>unless:</code> clause.</p>
+                    </div>
+                </article>
+
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">07</span>
+                    <h4>Run a <code>.ps1</code> script</h4>
+                    <p>For real scripts. Drop the <code>.ps1</code> on the master, Salt pulls it down and runs it on the minion. <code>salt://</code> is Salt's file-server URL scheme.</p>
+                    <pre><code><span class="code-comment"># /srv/salt/windows/scripts/sysinfo.ps1</span>
+$out = "C:\saltdemo\sysinfo.txt"
+@"
+Hostname:   $env:COMPUTERNAME
+OS:         $((Get-CimInstance Win32_OperatingSystem).Caption)
+PS version: $($PSVersionTable.PSVersion)
+Stamp:      $(Get-Date -Format 'yyyy-MM-dd HH:mm:ss')
+"@ | Out-File -FilePath $out -Encoding UTF8</code></pre>
+                    <pre><code><span class="code-comment"># /srv/salt/windows/sysinfo.sls</span>
+write_sysinfo:
+  cmd.script:
+    - source: salt://windows/scripts/sysinfo.ps1
+    - shell: powershell</code></pre>
+                    <div class="apply-box">
+                        <p class="apply-label"><i class="fas fa-play"></i> Apply it</p>
+                        <pre><code>sudo salt '&lt;your minion id&gt;' state.apply windows.sysinfo</code></pre>
+                        <p class="apply-hint">→ <code>C:\saltdemo\sysinfo.txt</code> with hostname, OS, PowerShell version, and a timestamp.</p>
+                    </div>
+                </article>
+
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">08</span>
+                    <h4>Install a Windows role or feature</h4>
+                    <p><code>win_servermanager</code> wraps PowerShell's <code>Install-WindowsFeature</code>. Use it for IIS, RSAT, .NET, anything in the Server Manager catalog.</p>
+                    <pre><code><span class="code-comment"># /srv/salt/windows/iis.sls</span>
+install_iis:
+  win_servermanager.installed:
+    - name: Web-Server
+    - recurse: True       <span class="code-comment"># include sub-features</span>
+    - restart: False      <span class="code-comment"># no auto-reboot during install</span>
+
+install_iis_console:
+  win_servermanager.installed:
+    - name: Web-Mgmt-Console
+    - require:
+      - win_servermanager: install_iis</code></pre>
+                    <div class="apply-box">
+                        <p class="apply-label"><i class="fas fa-play"></i> Apply it</p>
+                        <pre><code>sudo salt '&lt;your minion id&gt;' state.apply windows.iis</code></pre>
+                        <p class="apply-hint">→ Installs the IIS Web-Server feature plus the management console. Browse to <code>http://&lt;your minion id&gt;/</code> — IIS welcome page should load.</p>
+                    </div>
+                </article>
+
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">09</span>
+                    <h4>Add a user to a group</h4>
+                    <p>Use <code>group.present</code> with <code>addusers:</code>. The user must already exist — local or AD-joined. For AD users, prefix with <code>DOMAIN\\</code>.</p>
+                    <pre><code><span class="code-comment"># /srv/salt/windows/group_membership.sls</span>
+add_to_remote_desktop_users:
+  group.present:
+    - name: Remote Desktop Users
+    - addusers:
+      - saltdemo
+      - DOMAIN\\app-svc
+
+add_to_backup_operators:
+  group.present:
+    - name: Backup Operators
+    - addusers:
+      - DOMAIN\\backup-svc</code></pre>
+                    <div class="apply-box">
+                        <p class="apply-label"><i class="fas fa-play"></i> Apply it</p>
+                        <pre><code>sudo salt '&lt;your minion id&gt;' state.apply windows.group_membership</code></pre>
+                        <p class="apply-hint">→ Adds the listed users to Remote Desktop Users and Backup Operators. Verify on the box: <code>net localgroup "Remote Desktop Users"</code></p>
+                    </div>
+                </article>
+            </div>
+
+            <!-- Linux divider -->
+            <div style="display: flex; align-items: center; gap: 0.75rem; margin: 2.5rem 0 1rem;">
+                <span class="platform-tag" style="margin-left: 0; background: rgba(212, 168, 94, 0.12); color: #d4a85e; border-color: rgba(212, 168, 94, 0.35);"><i class="fab fa-linux" aria-hidden="true"></i> Linux</span>
+                <span style="flex: 1; height: 1px; background: var(--color-border);"></span>
+            </div>
+
+            <div class="quickstart-grid divider-grid" style="grid-template-columns: 1fr;">
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">10</span>
+                    <h4>Package + service + require chain</h4>
+                    <p>The everyday Linux pattern: install a package, make sure its service is running, chain them so Salt does it in the right order. The <code>require:</code> tells Salt "do <code>nginx_package</code> first." Re-run this all you want — Salt only changes what's not already correct.</p>
+                    <pre><code><span class="code-comment"># /srv/salt/linux/webserver.sls</span>
+
+<span class="code-comment"># shared utilities — install both packages in one state</span>
+network_utilities:
+  pkg.installed:
+    - pkgs:
+      - rsync
+      - curl
+
+<span class="code-comment"># nginx package</span>
+nginx_package:
+  pkg.installed:
+    - name: nginx
+
+<span class="code-comment"># nginx service — runs on boot, depends on the package being there</span>
+nginx_service:
+  service.running:
+    - name: nginx
+    - enable: True
+    - require:
+      - pkg: nginx_package</code></pre>
+                    <div class="apply-box">
+                        <p class="apply-label"><i class="fas fa-play"></i> Apply it</p>
+                        <pre><code>sudo salt '&lt;your minion id&gt;' state.apply linux.webserver</code></pre>
+                        <p class="apply-hint">→ Installs <code>rsync</code>, <code>curl</code>, and <code>nginx</code>; starts and enables nginx. From the box: <code>curl http://localhost/</code> should return the nginx welcome page.</p>
+                    </div>
+                </article>
+            </div>
+
+            <div class="callout callout-tip" style="margin-top: 1.75rem;">
+                <i class="fas fa-circle-info"></i>
+                <p><strong>About <code>require</code>.</strong> Salt doesn't run states in file order — it runs them in dependency order. If you don't say <code>require</code>, Salt is free to run them in parallel. For most things that's fine. For "package must exist before service starts," it's not. <code>require</code> is how you tell Salt the order matters.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- §3 Apply everything together -->
+    <section class="guide-section section-alt">
+        <div class="container">
+            <h2>Apply everything in one shot.</h2>
+            <p class="section-intro">You've been applying states one at a time with <code>state.apply &lt;name&gt;</code>. Now we wire them all into the top file and apply the lot with <code>state.highstate</code>.</p>
+
+            <div class="quickstart-grid divider-grid" style="grid-template-columns: 1fr;">
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">11</span>
+                    <h4>Update <code>top.sls</code>, then highstate everything</h4>
+                    <p>Add the new states to <code>/srv/salt/top.sls</code>. Salt reads this file, matches each minion against the grain rules, and applies whatever's listed. One command, every minion converges.</p>
+
+                    <pre><code><span class="code-comment"># /srv/salt/top.sls</span>
+base:
+  'os_family:Windows':
+    - match: grain
+    - windows.hello
+    - windows.hostname
+    - windows.sysinfo
+    - windows.iis
+    - windows.group_membership
+
+  'os_family:RedHat':
+    - match: grain
+    - linux.hello
+    - linux.webserver</code></pre>
+
+                    <div class="apply-box">
+                        <p class="apply-label"><i class="fas fa-play"></i> Apply it — to every minion at once</p>
+                        <pre><code><span class="code-comment"># the headline command</span>
+sudo salt '*' state.highstate
+
+<span class="code-comment"># or, equivalently — state.apply with no name</span>
+sudo salt '*' state.apply</code></pre>
+                        <p class="apply-hint">→ Salt reads <code>top.sls</code>, decides which states each minion gets (Windows minions get the Windows states, Linux minions get the Linux states), and applies them. Idempotent — re-run any time. Re-run after every Git pull.</p>
+                    </div>
+                </article>
+            </div>
+
+            <div class="callout callout-tip" style="margin-top: 1.75rem;">
+                <i class="fas fa-circle-info"></i>
+                <p><strong>The split: <code>state.apply &lt;name&gt;</code> vs <code>state.highstate</code>.</strong> <code>state.apply &lt;name&gt;</code> applies <em>one</em> specific state regardless of <code>top.sls</code> — useful for testing a single change. <code>state.highstate</code> reads <code>top.sls</code> and applies <em>everything</em> that matches each minion. Both are idempotent. In day-to-day operation, you'll mostly run <code>state.highstate</code>.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- §4 Pillar — config in one place -->
+    <section class="guide-section">
+        <div class="container">
+            <h2>Pillar — config in one place.</h2>
+            <p class="section-intro">Pillar moves credentials, paths, and per-environment values <em>out</em> of state files. State files describe <strong>what</strong> should be done. Pillar describes <strong>what to do it with</strong>. Edit pillar, redeploy — no state file changes needed.</p>
+
+            <div class="quickstart-grid divider-grid gs-steps">
+
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">12</span>
+                    <h4>Tell the master where pillar lives</h4>
+                    <p>Drop a single config file in <code>/etc/salt/master.d/</code>. Restart the master so it picks up the change. <code>/srv/pillar</code> is the default — being explicit makes it easy to add more roots later.</p>
+                    <pre><code><span class="code-comment"># /etc/salt/master.d/pillar.conf</span>
+pillar_roots:
+  base:
+    - /srv/pillar</code></pre>
+                    <pre><code><span class="code-comment"># restart so the master sees the change</span>
+sudo systemctl restart salt-master</code></pre>
+                </article>
+
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">13</span>
+                    <h4>Add pillar data</h4>
+                    <p>Two files: a <strong>top file</strong> that says which minions get which pillar, and a <strong>data file</strong> with the actual values.</p>
+                    <pre><code><span class="code-comment"># /srv/pillar/top.sls — assign data to Windows minions</span>
+base:
+  'os_family:Windows':
+    - match: grain
+    - windows.users</code></pre>
+                    <pre><code><span class="code-comment"># /srv/pillar/windows/users.sls — the data itself</span>
+windows_local_groups:
+  Remote Desktop Users:
+    - saltdemo
+    - DOMAIN\app-svc
+
+  Backup Operators:
+    - DOMAIN\backup-svc</code></pre>
+                    <div class="apply-box">
+                        <p class="apply-label"><i class="fas fa-play"></i> Refresh and verify</p>
+                        <pre><code><span class="code-comment"># tell every minion to re-pull pillar from the master</span>
+sudo salt '*' saltutil.refresh_pillar
+
+<span class="code-comment"># confirm the data is reachable from the minion</span>
+sudo salt '&lt;your minion id&gt;' pillar.items</code></pre>
+                        <p class="apply-hint">→ The output should show <code>windows_local_groups</code> with the values you defined. If it doesn't, check <code>/var/log/salt/master</code>.</p>
+                    </div>
+                </article>
+
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">14</span>
+                    <h4>Use pillar from a state <span class="platform-tag"><i class="fab fa-windows" aria-hidden="true"></i> Windows</span></h4>
+                    <p>The same group-membership idea as step 09 — but the user list now lives in pillar. The state loops over pillar data with <strong>Jinja</strong>: <code>{% for ... %}</code> iterates, <code>{{ ... }}</code> interpolates. Edit pillar tomorrow, the state still works.</p>
+                    <pre><code><span class="code-comment"># /srv/salt/windows/group_membership_pillar.sls</span>
+{% for group, members in pillar.get('windows_local_groups', {}).items() %}
+add_to_{{ group | replace(' ', '_') }}:
+  group.present:
+    - name: {{ group }}
+    - addusers: {{ members }}
+{% endfor %}</code></pre>
+                    <div class="apply-box">
+                        <p class="apply-label"><i class="fas fa-play"></i> Apply it</p>
+                        <pre><code>sudo salt '&lt;your minion id&gt;' state.apply windows.group_membership_pillar</code></pre>
+                        <p class="apply-hint">→ Same outcome as step 09, but the data is now in pillar. Add another group to <code>users.sls</code>, refresh pillar, re-apply — no state-file edit needed.</p>
+                    </div>
+                </article>
+            </div>
+
+            <div class="callout callout-tip" style="margin-top: 1.75rem;">
+                <i class="fas fa-circle-info"></i>
+                <p><strong>Why this matters.</strong> Per-environment values (dev vs staging vs prod) live in pillar. Secrets live in pillar (<a href="install-guide.html#gpg-deep-dive" style="color: var(--color-accent);">encrypted with GPG</a>). The same state file ships everywhere — pillar makes it behave correctly in each environment. That's the separation of <strong>logic</strong> (states) from <strong>data</strong> (pillar).</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- §5 Modules reference -->
+    <section class="guide-section section-alt" id="modules-reference">
+        <div class="container">
+            <h2>Modules used in this guide.</h2>
+            <p class="section-intro">Every Salt state module we used, with a direct link to its full reference. <strong>Bookmark this</strong> — the official docs are the source of truth. We've shown one or two options per module; each module typically has 20+.</p>
+
+            <div class="pattern-grid" style="grid-template-columns: repeat(2, 1fr);">
+                <div class="pattern-card">
+                    <div class="pattern-card-num">FILE</div>
+                    <h4><a href="https://docs.saltproject.io/en/3007/ref/states/all/salt.states.file.html" target="_blank" rel="noopener" style="color: var(--color-text); text-decoration: none; border-bottom: 1px dashed var(--color-accent);">file.directory</a> · <a href="https://docs.saltproject.io/en/3007/ref/states/all/salt.states.file.html" target="_blank" rel="noopener" style="color: var(--color-text); text-decoration: none; border-bottom: 1px dashed var(--color-accent);">file.managed</a></h4>
+                    <p>Folders, files, ownership, permissions, content, source from the master, render with Jinja. Used in steps 04 and 05.</p>
+                </div>
+                <div class="pattern-card">
+                    <div class="pattern-card-num">CMD</div>
+                    <h4><a href="https://docs.saltproject.io/en/3007/ref/states/all/salt.states.cmd.html" target="_blank" rel="noopener" style="color: var(--color-text); text-decoration: none; border-bottom: 1px dashed var(--color-accent);">cmd.run</a> · <a href="https://docs.saltproject.io/en/3007/ref/states/all/salt.states.cmd.html" target="_blank" rel="noopener" style="color: var(--color-text); text-decoration: none; border-bottom: 1px dashed var(--color-accent);">cmd.script</a></h4>
+                    <p>Run shell or PowerShell. <code>unless:</code> and <code>onlyif:</code> for idempotency. <code>cmd.script</code> pulls from <code>salt://</code>. Used in steps 06 and 07.</p>
+                </div>
+                <div class="pattern-card">
+                    <div class="pattern-card-num">PKG</div>
+                    <h4><a href="https://docs.saltproject.io/en/3007/ref/states/all/salt.states.pkg.html" target="_blank" rel="noopener" style="color: var(--color-text); text-decoration: none; border-bottom: 1px dashed var(--color-accent);">pkg.installed</a></h4>
+                    <p>Install a package or list of packages. Pin versions, hold packages, source from custom repos. Used in step 10.</p>
+                </div>
+                <div class="pattern-card">
+                    <div class="pattern-card-num">SERVICE</div>
+                    <h4><a href="https://docs.saltproject.io/en/3007/ref/states/all/salt.states.service.html" target="_blank" rel="noopener" style="color: var(--color-text); text-decoration: none; border-bottom: 1px dashed var(--color-accent);">service.running</a></h4>
+                    <p>Start a service, enable on boot, restart on config change with <code>watch:</code>. Used in step 10.</p>
+                </div>
+                <div class="pattern-card">
+                    <div class="pattern-card-num">WINDOWS</div>
+                    <h4><a href="https://docs.saltproject.io/en/3007/ref/states/all/salt.states.win_servermanager.html" target="_blank" rel="noopener" style="color: var(--color-text); text-decoration: none; border-bottom: 1px dashed var(--color-accent);">win_servermanager.installed</a></h4>
+                    <p>Install Windows roles and features. Wraps <code>Install-WindowsFeature</code>. Used in step 08 (IIS).</p>
+                </div>
+                <div class="pattern-card">
+                    <div class="pattern-card-num">GROUP</div>
+                    <h4><a href="https://docs.saltproject.io/en/3007/ref/states/all/salt.states.group.html" target="_blank" rel="noopener" style="color: var(--color-text); text-decoration: none; border-bottom: 1px dashed var(--color-accent);">group.present</a></h4>
+                    <p>Local group membership on Windows and Linux. Add users with <code>addusers:</code>. Used in steps 09 and 14.</p>
+                </div>
+            </div>
+
+            <div class="callout callout-tip" style="margin-top: 1.75rem;">
+                <i class="fas fa-link"></i>
+                <p><strong>The complete index of every Salt state module</strong> is at <a href="https://docs.saltproject.io/en/3007/ref/states/all/index.html" target="_blank" rel="noopener" style="color: var(--color-accent); font-weight: 600;">docs.saltproject.io/en/3007/ref/states/all/</a>. There are hundreds. <code>file</code>, <code>pkg</code>, <code>service</code>, and <code>cmd</code> cover most of what you'll do day-to-day.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- §6 Coming next -->
+    <section class="guide-section">
+        <div class="container">
+            <h2>Coming next</h2>
+            <p class="section-intro">You now have the skeleton: folders, top files, and one state per platform. We'll continue from here.</p>
+
+            <div class="coming-next">
+                <div class="coming-next-item">
+                    <h4>Talk to minions directly — remote execution</h4>
+                    <p>When you don't need a state, you don't need a state. <code>salt '*' test.ping</code>, <code>salt '*' cmd.run 'uptime'</code>, <code>salt 'web*' pkg.install nginx</code>. Useful for quick fleet-wide queries and one-off tasks.</p>
+                </div>
+                <div class="coming-next-item">
+                    <h4>Multi-environment — dev, staging, prod</h4>
+                    <p>Add more roots to <code>file_roots.conf</code> and <code>pillar.conf</code>. Same states, different pillar per environment. The same blue/green pattern from the <a href="install-guide.html" style="color: var(--color-accent);">install guide</a>, applied at the data level.</p>
+                </div>
+                <div class="coming-next-item">
+                    <h4>Jinja templating — go deeper</h4>
+                    <p>Conditionals (<code>{% if grains['os_family'] == 'RedHat' %}…{% endif %}</code>), filters, file templating with <code>file.managed</code> + <code>template: jinja</code>. The same template, behaving correctly on different OSs.</p>
+                </div>
+                <div class="coming-next-item">
+                    <h4>Targeting — by name, glob, grain</h4>
+                    <p><code>salt 'web1' …</code>, <code>salt 'web*' …</code>, <code>salt -G 'os_family:RedHat' …</code>. How to talk to one box, a group, or every box that matches a grain. The same matchers work in <code>top.sls</code> too.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="contact">
+        <div class="container">
+            <div class="contact-content fade-in">
+                <h2>Want this in your environment, faster?</h2>
+                <p class="contact-sub">We've done this build dozens of times. We'll do it with your team and hand it back working.</p>
+                <a href="mailto:sales@saltify.work" class="contact-email">sales@saltify.work</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-inner">
+                <p class="footer-logo">
+                    <span class="logo-primary">Saltify</span>
+                    <span class="logo-secondary">Pty Ltd</span>
+                </p>
+                <p class="footer-tagline">Enterprise Salt for teams that can't afford fragile infrastructure. Based in Australia.</p>
+                <p class="footer-copy">© 2026 Saltify Pty Ltd</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>
