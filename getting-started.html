@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-    <link rel="stylesheet" href="css/style.css?v=19">
+    <link rel="stylesheet" href="css/style.css?v=20">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -234,7 +234,7 @@
             <div class="tldr">
                 <h2>What you'll do</h2>
                 <ul>
-                    <li><strong>Create the folder structure</strong> Salt expects under <code>/srv/salt</code> and <code>/srv/pillar</code>.</li>
+                    <li><strong>Create the folder structure</strong> Salt expects under <code>/srv/salt</code> and <code>/srv/salt/pillar</code>.</li>
                     <li><strong>Write the two top files</strong> that tell Salt which states apply to which minions.</li>
                     <li><strong>Write your first state for Windows</strong> — make a folder, drop a file in it.</li>
                     <li><strong>Write your first state for Linux</strong> — same idea, native paths.</li>
@@ -257,7 +257,7 @@
     <section class="guide-section section-alt">
         <div class="container">
             <h2>Five steps. Run them on master 1.</h2>
-            <p class="section-intro">SSH to your Salt master from the install guide. Become root. Then walk through these five steps in order. Everything happens under <code>/srv/salt</code> and <code>/srv/pillar</code>.</p>
+            <p class="section-intro">SSH to your Salt master from the install guide. Become root. Then walk through these five steps in order. Everything happens under <code>/srv/salt</code> and <code>/srv/salt/pillar</code>.</p>
 
             <div class="callout callout-tip" style="margin-bottom: 2rem;">
                 <i class="fas fa-book-bookmark"></i>
@@ -269,21 +269,18 @@
                 <article class="quickstart-step fade-in">
                     <span class="step-number">01</span>
                     <h4>Set up the folders</h4>
-                    <p>Create the two roots Salt reads from. <code>/srv/salt</code> holds your states. <code>/srv/pillar</code> holds your config data.</p>
+                    <p>Create the two roots Salt reads from. <code>/srv/salt</code> holds your states. <code>/srv/salt/pillar</code> holds your config data.</p>
                     <pre><code><span class="code-comment"># on master 1, as root</span>
 sudo su
 cd /srv/salt
-mkdir -p windows linux
-
-mkdir -p /srv/pillar
-cd /srv/pillar
+mkdir -p windows linux pillar
 
 <span class="code-comment"># final tree</span>
-tree /srv/salt /srv/pillar
+tree /srv/salt
 <span class="code-comment">#  /srv/salt
 #  ├── linux/
-#  └── windows/
-#  /srv/pillar/</span></code></pre>
+#  ├── pillar/
+#  └── windows/</span></code></pre>
                 </article>
 
                 <article class="quickstart-step fade-in">
@@ -303,9 +300,9 @@ base:
 
                 <article class="quickstart-step fade-in">
                     <span class="step-number">03</span>
-                    <h4>Create <code>/srv/pillar/top.sls</code></h4>
+                    <h4>Create <code>/srv/salt/pillar/top.sls</code></h4>
                     <p>Same idea, but for pillar data. Empty for now — we'll add data here in a later section.</p>
-                    <pre><code><span class="code-comment"># /srv/pillar/top.sls</span>
+                    <pre><code><span class="code-comment"># /srv/salt/pillar/top.sls</span>
 base:
   '*': []</code></pre>
                 </article>
@@ -580,11 +577,11 @@ sudo salt '*' state.apply</code></pre>
                 <article class="quickstart-step fade-in">
                     <span class="step-number">12</span>
                     <h4>Tell the master where pillar lives</h4>
-                    <p>Drop a single config file in <code>/etc/salt/master.d/</code>. Restart the master so it picks up the change. <code>/srv/pillar</code> is the default — being explicit makes it easy to add more roots later.</p>
+                    <p>Drop a single config file in <code>/etc/salt/master.d/</code>. Restart the master so it picks up the change. Salt's default pillar root is <code>/srv/pillar</code> — we keep ours nested under <code>/srv/salt/pillar</code> so the whole config tree lives in one repo.</p>
                     <pre><code><span class="code-comment"># /etc/salt/master.d/pillar.conf</span>
 pillar_roots:
   base:
-    - /srv/pillar</code></pre>
+    - /srv/salt/pillar</code></pre>
                     <pre><code><span class="code-comment"># restart so the master sees the change</span>
 sudo systemctl restart salt-master</code></pre>
                 </article>
@@ -593,12 +590,12 @@ sudo systemctl restart salt-master</code></pre>
                     <span class="step-number">13</span>
                     <h4>Add pillar data</h4>
                     <p>Two files: a <strong>top file</strong> that says which minions get which pillar, and a <strong>data file</strong> with the actual values.</p>
-                    <pre><code><span class="code-comment"># /srv/pillar/top.sls — assign data to Windows minions</span>
+                    <pre><code><span class="code-comment"># /srv/salt/pillar/top.sls — assign data to Windows minions</span>
 base:
   'os_family:Windows':
     - match: grain
     - windows.users</code></pre>
-                    <pre><code><span class="code-comment"># /srv/pillar/windows/users.sls — the data itself</span>
+                    <pre><code><span class="code-comment"># /srv/salt/pillar/windows/users.sls — the data itself</span>
 windows_local_groups:
   Remote Desktop Users:
     - saltdemo
@@ -693,7 +690,7 @@ cd /srv/salt &amp;&amp; git checkout main</code></pre>
 
             <div class="callout callout-tip" style="margin-top: 1.75rem;">
                 <i class="fas fa-shield-halved"></i>
-                <p><strong>About <code>/srv/pillar</code>.</strong> Pillar belongs in Git too — it's just data. <strong>Encrypt secrets first with GPG</strong> (we covered the setup in the <a href="install-guide.html#gpg-deep-dive" style="color: var(--color-accent);">install guide's GPG deep-dive</a>). Many teams keep pillar in a <em>separate</em> repo from <code>/srv/salt</code> for tighter access control — same <code>git init</code> / <code>push</code> pattern, different repo.</p>
+                <p><strong>About <code>/srv/salt/pillar</code>.</strong> Pillar belongs in Git too — it's just data. <strong>Encrypt secrets first with GPG</strong> (we covered the setup in the <a href="install-guide.html#gpg-deep-dive" style="color: var(--color-accent);">install guide's GPG deep-dive</a>). Many teams keep pillar in a <em>separate</em> repo from <code>/srv/salt</code> for tighter access control — same <code>git init</code> / <code>push</code> pattern, different repo.</p>
             </div>
         </div>
     </section>
@@ -796,6 +793,6 @@ cd /srv/salt &amp;&amp; git checkout main</code></pre>
         </div>
     </footer>
 
-    <script src="js/script.js?v=19"></script>
+    <script src="js/script.js?v=20"></script>
 </body>
 </html>
