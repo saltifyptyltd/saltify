@@ -61,26 +61,16 @@ function initTheme() {
 
 function initNavigation() {
     const navbar = document.querySelector('.navbar');
-    const hamburger = document.querySelector('.hamburger');
-    const navMenu = document.querySelector('.nav-menu');
-    const navLinks = document.querySelectorAll('.nav-link');
+    const dropdownToggle = document.querySelector('.nav-dropdown-toggle');
 
-    function closeNav() {
-        hamburger.classList.remove('active');
-        navMenu.classList.remove('active');
-        hamburger.setAttribute('aria-expanded', 'false');
-    }
-
-    hamburger?.addEventListener('click', () => {
-        const isActive = hamburger.classList.toggle('active');
-        navMenu.classList.toggle('active');
-        hamburger.setAttribute('aria-expanded', String(isActive));
-    });
-
-    navLinks.forEach(link => link.addEventListener('click', closeNav));
-
-    document.addEventListener('keydown', e => {
-        if (e.key === 'Escape' && navMenu.classList.contains('active')) closeNav();
+    /* Mobile: dropdown is hidden via CSS, so the parent "Learn Salt" link
+       falls through to the cheat sheet instead of being a no-op tap. */
+    dropdownToggle?.addEventListener('click', e => {
+        if (window.innerWidth <= 768) {
+            e.preventDefault();
+            e.stopPropagation();
+            window.location.href = 'salt-cheat-sheet.html';
+        }
     });
 
     let pending = false;
