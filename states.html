@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salt States — modules, requisites, real patterns | Saltify</title>
+    <meta name="description" content="The state modules you'll use 90% of the time, the requisite system that ties them together, and four real-world patterns from production. One scrollable page.">
+    <link rel="icon" type="image/png" href="logo/saltify-logo-large-transparent.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="stylesheet" href="css/style.css?v=4">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .guide-hero { padding: 140px 0 60px; text-align: center; }
+        .guide-hero h1 { font-size: clamp(2rem, 4vw, 3rem); letter-spacing: -0.02em; margin-bottom: 1rem; }
+        .guide-hero .lead { font-size: 1.125rem; color: var(--color-text-muted); max-width: 640px; margin: 0 auto; line-height: 1.6; }
+        .guide-hero .crumb { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--color-accent); margin-bottom: 1.25rem; }
+
+        .tldr { max-width: 760px; margin: 1.5rem auto 0; padding: 1.5rem 1.75rem; background: var(--color-accent-softer); border: 1px solid var(--color-accent-mid); border-radius: var(--radius); text-align: left; }
+        .tldr h2 { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-accent); margin-bottom: 0.75rem; }
+        .quick-nav { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .quick-nav a { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.4rem 0.875rem; border: 1px solid var(--color-border); border-radius: 999px; font-size: 0.85rem; color: var(--color-text); transition: border-color var(--transition), background var(--transition); }
+        .quick-nav a:hover { border-color: var(--color-accent); background: var(--color-accent-softer); color: var(--color-accent); }
+        .quick-nav a span.num { font-family: var(--font-mono); font-size: 0.7rem; color: var(--color-accent); font-weight: 600; }
+
+        .guide-section { padding: 60px 0; scroll-margin-top: 80px; }
+        .guide-section.section-alt { padding: 80px 0; }
+        .guide-section h2 { font-size: 1.75rem; letter-spacing: -0.015em; margin-bottom: 0.5rem; }
+        .guide-section h3 { font-size: 1.15rem; font-weight: 600; margin: 1.75rem 0 0.5rem; color: var(--color-text); }
+        .guide-section .section-intro { color: var(--color-text-muted); margin-bottom: 2rem; max-width: 720px; line-height: 1.6; }
+        .section-tag { display: inline-block; font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; color: var(--color-accent); background: var(--color-accent-softer); padding: 0.25rem 0.65rem; border-radius: 4px; margin-bottom: 0.75rem; text-transform: uppercase; }
+
+        /* State module cards */
+        .modules-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--color-border); border: 1px solid var(--color-border); border-radius: var(--radius); overflow: hidden; }
+        .module-card { padding: 1.5rem 1.75rem; background: var(--color-bg-card); display: flex; flex-direction: column; gap: 0.625rem; }
+        .module-card-head { display: flex; align-items: center; gap: 0.5rem; }
+        .module-card-icon { width: 32px; height: 32px; border-radius: 8px; background: var(--color-accent-softer); display: flex; align-items: center; justify-content: center; color: var(--color-accent); font-size: 0.95rem; }
+        .module-card h4 { font-size: 1rem; font-weight: 600; color: var(--color-text); margin: 0; font-family: var(--font-mono); }
+        .module-card-funcs { font-size: 0.75rem; color: var(--color-text-muted); font-family: var(--font-mono); margin-bottom: 0.25rem; }
+        .module-card pre { margin: 0; font-size: 0.7875rem; }
+        .module-card .note { font-size: 0.8125rem; color: var(--color-text-muted); line-height: 1.5; margin: 0; }
+
+        /* Requisites table */
+        .req-grid { display: grid; grid-template-columns: 200px 1fr; gap: 1px; background: var(--color-border); border: 1px solid var(--color-border); border-radius: var(--radius); overflow: hidden; margin-top: 1rem; }
+        .req-key, .req-val { padding: 1rem 1.25rem; background: var(--color-bg-card); }
+        .req-key { font-family: var(--font-mono); font-weight: 600; color: var(--color-accent); font-size: 0.875rem; }
+        .req-val { font-size: 0.875rem; color: var(--color-text-muted); line-height: 1.55; }
+        .req-val code { font-size: 0.8125rem; }
+
+        /* Real-world pattern blocks */
+        .pattern-block { padding: 1.75rem 2rem; background: var(--color-bg-card); border: 1px solid var(--color-border); border-radius: var(--radius); margin-bottom: 1.25rem; }
+        .pattern-block h3 { margin-top: 0; }
+        .pattern-tag { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-accent); margin-bottom: 0.4rem; display: flex; align-items: center; gap: 0.4rem; }
+        .pattern-block p { font-size: 0.925rem; color: var(--color-text-muted); line-height: 1.6; margin-bottom: 0.75rem; }
+        .pattern-block pre { margin-bottom: 0.75rem; }
+
+        /* Anti-patterns list */
+        .antipatterns { display: grid; gap: 0.875rem; margin-top: 1rem; }
+        .antipattern { padding: 1.125rem 1.25rem; background: var(--color-bg-card); border: 1px solid var(--color-border); border-left: 3px solid var(--color-danger); border-radius: 8px; }
+        .antipattern h4 { font-size: 0.95rem; font-weight: 600; color: var(--color-text); margin-bottom: 0.35rem; }
+        .antipattern p { font-size: 0.875rem; color: var(--color-text-muted); line-height: 1.55; margin: 0; }
+
+        /* Callouts */
+        .callout { display: flex; gap: 1rem; padding: 1.125rem 1.25rem; border-radius: 10px; margin: 1.5rem 0; font-size: 0.925rem; line-height: 1.55; align-items: flex-start; }
+        .callout i { font-size: 1.1rem; margin-top: 0.15rem; flex-shrink: 0; }
+        .callout-tip { background: var(--color-accent-softer); border: 1px solid var(--color-accent-mid); }
+        .callout-tip i { color: var(--color-accent); }
+        .callout-warn { background: var(--color-bg-bad); border: 1px solid rgba(179, 84, 84, 0.4); }
+        .callout-warn i { color: var(--color-danger); }
+        .callout p { margin: 0; }
+        .callout strong { color: var(--color-text); }
+
+        .source-credit { text-align: center; margin-top: 2rem; font-size: 0.8125rem; color: var(--color-text-dim); font-style: italic; }
+        .source-credit a { color: var(--color-text-muted); border-bottom: 1px dashed var(--color-text-dim); }
+
+        @media (max-width: 900px) {
+            .modules-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+        @media (max-width: 600px) {
+            .modules-grid { grid-template-columns: 1fr; }
+            .req-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span class="logo-primary">Saltify</span>
+                <span class="logo-secondary">Pty Ltd</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html#services" class="nav-link">Services</a></li>
+                <li class="nav-dropdown">
+                    <a href="#" class="nav-link nav-dropdown-toggle" aria-haspopup="true" aria-expanded="false" onclick="event.preventDefault();">Learn Salt <span class="nav-caret">▾</span></a>
+                    <ul class="nav-dropdown-menu" aria-label="Learn submenu">
+                        <li><a href="salt-cheat-sheet.html" class="nav-link">Cheat Sheet</a></li>
+                        <li><a href="install-guide.html" class="nav-link">Install Guide</a></li>
+                        <li><a href="getting-started.html" class="nav-link">Getting Started</a></li>
+                        <li><a href="states.html" class="nav-link" aria-current="page">Salt States</a></li>
+                        <li><a href="windows.html" class="nav-link">Salt on Windows</a></li>
+                    </ul>
+                </li>
+                <li><a href="index.html#about" class="nav-link">About</a></li>
+                <li><a href="index.html#contact" class="nav-link nav-cta">Let's talk →</a></li>
+            </ul>
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" aria-pressed="false">
+                    <i class="fas fa-sun" id="themeIcon" aria-hidden="true"></i>
+                </button>
+                <button class="hamburger" aria-label="Toggle menu" aria-expanded="false">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="guide-hero">
+        <div class="container">
+            <p class="crumb"><i class="fas fa-cube"></i> Salt States</p>
+            <h1>Salt states. Without the spec sheet.</h1>
+            <p class="lead">The state modules you'll use 90% of the time, the requisite system that ties them together, and four real-world patterns from production. <strong>One scrollable page.</strong></p>
+
+            <div class="tldr">
+                <h2>Jump to</h2>
+                <div class="quick-nav">
+                    <a href="#anatomy"><span class="num">01</span> Anatomy</a>
+                    <a href="#modules"><span class="num">02</span> The 6 modules</a>
+                    <a href="#requisites"><span class="num">03</span> Requisites</a>
+                    <a href="#top-file"><span class="num">04</span> Top file</a>
+                    <a href="#patterns"><span class="num">05</span> Real patterns</a>
+                    <a href="#antipatterns"><span class="num">06</span> Anti-patterns</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- §1 Anatomy -->
+    <section id="anatomy" class="guide-section">
+        <div class="container">
+            <p class="section-tag">01 · Foundation · ~3 min</p>
+            <h2>Anatomy of a state.</h2>
+            <p class="section-intro">A Salt state is YAML describing a <em>desired condition</em>, not a sequence of actions. Salt looks at the current state of the box, compares to what you wrote, and changes only what's not yet correct. <strong>Run it ten times, the box ends up in the same place every time.</strong> That's idempotency, and it's the whole game.</p>
+
+            <h3>The shape</h3>
+            <pre><code><span class="code-comment"># every state has three parts:</span>
+&lt;state ID&gt;:                       <span class="code-comment"># a unique label — your choice</span>
+  &lt;module&gt;.&lt;function&gt;:            <span class="code-comment"># what to do (file.managed, pkg.installed, etc.)</span>
+    - arg_name: arg_value         <span class="code-comment"># module arguments</span>
+    - arg_name: arg_value</code></pre>
+
+            <p style="margin-top: 1rem;">A real one:</p>
+            <pre><code>nginx_running:                     <span class="code-comment"># state ID</span>
+  service.running:                 <span class="code-comment"># module = service, function = running</span>
+    - name: nginx                  <span class="code-comment"># the service name</span>
+    - enable: True                 <span class="code-comment"># enable on boot</span></code></pre>
+
+            <div class="callout callout-tip">
+                <i class="fas fa-circle-info"></i>
+                <p><strong>Always dry-run before you commit.</strong> Append <code>test=True</code> to any apply command and Salt prints what it <em>would</em> change. <code>salt 'web*' state.apply nginx test=True</code>. Catches typos and unintended diffs before the fleet sees them.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- §2 The state modules -->
+    <section id="modules" class="guide-section section-alt">
+        <div class="container">
+            <p class="section-tag">02 · Reference · ~7 min</p>
+            <h2>The 6 state modules you'll use 90% of the time.</h2>
+            <p class="section-intro">Salt ships hundreds of state modules. Six cover almost everything you'll do in a normal day. Master these, browse the rest at <a href="https://docs.saltproject.io/en/3007/ref/states/all/index.html" target="_blank" rel="noopener" style="color: var(--color-accent);">docs.saltproject.io</a> when you need something exotic.</p>
+
+            <div class="modules-grid">
+
+                <article class="module-card">
+                    <div class="module-card-head">
+                        <div class="module-card-icon"><i class="fas fa-file"></i></div>
+                        <h4>file</h4>
+                    </div>
+                    <p class="module-card-funcs">.directory · .managed · .symlink · .absent · .recurse</p>
+                    <pre><code>nginx_conf:
+  file.managed:
+    - name: /etc/nginx/nginx.conf
+    - source: salt://nginx/nginx.conf
+    - mode: '0644'
+    - template: jinja</code></pre>
+                    <p class="note">Folders, files, content, ownership, permissions. <code>template: jinja</code> renders templates with grains/pillar.</p>
+                </article>
+
+                <article class="module-card">
+                    <div class="module-card-head">
+                        <div class="module-card-icon"><i class="fas fa-box"></i></div>
+                        <h4>pkg</h4>
+                    </div>
+                    <p class="module-card-funcs">.installed · .removed · .uptodate · .latest</p>
+                    <pre><code>nginx_pkg:
+  pkg.installed:
+    - name: nginx
+    - version: 1.24.*    <span class="code-comment"># pin loosely</span></code></pre>
+                    <p class="note">Cross-OS — same state on RHEL, Debian, Windows. Pin versions in production. Lists work too: <code>- pkgs: [nginx, curl, rsync]</code>.</p>
+                </article>
+
+                <article class="module-card">
+                    <div class="module-card-head">
+                        <div class="module-card-icon"><i class="fas fa-gears"></i></div>
+                        <h4>service</h4>
+                    </div>
+                    <p class="module-card-funcs">.running · .dead · .enabled · .disabled</p>
+                    <pre><code>nginx_service:
+  service.running:
+    - name: nginx
+    - enable: True
+    - watch:
+      - file: nginx_conf</code></pre>
+                    <p class="note"><code>enable: True</code> survives reboots. <code>watch:</code> auto-restarts on file changes.</p>
+                </article>
+
+                <article class="module-card">
+                    <div class="module-card-head">
+                        <div class="module-card-icon"><i class="fas fa-user"></i></div>
+                        <h4>user</h4>
+                    </div>
+                    <p class="module-card-funcs">.present · .absent</p>
+                    <pre><code>app_user:
+  user.present:
+    - name: appsvc
+    - shell: /bin/bash
+    - groups: [docker, sudo]
+    - createhome: True</code></pre>
+                    <p class="note">Cross-OS user management. Use pillar for any password — never hardcode.</p>
+                </article>
+
+                <article class="module-card">
+                    <div class="module-card-head">
+                        <div class="module-card-icon"><i class="fas fa-users"></i></div>
+                        <h4>group</h4>
+                    </div>
+                    <p class="module-card-funcs">.present · .absent</p>
+                    <pre><code>add_to_rdp:
+  group.present:
+    - name: Remote Desktop Users
+    - addusers:
+      - DOMAIN\\app-svc</code></pre>
+                    <p class="note">Local group membership. Users must already exist (locally or AD). Double-backslash for AD users.</p>
+                </article>
+
+                <article class="module-card">
+                    <div class="module-card-head">
+                        <div class="module-card-icon"><i class="fas fa-terminal"></i></div>
+                        <h4>cmd</h4>
+                    </div>
+                    <p class="module-card-funcs">.run · .script · .wait</p>
+                    <pre><code>tag_machine:
+  cmd.run:
+    - name: echo 'managed' &gt; /etc/managed
+    - unless: test -f /etc/managed</code></pre>
+                    <p class="note"><strong>Use sparingly.</strong> Always pair with <code>unless:</code> or <code>onlyif:</code> for idempotency. Real states are better.</p>
+                </article>
+
+            </div>
+
+            <div class="callout callout-tip" style="margin-top: 2rem;">
+                <i class="fas fa-lightbulb"></i>
+                <p><strong>Naming.</strong> Salt has a <code>name:</code> shortcut — if you skip it, Salt uses the state ID as the name. <code>nginx_pkg: pkg.installed: - name: nginx</code> can be shortened to just <code>nginx: pkg.installed</code>. Clean for one-offs, confusing in bigger files. Pick one style per project.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- §3 Requisites -->
+    <section id="requisites" class="guide-section">
+        <div class="container">
+            <p class="section-tag">03 · The dependency system · ~5 min</p>
+            <h2>Requisites — making states cooperate.</h2>
+            <p class="section-intro">Salt doesn't run states in file order. It runs them in <strong>dependency order</strong>. You declare dependencies with requisites. Get this right and complex setups become bulletproof. Get it wrong and you'll wonder why your service tried to start before its package existed.</p>
+
+            <h3>The four you need</h3>
+            <div class="req-grid">
+                <div class="req-key">require:</div>
+                <div class="req-val">Run <em>after</em> the listed states succeed. The bread-and-butter "do A before B" requisite. <code>service: nginx_pkg</code> means "wait until <code>nginx_pkg</code> is done."</div>
+                <div class="req-key">watch:</div>
+                <div class="req-val">Like <code>require</code>, plus <em>react if anything changed</em>. Service restarts automatically when its config file changes. <strong>This is the killer feature.</strong></div>
+                <div class="req-key">onchanges:</div>
+                <div class="req-val">Run <em>only if</em> a watched state actually made a change. Useful for "run this audit script when config gets modified" — won't run on no-op highstates.</div>
+                <div class="req-key">listen:</div>
+                <div class="req-val">Defer until the <em>end</em> of the highstate. Same idea as <code>watch</code>, but batched. Useful for one-time post-deployment hooks.</div>
+            </div>
+
+            <h3>Inverse forms</h3>
+            <p style="color: var(--color-text-muted); line-height: 1.6;">Each requisite has a <code>_in</code> mirror — <code>require_in</code>, <code>watch_in</code>, <code>onchanges_in</code>, <code>listen_in</code>. Same effect, declared from the <em>other</em> side. Use whichever reads better:</p>
+            <pre><code><span class="code-comment"># both of these mean "service restarts on config change"</span>
+
+<span class="code-comment"># forward — declared on the service</span>
+nginx_service:
+  service.running:
+    - name: nginx
+    - watch:
+      - file: nginx_conf
+
+<span class="code-comment"># inverse — declared on the file</span>
+nginx_conf:
+  file.managed:
+    - name: /etc/nginx/nginx.conf
+    - source: salt://nginx/nginx.conf
+    - watch_in:
+      - service: nginx_service</code></pre>
+
+            <div class="callout callout-tip">
+                <i class="fas fa-circle-info"></i>
+                <p><strong>The 30-second rule.</strong> If you can't tell from looking at a state file what runs in what order, your requisites are wrong. Fix the chain, not the symptom.</p>
+            </div>
+
+            <h3>The canonical chain — package + config + service</h3>
+            <p style="color: var(--color-text-muted); line-height: 1.6;">Hundreds of state files end up looking like this. Memorize it.</p>
+            <pre><code>nginx_pkg:
+  pkg.installed:
+    - name: nginx
+
+nginx_conf:
+  file.managed:
+    - name: /etc/nginx/nginx.conf
+    - source: salt://nginx/nginx.conf
+    - require:
+      - pkg: nginx_pkg                <span class="code-comment"># package must exist first</span>
+
+nginx_service:
+  service.running:
+    - name: nginx
+    - enable: True
+    - require:
+      - pkg: nginx_pkg                <span class="code-comment"># package must exist</span>
+    - watch:
+      - file: nginx_conf              <span class="code-comment"># restart on config change</span></code></pre>
+        </div>
+    </section>
+
+    <!-- §4 Top file -->
+    <section id="top-file" class="guide-section section-alt">
+        <div class="container">
+            <p class="section-tag">04 · Routing · ~3 min</p>
+            <h2>The top file — how Salt picks which minion gets what.</h2>
+            <p class="section-intro"><code>top.sls</code> is Salt's routing table. It says <em>"for each minion, here's the list of states that apply."</em> Lives at <code>/srv/salt/top.sls</code>. Highstate reads it and figures out the rest.</p>
+
+            <h3>The shape</h3>
+            <pre><code><span class="code-comment"># /srv/salt/top.sls</span>
+base:                              <span class="code-comment"># environment (also: dev, staging, prod)</span>
+  '*':                             <span class="code-comment"># every minion</span>
+    - common.baseline
+
+  'web*':                          <span class="code-comment"># glob — minion ID matching</span>
+    - nginx
+    - app
+
+  'os_family:RedHat':              <span class="code-comment"># grain match</span>
+    - match: grain
+    - linux.hardening
+
+  'G@os:Windows and G@env:prod':   <span class="code-comment"># compound</span>
+    - match: compound
+    - windows.iis
+    - windows.audit</code></pre>
+
+            <h3>Match types</h3>
+            <ul style="line-height: 1.8; padding-left: 1.25rem; color: var(--color-text-muted);">
+                <li><strong>Default (glob)</strong> — minion ID with wildcards: <code>web*</code>, <code>db-prod-?</code></li>
+                <li><strong><code>match: grain</code></strong> — match on a single grain: <code>os_family:Windows</code>, <code>os:CentOS</code></li>
+                <li><strong><code>match: pillar</code></strong> — match on pillar data: <code>tier:critical</code></li>
+                <li><strong><code>match: list</code></strong> — explicit list: <code>web1,web2,web3</code></li>
+                <li><strong><code>match: compound</code></strong> — combine with <code>and</code> / <code>or</code> / <code>not</code> + matcher prefixes (<code>G@</code>, <code>I@</code>, <code>L@</code>, <code>E@</code>)</li>
+            </ul>
+
+            <div class="callout callout-tip">
+                <i class="fas fa-circle-info"></i>
+                <p><strong>The flow.</strong> <code>salt '*' state.highstate</code> → master reads <code>top.sls</code> → for each minion, gathers the matched state names → applies them → minion converges. <code>state.apply &lt;name&gt;</code> ignores <code>top.sls</code> and applies just the one. Both idempotent.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- §5 Real patterns -->
+    <section id="patterns" class="guide-section">
+        <div class="container">
+            <p class="section-tag">05 · Production · ~10 min</p>
+            <h2>Real-world patterns.</h2>
+            <p class="section-intro">Four sanitized patterns from production deployments. Each one is something you'd actually run, distilled to the parts that teach. <strong>Steal these.</strong></p>
+
+            <!-- Pattern 1 -->
+            <div class="pattern-block">
+                <p class="pattern-tag"><i class="fas fa-bolt"></i> Pattern 01</p>
+                <h3>Pillar-driven user with sudoers — Linux</h3>
+                <p>Idempotent demo user creation, with sudoers granted via a drop-in. Validates the sudoers fragment with <code>visudo -cf</code> <em>before</em> moving it into place — a malformed line can't break sudo system-wide.</p>
+                <pre><code><span class="code-comment"># /srv/salt/linux/demo_user.sls</span>
+{% set sudo_user  = salt['pillar.get']('linux:sudoer:username', 'saltdemo') %}
+{% set sudo_shell = salt['pillar.get']('linux:sudoer:shell', '/bin/bash') %}
+{% set nopasswd   = salt['pillar.get']('linux:sudoer:nopasswd', True) %}
+
+demo_user:
+  user.present:
+    - name: {{ sudo_user }}
+    - shell: {{ sudo_shell }}
+    - createhome: True
+
+demo_user_sudoers:
+  file.managed:
+    - name: /etc/sudoers.d/{{ sudo_user }}
+    - user: root
+    - group: root
+    - mode: '0440'
+    - contents: |
+        # Managed by Salt
+        {{ sudo_user }} ALL=(ALL){% if nopasswd %} NOPASSWD:{% endif %} ALL
+    - check_cmd: /usr/sbin/visudo -cf      <span class="code-comment"># validate before commit</span>
+    - require:
+      - user: demo_user</code></pre>
+                <p><strong>Why this is good:</strong> values come from pillar (per-environment override), <code>check_cmd</code> guards against malformed sudoers, <code>require:</code> ensures the user exists before adding rights, and the whole thing is conditional on Linux (in real life with a Jinja <code>{% if grains['kernel'] == 'Linux' %}</code> wrapper).</p>
+            </div>
+
+            <!-- Pattern 2 -->
+            <div class="pattern-block">
+                <p class="pattern-tag"><i class="fas fa-bolt"></i> Pattern 02</p>
+                <h3>Reboot, wait, reconnect — Windows</h3>
+                <p>Reboot a Windows box from Salt and wait for it to come back before continuing the highstate. The "reboot orchestration" pattern that separates production-grade Salt from script-style Salt.</p>
+                <pre><code><span class="code-comment"># /srv/salt/windows/reboot.sls</span>
+
+reboot_now:
+  cmd.run:
+    - name: shutdown /r /t 2
+    - shell: cmd
+
+wait_for_winrm:
+  cmd.run:
+    - name: |
+        powershell -ExecutionPolicy Bypass -Command "
+        $counter = 0
+        while ($counter -lt 30) {
+          if (Test-NetConnection -ComputerName $env:COMPUTERNAME `
+              -Port 5985 -InformationLevel Quiet) { exit 0 }
+          Start-Sleep -Seconds 10
+          $counter++
+        }
+        exit 1"
+    - shell: cmd
+    - require:
+      - cmd: reboot_now
+
+post_reboot_smoke_test:
+  cmd.run:
+    - name: powershell -Command "Get-Service salt-minion"
+    - shell: cmd
+    - require:
+      - cmd: wait_for_winrm</code></pre>
+                <p><strong>Why this works:</strong> WinRM (port 5985) coming back is a reliable signal that the box is genuinely up — services started, network up, ready to take work. The PowerShell loop polls for 5 minutes max, fails fast if the box doesn't come back. Subsequent states <code>require:</code> the wait, so the highstate doesn't try to do work on a half-booted box.</p>
+            </div>
+
+            <!-- Pattern 3 -->
+            <div class="pattern-block">
+                <p class="pattern-tag"><i class="fas fa-bolt"></i> Pattern 03</p>
+                <h3>Multi-host orchestration — RDS-style</h3>
+                <p>One <code>salt-run state.orch</code> command, deploying state to multiple groups of minions in dependency order. This is the pattern for anything that involves <em>"deploy A on these boxes, then B on those, then C on the others."</em> Used here for a Remote Desktop Services build (license server first, then session hosts, then app publishing).</p>
+                <pre><code><span class="code-comment"># /srv/salt/orch/rds_build.sls</span>
+<span class="code-comment"># run with: sudo salt-run state.orch orch.rds_build</span>
+
+deploy_broker_gateway:
+  salt.state:
+    - tgt: 'G@server_role:rds_broker'
+    - tgt_type: compound
+    - sls: windows.rds.broker_gateway
+
+deploy_license_server:
+  salt.state:
+    - tgt: 'G@server_role:rds_license'
+    - tgt_type: compound
+    - sls: windows.rds.license_server
+
+deploy_session_hosts:
+  salt.state:
+    - tgt: 'G@server_role:rds_session_host'
+    - tgt_type: compound
+    - sls: windows.rds.session_host
+    - require:
+      - salt: deploy_broker_gateway      <span class="code-comment"># brokers ready first</span>
+      - salt: deploy_license_server       <span class="code-comment"># licensing ready first</span>
+
+publish_apps:
+  salt.function:
+    - tgt: 'G@server_role:rds_broker'
+    - tgt_type: compound
+    - name: cmd.run
+    - arg:
+      - powershell -File C:\scripts\publish_apps.ps1
+    - require:
+      - salt: deploy_session_hosts        <span class="code-comment"># hosts ready first</span></code></pre>
+                <p><strong>Why this is the killer pattern:</strong> Salt is doing what would normally take a Bash-and-Ansible kludge with sleeps and pings — and doing it idempotently. <code>salt.state</code> applies states to grain-targeted groups; <code>salt.function</code> runs ad-hoc functions; <code>require:</code> chains them. Re-run anytime, only the parts that haven't converged actually do work.</p>
+            </div>
+
+            <!-- Pattern 4 -->
+            <div class="pattern-block">
+                <p class="pattern-tag"><i class="fas fa-bolt"></i> Pattern 04</p>
+                <h3>Reactor — event-driven Salt</h3>
+                <p>Salt has an event bus. Anything happening on the master or minions fires an event. Reactors map event tags to state files. <strong>This turns Salt from "I tell it to do things" into "it does things when stuff happens."</strong></p>
+                <pre><code><span class="code-comment"># /etc/salt/master.d/reactor.conf</span>
+reactor:
+  - 'orchestrate/rds/start':                    <span class="code-comment"># custom event tag</span>
+    - /srv/salt/reactor/start_rds_build.sls
+  - 'salt/minion/*/start':                      <span class="code-comment"># built-in: minion came up</span>
+    - /srv/salt/reactor/welcome_new_minion.sls
+
+<span class="code-comment"># /srv/salt/reactor/start_rds_build.sls</span>
+start_rds_build:
+  runner.state.orchestrate:
+    - mods: orch.rds_build</code></pre>
+                <p>Fire the event from anywhere — a CI pipeline, another minion, a webhook handler — and the orchestration kicks off automatically:</p>
+                <pre><code>salt-call event.send 'orchestrate/rds/start'</code></pre>
+                <p><strong>Why this matters:</strong> blue/green deploys, automated remediation, scheduled builds — they all live here. The <a href="install-guide.html" style="color: var(--color-accent);">install guide</a>'s blue/green pattern is essentially this: an event fires, a reactor responds, an orchestration runs.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- §6 Anti-patterns -->
+    <section id="antipatterns" class="guide-section section-alt">
+        <div class="container">
+            <p class="section-tag">06 · What not to do · ~3 min</p>
+            <h2>Anti-patterns.</h2>
+            <p class="section-intro">Six things that look like they work and bite you six months later.</p>
+
+            <div class="antipatterns">
+                <div class="antipattern">
+                    <h4>cmd.run without <code>unless:</code> or <code>onlyif:</code></h4>
+                    <p>Runs on every highstate. Slows everything down, makes idempotency a lie. If a real state module exists (<code>file.managed</code>, <code>pkg.installed</code>, etc.), use that. If <code>cmd.run</code> is genuinely necessary, gate it.</p>
+                </div>
+                <div class="antipattern">
+                    <h4>Hardcoded values in state files</h4>
+                    <p>Hostnames, paths, credentials, environment names — they belong in pillar. Hardcode and you'll need a state file per environment. Pillar them and one state file works everywhere. <a href="getting-started.html#pillar" style="color: var(--color-accent);">Getting Started</a> covers pillar.</p>
+                </div>
+                <div class="antipattern">
+                    <h4>Missing <code>require:</code> chains</h4>
+                    <p>Without it, Salt is free to run states in parallel. For "package must exist before service starts" that's a race. Salt won't always lose it — but when it does, you'll spend hours debugging.</p>
+                </div>
+                <div class="antipattern">
+                    <h4>One giant <code>.sls</code> with everything in it</h4>
+                    <p>Hundreds of states in <code>/srv/salt/all.sls</code>. Hard to read, hard to test, impossible to reuse. Split by concern: <code>nginx/init.sls</code>, <code>nginx/config.sls</code>, <code>nginx/cert.sls</code>. Use <code>include:</code> to compose.</p>
+                </div>
+                <div class="antipattern">
+                    <h4>Restarting on every highstate</h4>
+                    <p>Use <code>watch:</code>, not <code>cmd.run</code> with a reload command. <code>watch:</code> only fires when something actually changed. <code>cmd.run</code> fires every time. Difference between "graceful reload when needed" and "kicking nginx every 10 minutes."</p>
+                </div>
+                <div class="antipattern">
+                    <h4>Skipping <code>test=True</code> in production</h4>
+                    <p>Always dry-run. Especially after pillar edits, especially on critical fleets. The fix takes 5 seconds (<code>state.apply test=True</code>). The recovery if you skip it can take an afternoon.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- See also + source -->
+    <section class="guide-section">
+        <div class="container">
+            <h2>See also.</h2>
+            <ul style="line-height: 1.8; padding-left: 1.25rem;">
+                <li><a href="getting-started.html">Getting Started</a> — your first <code>.sls</code> files, top.sls, pillar, Git integration</li>
+                <li><a href="windows.html">Salt on Windows</a> — install minion, quirks, winrepo</li>
+                <li><a href="salt-cheat-sheet.html">Cheat Sheet</a> — every Salt command worth knowing</li>
+                <li><a href="https://docs.saltproject.io/en/3007/ref/states/all/index.html" target="_blank" rel="noopener">Every state module ↗</a> — the canonical reference</li>
+                <li><a href="https://docs.saltproject.io/en/3007/ref/states/requisites.html" target="_blank" rel="noopener">All requisites ↗</a> — including the rare ones (<code>prereq</code>, <code>use</code>, <code>runas</code>)</li>
+                <li><a href="https://docs.saltproject.io/en/3007/topics/orchestrate/" target="_blank" rel="noopener">Orchestrate runner ↗</a> — for multi-host workflows</li>
+                <li><a href="https://docs.saltproject.io/en/3007/topics/reactor/" target="_blank" rel="noopener">Reactor system ↗</a> — event-driven Salt</li>
+            </ul>
+
+            <p class="source-credit">Patterns distilled from Saltify's production deployments + the official Salt docs at <a href="https://github.com/saltstack/salt/tree/master/doc" target="_blank" rel="noopener">salt/doc/</a> (Apache 2.0).</p>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="contact">
+        <div class="container">
+            <div class="contact-content fade-in">
+                <h2>Stuck on a state pattern?</h2>
+                <p class="contact-sub">If you're staring at YAML and wondering why it's not converging, we've probably seen the bug. Tell us what's broken.</p>
+                <a href="mailto:sales@saltify.work" class="contact-email">sales@saltify.work</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-inner">
+                <p class="footer-logo">
+                    <span class="logo-primary">Saltify</span>
+                    <span class="logo-secondary">Pty Ltd</span>
+                </p>
+                <p class="footer-tagline">Enterprise Salt for teams that can't afford fragile infrastructure. Based in Australia.</p>
+                <p class="footer-copy">© 2026 Saltify Pty Ltd</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/script.js?v=4"></script>
+</body>
+</html>

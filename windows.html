@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salt on Windows — practical guide | Saltify</title>
+    <meta name="description" content="Salt for Windows, written for humans. Install the minion, navigate Windows quirks, manage software fleet-wide with winrepo. One page, distilled from production deployments.">
+    <link rel="icon" type="image/png" href="logo/saltify-logo-large-transparent.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="stylesheet" href="css/style.css?v=4">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Hero */
+        .guide-hero { padding: 140px 0 60px; text-align: center; }
+        .guide-hero h1 { font-size: clamp(2rem, 4vw, 3rem); letter-spacing: -0.02em; margin-bottom: 1rem; }
+        .guide-hero .lead { font-size: 1.125rem; color: var(--color-text-muted); max-width: 640px; margin: 0 auto; line-height: 1.6; }
+        .guide-hero .crumb { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--color-accent); margin-bottom: 1.25rem; }
+
+        /* TL;DR / quick nav */
+        .tldr { max-width: 760px; margin: 1.5rem auto 0; padding: 1.5rem 1.75rem; background: var(--color-accent-softer); border: 1px solid var(--color-accent-mid); border-radius: var(--radius); text-align: left; }
+        .tldr h2 { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-accent); margin-bottom: 0.75rem; }
+        .quick-nav { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .quick-nav a { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.4rem 0.875rem; border: 1px solid var(--color-border); border-radius: 999px; font-size: 0.85rem; color: var(--color-text); transition: border-color var(--transition), background var(--transition); }
+        .quick-nav a:hover { border-color: var(--color-accent); background: var(--color-accent-softer); color: var(--color-accent); }
+        .quick-nav a span.num { font-family: var(--font-mono); font-size: 0.7rem; color: var(--color-accent); font-weight: 600; }
+
+        /* Sections */
+        .guide-section { padding: 60px 0; scroll-margin-top: 80px; }
+        .guide-section.section-alt { padding: 80px 0; }
+        .guide-section h2 { font-size: 1.75rem; letter-spacing: -0.015em; margin-bottom: 0.5rem; }
+        .guide-section h3 { font-size: 1.15rem; font-weight: 600; margin: 1.75rem 0 0.5rem; color: var(--color-text); }
+        .guide-section .section-intro { color: var(--color-text-muted); margin-bottom: 2rem; max-width: 720px; line-height: 1.6; }
+        .section-tag { display: inline-block; font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; color: var(--color-accent); background: var(--color-accent-softer); padding: 0.25rem 0.65rem; border-radius: 4px; margin-bottom: 0.75rem; text-transform: uppercase; }
+
+        /* Install steps grid */
+        .install-steps { grid-template-columns: repeat(2, 1fr); }
+        .install-steps .quickstart-step:last-child:nth-child(odd) { grid-column: 1 / -1; }
+
+        /* Apply box */
+        .apply-box { margin-top: 1rem; padding: 0.875rem 1rem; background: var(--color-accent-softer); border-left: 2px solid var(--color-accent); border-radius: 0 6px 6px 0; }
+        .apply-box pre { margin: 0 0 0.5rem; }
+        .apply-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-accent); margin: 0 0 0.5rem !important; display: flex; align-items: center; gap: 0.4rem; }
+        .apply-hint { font-size: 0.8125rem; color: var(--color-text-muted); margin: 0 !important; line-height: 1.5; }
+
+        /* Field-experience callouts */
+        .field-callout { padding: 1.5rem 1.75rem; background: linear-gradient(160deg, var(--color-bg-featured) 0%, var(--color-bg-card) 100%); border: 1px solid var(--color-accent-mid); border-radius: 12px; margin: 1.5rem 0; }
+        .field-callout-tag { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-accent); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.4rem; }
+        .field-callout h3 { font-size: 1.1rem; font-weight: 600; color: var(--color-text); margin-bottom: 0.5rem; margin-top: 0; }
+        .field-callout p { font-size: 0.925rem; color: var(--color-text-muted); line-height: 1.6; margin-bottom: 0.75rem; }
+        .field-callout p:last-child { margin-bottom: 0; }
+
+        /* Quirks list (numbered cards stacked) */
+        .quirks-grid { display: grid; grid-template-columns: 1fr; gap: 1px; background: var(--color-border); border: 1px solid var(--color-border); border-radius: var(--radius); overflow: hidden; }
+        .quirk { padding: 1.5rem 1.75rem; background: var(--color-bg-card); display: grid; grid-template-columns: 80px 1fr; gap: 1.25rem; align-items: start; }
+        .quirk-num { font-family: var(--font-mono); font-size: 0.75rem; font-weight: 700; letter-spacing: 0.12em; color: var(--color-accent); padding-top: 0.2rem; }
+        .quirk-body h4 { font-size: 1.05rem; font-weight: 600; color: var(--color-text); margin-bottom: 0.4rem; letter-spacing: -0.005em; }
+        .quirk-body p { font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.55; margin-bottom: 0.6rem; }
+        .quirk-body p:last-child { margin-bottom: 0; }
+        .quirk-fix { display: flex; align-items: flex-start; gap: 0.5rem; padding: 0.625rem 0.875rem; background: var(--color-accent-softer); border-left: 2px solid var(--color-accent); border-radius: 0 6px 6px 0; margin-top: 0.75rem; font-size: 0.85rem; }
+        .quirk-fix i { color: var(--color-accent); margin-top: 0.15rem; flex-shrink: 0; }
+        .quirk-fix code { font-size: 0.8125rem; }
+
+        /* Day-2 ops cards */
+        .ops-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1px; background: var(--color-border); border: 1px solid var(--color-border); border-radius: var(--radius); overflow: hidden; margin-top: 1.5rem; }
+        .ops-card { padding: 1.5rem 1.75rem; background: var(--color-bg-card); }
+        .ops-card-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; color: var(--color-accent); text-transform: uppercase; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.4rem; }
+        .ops-card h4 { font-size: 1rem; font-weight: 600; color: var(--color-text); margin-bottom: 0.4rem; }
+        .ops-card p { font-size: 0.875rem; color: var(--color-text-muted); line-height: 1.55; margin-bottom: 0.75rem; }
+
+        /* Callouts */
+        .callout { display: flex; gap: 1rem; padding: 1.125rem 1.25rem; border-radius: 10px; margin: 1.5rem 0; font-size: 0.925rem; line-height: 1.55; align-items: flex-start; }
+        .callout i { font-size: 1.1rem; margin-top: 0.15rem; flex-shrink: 0; }
+        .callout-tip { background: var(--color-accent-softer); border: 1px solid var(--color-accent-mid); }
+        .callout-tip i { color: var(--color-accent); }
+        .callout-warn { background: var(--color-bg-bad); border: 1px solid rgba(179, 84, 84, 0.4); }
+        .callout-warn i { color: var(--color-danger); }
+        .callout p { margin: 0; }
+        .callout strong { color: var(--color-text); }
+
+        /* Coming next planned items */
+        .planned-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.875rem; margin-top: 1.5rem; }
+        .planned-item { padding: 1rem 1.25rem; background: var(--color-bg-card); border: 1px dashed var(--color-border); border-radius: 8px; font-size: 0.9rem; color: var(--color-text-muted); display: flex; align-items: center; gap: 0.75rem; }
+        .planned-item i { color: var(--color-text-dim); }
+        .planned-item strong { color: var(--color-text); }
+
+        /* Source attribution */
+        .source-credit { text-align: center; margin-top: 2rem; font-size: 0.8125rem; color: var(--color-text-dim); font-style: italic; }
+        .source-credit a { color: var(--color-text-muted); border-bottom: 1px dashed var(--color-text-dim); }
+
+        @media (max-width: 768px) {
+            .install-steps { grid-template-columns: 1fr; }
+            .ops-grid { grid-template-columns: 1fr; }
+            .planned-grid { grid-template-columns: 1fr; }
+        }
+        @media (max-width: 600px) {
+            .quirk { grid-template-columns: 1fr; gap: 0.5rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span class="logo-primary">Saltify</span>
+                <span class="logo-secondary">Pty Ltd</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html#services" class="nav-link">Services</a></li>
+                <li class="nav-dropdown">
+                    <a href="#" class="nav-link nav-dropdown-toggle" aria-haspopup="true" aria-expanded="false" onclick="event.preventDefault();">Learn Salt <span class="nav-caret">▾</span></a>
+                    <ul class="nav-dropdown-menu" aria-label="Learn submenu">
+                        <li><a href="salt-cheat-sheet.html" class="nav-link">Cheat Sheet</a></li>
+                        <li><a href="install-guide.html" class="nav-link">Install Guide</a></li>
+                        <li><a href="getting-started.html" class="nav-link">Getting Started</a></li>
+                        <li><a href="states.html" class="nav-link">Salt States</a></li>
+                        <li><a href="windows.html" class="nav-link" aria-current="page">Salt on Windows</a></li>
+                    </ul>
+                </li>
+                <li><a href="index.html#about" class="nav-link">About</a></li>
+                <li><a href="index.html#contact" class="nav-link nav-cta">Let's talk →</a></li>
+            </ul>
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" aria-pressed="false">
+                    <i class="fas fa-sun" id="themeIcon" aria-hidden="true"></i>
+                </button>
+                <button class="hamburger" aria-label="Toggle menu" aria-expanded="false">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="guide-hero">
+        <div class="container">
+            <p class="crumb"><i class="fab fa-windows"></i> Salt on Windows</p>
+            <h1>Salt for Windows. Written for humans.</h1>
+            <p class="lead">Practical guidance for the people actually managing Windows fleets with Salt. Install the minion, navigate the quirks, manage software fleet-wide with winrepo. <strong>One page. Distilled from production.</strong></p>
+
+            <div class="tldr">
+                <h2>Jump to</h2>
+                <div class="quick-nav">
+                    <a href="#install"><span class="num">01</span> Install the minion</a>
+                    <a href="#quirks"><span class="num">02</span> Windows quirks</a>
+                    <a href="#winrepo"><span class="num">03</span> winrepo (package mgmt)</a>
+                    <a href="#whats-next"><span class="num">→</span> Coming next</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why this exists -->
+    <section class="guide-section">
+        <div class="container">
+            <div class="callout callout-tip" style="max-width: 760px; margin: 0 auto;">
+                <i class="fas fa-circle-info"></i>
+                <p><strong>Why this page exists.</strong> Salt's official Windows docs are mostly auto-generated module references and one giant winrepo doc. Getting started, the gotchas, real production patterns — those gaps are what we're filling here. Each section links to the official docs for the full reference, but the practical guidance lives on this page.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- §1 Install the minion -->
+    <section id="install" class="guide-section section-alt">
+        <div class="container">
+            <p class="section-tag">01 · Tutorial · ~10 min</p>
+            <h2>Install the Salt minion on Windows.</h2>
+            <p class="section-intro">Get the minion onto a Windows box, point it at your master, accept its key. Day-one task. Open <strong>PowerShell as Administrator</strong> on the Windows box. The whole thing takes about five minutes.</p>
+
+            <div class="quickstart-grid divider-grid install-steps">
+
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">01</span>
+                    <h4>Download the MSI</h4>
+                    <p>Get the Windows Salt minion installer. Pick the version that matches your masters (RaaS 8.18 supports Salt 3006.x and 3007.x).</p>
+                    <pre><code><span class="code-comment"># official release portal — pick AMD64 or x86</span>
+https://repo.saltproject.io/salt/py3/windows/
+
+<span class="code-comment"># or via PowerShell to a known path</span>
+$url = "https://repo.saltproject.io/salt/py3/windows/" +
+       "Salt-Minion-3007.1-Py3-AMD64-Setup.exe"
+Invoke-WebRequest -Uri $url `
+  -OutFile C:\Windows\Temp\salt-minion.exe</code></pre>
+                    <p style="font-size: 0.85rem;">Air-gapped? Get the MSI from your offline bundle, copy via SMB / SCP / USB, skip the URL.</p>
+                </article>
+
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">02</span>
+                    <h4>Install silently</h4>
+                    <p>The installer takes <code>/master=</code> and <code>/minion-name=</code> as command-line args. Bake them in at install time — no config file editing afterwards.</p>
+                    <pre><code><span class="code-comment"># silent install with master + minion ID set</span>
+C:\Windows\Temp\salt-minion.exe /S `
+  /master=salt-master.example.com `
+  /minion-name=&lt;your minion id&gt;</code></pre>
+                    <p style="font-size: 0.85rem;"><code>/S</code> = silent. Drop it for an interactive install. Multiple masters: <code>/master=master1,master2</code>.</p>
+                </article>
+
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">03</span>
+                    <h4>Start the service</h4>
+                    <p>The MSI registers <code>salt-minion</code> as a Windows service. First start may need a manual nudge.</p>
+                    <pre><code>Start-Service salt-minion
+Get-Service salt-minion        <span class="code-comment"># should be Running</span>
+Set-Service salt-minion `
+  -StartupType Automatic        <span class="code-comment"># persists across reboots</span></code></pre>
+                </article>
+
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">04</span>
+                    <h4>Verify on the master</h4>
+                    <p>Switch to your Salt master. The new minion's key should appear in the pending list. Accept it.</p>
+                    <pre><code><span class="code-comment"># on the master</span>
+sudo salt-key -L           <span class="code-comment"># list pending</span>
+sudo salt-key -a &lt;your minion id&gt;</code></pre>
+                    <div class="apply-box">
+                        <p class="apply-label"><i class="fas fa-play"></i> Smoke test</p>
+                        <pre><code>sudo salt '&lt;your minion id&gt;' test.ping</code></pre>
+                        <p class="apply-hint">→ Returns <code>True</code>. If not, see troubleshooting below.</p>
+                    </div>
+                </article>
+
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">05</span>
+                    <h4>First useful command</h4>
+                    <p>Confirm everything works end-to-end with a real query.</p>
+                    <pre><code><span class="code-comment"># grain inspection — what does Salt know about this box?</span>
+sudo salt '&lt;your minion id&gt;' grains.items
+
+<span class="code-comment"># installed software (uses winrepo if configured)</span>
+sudo salt '&lt;your minion id&gt;' pkg.list_pkgs</code></pre>
+                </article>
+            </div>
+
+            <h3 style="margin-top: 2.5rem;">Field-tested patterns</h3>
+
+            <div class="field-callout">
+                <p class="field-callout-tag"><i class="fas fa-bolt"></i> From production</p>
+                <h3>Bake the minion into your golden image</h3>
+                <p>Don't install on every new VM. Install once into your Windows template. New VMs come up with the minion already there — first boot picks up the master config from a sysprep specialize step or unattend file.</p>
+                <p><strong>Trick:</strong> ship the template with <code>master: salt-master.example.com</code> as a CNAME. Cuts over with DNS, no reinstall, no re-key. The blue/green pattern from the <a href="install-guide.html" style="color: var(--color-accent);">install guide</a> works the same way for minions as it does for masters.</p>
+            </div>
+
+            <div class="field-callout">
+                <p class="field-callout-tag"><i class="fas fa-bolt"></i> From production</p>
+                <h3>salt-cloud (saltify driver) for fleet rollouts</h3>
+                <p>If the boxes already exist and you can SMB to them, push the MSI from the master via <code>salt-cloud</code> with the <code>saltify</code> driver. No need to log into each Windows host.</p>
+                <pre><code><span class="code-comment"># /etc/salt/cloud.profiles.d/win.conf</span>
+win-server-2022:
+  driver: saltify
+  ssh_host: win01.example.com
+  win_username: Administrator
+  win_password: &lt;encrypt-with-pillar-gpg&gt;
+  master: salt-master.example.com
+  win_installer: /etc/salt/cloud.deploy.d/Salt-Minion-3007.1-AMD64-Setup.exe</code></pre>
+            </div>
+
+            <div class="field-callout">
+                <p class="field-callout-tag"><i class="fas fa-bolt"></i> From production</p>
+                <h3>Pick a sensible minion ID convention</h3>
+                <p>Default is the hostname. That's fine for one-off boxes. For fleets, use something role-aware: <code>app-web01</code>, <code>db-prod-01</code>. Lets you target with globs (<code>salt 'app-*'</code>) and grains (<code>os_family:Windows</code>) cleanly. Don't change minion IDs after the fact — Salt treats it as a new minion and you lose history.</p>
+            </div>
+
+            <h3 style="margin-top: 2.5rem;">If <code>test.ping</code> doesn't return</h3>
+
+            <div class="callout callout-warn">
+                <i class="fas fa-shield-halved"></i>
+                <p><strong>Firewall.</strong> The minion needs to reach the master on TCP 4505 and 4506. Check Windows Firewall on the minion AND any network firewall between minion and master. <code>Test-NetConnection -ComputerName salt-master.example.com -Port 4505</code> tells you if you can reach.</p>
+            </div>
+            <div class="callout callout-tip">
+                <i class="fas fa-key"></i>
+                <p><strong>Key not accepted.</strong> <code>sudo salt-key -L</code> on the master — is the minion still in <em>Unaccepted Keys</em>? Accept it. If it's <em>Rejected</em>, delete and re-register.</p>
+            </div>
+            <div class="callout callout-tip">
+                <i class="fas fa-magnifying-glass"></i>
+                <p><strong>Wrong master in config.</strong> On the Windows box, check <code>C:\ProgramData\Salt Project\Salt\conf\minion</code>. The <code>master:</code> line should match your master FQDN. Edit, then <code>Restart-Service salt-minion</code>.</p>
+            </div>
+            <div class="callout callout-tip">
+                <i class="fas fa-clock"></i>
+                <p><strong>Time skew.</strong> Salt requires the minion clock to be within a few minutes of the master. If the Windows box is on stale time, <code>w32tm /resync</code> usually fixes it.</p>
+            </div>
+            <div class="callout callout-tip">
+                <i class="fas fa-bug"></i>
+                <p><strong>Still nothing?</strong> Stop the service, run the minion in foreground debug: <code>salt-minion -l debug</code>. The output tells you exactly what's failing — DNS, TCP, key auth, all of it.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- §2 Windows quirks -->
+    <section id="quirks" class="guide-section">
+        <div class="container">
+            <p class="section-tag">02 · Reference · ~5 min</p>
+            <h2>Windows quirks.</h2>
+            <p class="section-intro">Salt was written for Unix first. Windows came later. <strong>These are the corners where that history shows.</strong> Read this once, save yourself a debugging session.</p>
+
+            <div class="callout callout-tip">
+                <i class="fas fa-circle-info"></i>
+                <p><strong>The mental model.</strong> When Salt has to choose between Unix idioms and Windows reality, it usually picks Unix and ignores the rest. Most "weird Windows behavior" is Salt doing nothing where you expected it to do something.</p>
+            </div>
+
+            <div class="quirks-grid">
+
+                <div class="quirk">
+                    <p class="quirk-num">QUIRK 01</p>
+                    <div class="quirk-body">
+                        <h4><code>group</code> on file states does nothing</h4>
+                        <p>Windows files <em>do</em> have a "primary group" property, but it's basically vestigial — leftover from Services for Unix / NFS compatibility. Salt knows this and silently ignores the <code>group</code> parameter on file states. No error, no warning that matters, just nothing.</p>
+                        <p>If you actually want to set the primary group (you probably don't), use <code>file.get_pgid</code>, <code>file.get_pgroup</code>, or the <code>pgroup</code> arg on <code>file.chown</code>.</p>
+                        <div class="quirk-fix"><i class="fas fa-wrench"></i> <span>Skip <code>group:</code> in your file states on Windows. Use ACLs via <code>win_dacl</code> if you need real permissions.</span></div>
+                    </div>
+                </div>
+
+                <div class="quirk">
+                    <p class="quirk-num">QUIRK 02</p>
+                    <div class="quirk-body">
+                        <h4>Casing — Windows preserves it, Salt expects it</h4>
+                        <p>Windows is case-insensitive but case-preserving — <code>Administrator</code> and <code>administrator</code> work for login, but the system always returns the case it was created with. Salt assumes case-sensitive everywhere, so a state with <code>user: administrator</code> can fail in bizarre ways when the actual account is <code>Administrator</code>.</p>
+                        <div class="quirk-fix"><i class="fas fa-wrench"></i> <span>Pretend Windows is case-sensitive. Match the case of the real account name. Always.</span></div>
+                    </div>
+                </div>
+
+                <div class="quirk">
+                    <p class="quirk-num">QUIRK 03</p>
+                    <div class="quirk-body">
+                        <h4>Username forms — only the raw value works</h4>
+                        <p>A Windows user can be referred to three ways: <code>alice</code>, <code>DOMAIN\alice</code>, <code>alice@domain.tld</code>. They all log into the same account. Salt only understands the raw username — no domain, no host.</p>
+                        <p>Pass <code>DOMAIN\alice</code> to most module functions and Salt will probably do the wrong thing or throw a confusing error. UPN form (<code>alice@domain.tld</code>) is even worse.</p>
+                        <div class="quirk-fix"><i class="fas fa-wrench"></i> <span>Always use the raw username (<code>alice</code>) in correct case. Domain-qualify <em>only</em> in <code>group.present.addusers</code> with double-backslash: <code>DOMAIN\\alice</code>.</span></div>
+                    </div>
+                </div>
+
+                <div class="quirk">
+                    <p class="quirk-num">QUIRK 04</p>
+                    <div class="quirk-body">
+                        <h4>The <code>None</code> group needs quotes</h4>
+                        <p>Every Windows system has a built-in group literally named <code>None</code> — the default primary group for non-domain accounts. Python uses <code>None</code> as its null value. When Salt sees <code>None</code> in your state, it interprets it as "no group" instead of "the group named None."</p>
+                        <div class="quirk-fix"><i class="fas fa-wrench"></i> <span>Wrap it in nested quotes:&nbsp;<code>salt '*' file.chpgrp C:\path\to\file "'None'"</code></span></div>
+                    </div>
+                </div>
+
+                <div class="quirk">
+                    <p class="quirk-num">QUIRK 05</p>
+                    <div class="quirk-body">
+                        <h4>Symlink loops are fatal on Windows</h4>
+                        <p>If Salt detects a symlink loop or more than 64 levels of symlinks while traversing a path, it raises an error — always. On Unix some functions tolerate this. On Windows they don't.</p>
+                        <p>Rare in practice unless you've got something exotic like nested junction points or DFS namespaces. If your state suddenly fails with a symlink error, check the path for loops.</p>
+                        <div class="quirk-fix"><i class="fas fa-wrench"></i> <span>Don't create symlink loops. To debug: <code>(Get-Item path).LinkType</code> and <code>fsutil reparsepoint query</code>.</span></div>
+                    </div>
+                </div>
+
+                <div class="quirk">
+                    <p class="quirk-num">QUIRK 06</p>
+                    <div class="quirk-body">
+                        <h4>Path separators — backslash vs forward-slash</h4>
+                        <p>Not in the official quirks list but bites everyone. YAML treats backslash as an escape character in <em>double-quoted</em> strings. <code>"C:\path\to\file"</code> has bugs you can't see. Salt itself accepts forward slashes on Windows everywhere — they get converted under the hood.</p>
+                        <div class="quirk-fix"><i class="fas fa-wrench"></i> <span>Three options that work: bare path <code>C:\path\to\file</code>, single-quoted <code>'C:\path\to\file'</code>, or forward slashes <code>C:/path/to/file</code>. Don't double-quote unless you double-escape.</span></div>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="callout callout-tip" style="margin-top: 2rem;">
+                <i class="fas fa-lightbulb"></i>
+                <p><strong>The compounding rule.</strong> If a state behaves weirdly on Windows and you're sure the YAML is right, the issue is probably one of these six. Cross-reference before you blame the module.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- §3 winrepo -->
+    <section id="winrepo" class="guide-section section-alt">
+        <div class="container">
+            <p class="section-tag">03 · Deep dive · ~15 min</p>
+            <h2>winrepo — the Windows package manager.</h2>
+            <p class="section-intro">Like <code>apt</code> on Linux. Like <code>yum</code> on RHEL. <strong>Salt for Windows software, fleet-wide.</strong> Install, upgrade, remove with one command — no logging into individual boxes.</p>
+
+            <h3 style="margin-top: 1rem;">The mental model</h3>
+            <p style="color: var(--color-text-muted); line-height: 1.6;">winrepo isn't magic. It's a Git repo of YAML files. Each file describes how to install a piece of Windows software silently. Salt reads the files, builds a database, and uses that database when you say <code>pkg.install firefox</code>.</p>
+
+            <div class="callout callout-tip">
+                <i class="fas fa-circle-info"></i>
+                <p><strong>Three pieces:</strong> a <strong>Git repo</strong> of package definitions (the community one is <a href="https://github.com/saltstack/salt-winrepo-ng" target="_blank" rel="noopener">salt-winrepo-ng</a>), a <strong>local cache</strong> on each minion (built from the repo), and the <strong>installer URLs</strong> the package definitions point at (vendor download URLs, your own SMB share, or anywhere reachable from the minion).</p>
+            </div>
+
+            <div class="callout callout-warn">
+                <i class="fas fa-triangle-exclamation"></i>
+                <p><strong>No dependency resolution.</strong> Unlike <code>apt</code>, winrepo won't auto-install dependencies. If <em>X requires Y</em>, you install Y first. Manage the order yourself with <code>require:</code> in your states.</p>
+            </div>
+
+            <h3 style="margin-top: 2rem;">Quickstart — four steps</h3>
+            <p style="color: var(--color-text-muted); line-height: 1.6;">Run all four on the master. Steps 03 and 04 also work in masterless mode — swap <code>salt</code> for <code>salt-call --local</code> on the minion.</p>
+
+            <div class="quickstart-grid divider-grid install-steps" style="margin-top: 1rem;">
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">01</span>
+                    <h4>Install the Git library (optional)</h4>
+                    <p>If your master doesn't have it: <code>GitPython</code> or <code>pygit2</code>. Salt uses one of these to clone winrepo on the master.</p>
+                    <pre><code>sudo salt-pip install GitPython
+<span class="code-comment"># OR</span>
+sudo salt-pip install pygit2</code></pre>
+                </article>
+
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">02</span>
+                    <h4>Clone winrepo to the master</h4>
+                    <p>Pulls salt-winrepo-ng into <code>/srv/salt/win/repo-ng/</code> by default.</p>
+                    <pre><code>sudo salt-run winrepo.update_git_repos</code></pre>
+                    <p style="font-size: 0.85rem;">After this, you have hundreds of package definitions ready to use.</p>
+                </article>
+
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">03</span>
+                    <h4>Build package database on minions</h4>
+                    <p>Each Windows minion parses the YAML and builds a local database. Slow first time, fast after.</p>
+                    <pre><code>sudo salt -G 'os:windows' pkg.refresh_db</code></pre>
+                    <p style="font-size: 0.85rem;">Output: <code>success: 301, failed: 0</code> or similar. If anything fails, you've got malformed YAML.</p>
+                </article>
+
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">04</span>
+                    <h4>Install something</h4>
+                    <p>Latest version of Firefox on every Windows minion, in one command:</p>
+                    <pre><code>sudo salt -G 'os:windows' pkg.install firefox_x64</code></pre>
+                    <p style="font-size: 0.85rem;">Pin a version: <code>pkg.install firefox_x64 version=74.0</code>.</p>
+                </article>
+            </div>
+
+            <h3 style="margin-top: 2rem;">Day-2 operations</h3>
+            <p style="color: var(--color-text-muted); line-height: 1.6;">Once winrepo is set up, these are the four commands you'll actually run.</p>
+
+            <div class="ops-grid">
+                <div class="ops-card">
+                    <p class="ops-card-label"><i class="fas fa-magnifying-glass"></i> List installed</p>
+                    <h4>What's on the box?</h4>
+                    <p>Returns short names for software Salt manages, full names for everything else.</p>
+                    <pre><code>salt 'win01' pkg.list_pkgs</code></pre>
+                </div>
+                <div class="ops-card">
+                    <p class="ops-card-label"><i class="fas fa-list"></i> List versions</p>
+                    <h4>What can I install?</h4>
+                    <p>All versions of a package available in winrepo.</p>
+                    <pre><code>salt 'win01' pkg.list_available firefox_x64</code></pre>
+                </div>
+                <div class="ops-card">
+                    <p class="ops-card-label"><i class="fas fa-down-long"></i> Install</p>
+                    <h4>Install or upgrade</h4>
+                    <p>Latest version, or pin to a specific one with <code>version=</code>.</p>
+                    <pre><code>salt 'win01' pkg.install firefox_x64
+salt 'win01' pkg.install firefox_x64 version=74.0</code></pre>
+                </div>
+                <div class="ops-card">
+                    <p class="ops-card-label"><i class="fas fa-xmark"></i> Remove</p>
+                    <h4>Uninstall</h4>
+                    <p>Runs the uninstaller defined in the package definition.</p>
+                    <pre><code>salt 'win01' pkg.remove firefox_x64</code></pre>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 2rem;">Write your own package definition</h3>
+            <p style="color: var(--color-text-muted); line-height: 1.6;">The community winrepo covers hundreds of packages. For internal software (or anything missing), you write the YAML yourself. <strong>Three things you need:</strong> the full name as Add/Remove Programs shows it, the exact version, and the silent-install command-line switches.</p>
+
+            <p style="margin-top: 1rem; color: var(--color-text-muted);">Here's the canonical Firefox example, annotated:</p>
+            <pre><code><span class="code-comment"># /srv/salt/win/repo-ng/firefox.sls</span>
+firefox_x64:                   <span class="code-comment"># short name — used in pkg.install</span>
+  '74.0':                      <span class="code-comment"># version (always quoted — preserves trailing zeros)</span>
+    full_name: Mozilla Firefox 74.0 (x64 en-US)
+    installer: 'https://download-installer.cdn.mozilla.net/pub/firefox/releases/74.0/win64/en-US/Firefox%20Setup%2074.0.exe'
+    install_flags: '/S'        <span class="code-comment"># silent install switch</span>
+    uninstaller: '%ProgramFiles(x86)%/Mozilla Firefox/uninstall/helper.exe'
+    uninstall_flags: '/S'
+
+  '73.0.1':                    <span class="code-comment"># multiple versions in one file</span>
+    full_name: Mozilla Firefox 73.0.1 (x64 en-US)
+    installer: 'https://download-installer.cdn.mozilla.net/pub/firefox/releases/73.0.1/win64/en-US/Firefox%20Setup%2073.0.1.exe'
+    install_flags: '/S'
+    uninstaller: '%ProgramFiles(x86)%/Mozilla Firefox/uninstall/helper.exe'
+    uninstall_flags: '/S'</code></pre>
+
+            <h4 style="margin-top: 1.5rem; font-size: 1rem;">Three rules</h4>
+            <ul style="line-height: 1.8; padding-left: 1.25rem; color: var(--color-text-muted); font-size: 0.925rem;">
+                <li><strong>Short name must be unique</strong> across your whole winrepo. <code>firefox_x64</code> is what you'll type in <code>pkg.install</code>.</li>
+                <li><strong>Versions must be in quotes.</strong> Without quotes, YAML strips trailing zeros — <code>74.0</code> becomes <code>74</code> and your install breaks.</li>
+                <li><strong><code>full_name</code> must match Add/Remove Programs exactly.</strong> That's how Salt detects whether the package is already installed.</li>
+            </ul>
+
+            <h4 style="margin-top: 1.5rem; font-size: 1rem;">Common parameters</h4>
+            <ul style="line-height: 1.8; padding-left: 1.25rem; color: var(--color-text-muted); font-size: 0.925rem;">
+                <li><code>installer</code> — URL or <code>salt://</code> path to the installer binary</li>
+                <li><code>install_flags</code> — silent install switches (<code>/S</code>, <code>/quiet /norestart</code>, <code>/qn</code>, etc.)</li>
+                <li><code>uninstaller</code> + <code>uninstall_flags</code> — same idea for removal</li>
+                <li><code>msiexec: True</code> — set when installing an MSI (Salt wraps with <code>msiexec /i</code>)</li>
+                <li><code>cache_file</code> — cache the installer on the minion (use when installer is on <code>salt://</code>)</li>
+                <li><code>source_hash</code> — SHA-256 of the installer; verifies download integrity</li>
+            </ul>
+
+            <p style="margin-top: 1rem; font-size: 0.875rem; color: var(--color-text-muted);">After writing your <code>.sls</code> file, run <code>pkg.refresh_db</code> again to pick it up.</p>
+
+            <h3 style="margin-top: 2.5rem;">Field-tested patterns</h3>
+
+            <div class="field-callout">
+                <p class="field-callout-tag"><i class="fas fa-bolt"></i> From production</p>
+                <h3>Host the installers yourself</h3>
+                <p>Pointing <code>installer</code> at vendor URLs (download.mozilla.org, etc.) works for testing. In production it's fragile — vendors move URLs, change naming conventions, and rate-limit. <strong>Mirror installers to your own SMB share or <code>salt://</code> file root.</strong> Cuts download time, removes a third-party dependency, gives you version control.</p>
+                <pre><code>installer: 'salt://win/installers/firefox/Firefox Setup 74.0.exe'
+cache_file: 'salt://win/installers/firefox/Firefox Setup 74.0.exe'
+source_hash: 'sha256=&lt;your hash&gt;'</code></pre>
+            </div>
+
+            <div class="field-callout">
+                <p class="field-callout-tag"><i class="fas fa-bolt"></i> From production</p>
+                <h3>Multi-master rsync for installers</h3>
+                <p>If you run multiple Salt masters (the <a href="install-guide.html" style="color: var(--color-accent);">3-server stack</a>), don't store installers in Git — they bloat the repo. Store them on master 1's filesystem and rsync to the others nightly. Salt's file_roots will serve them via <code>salt://</code> the same way regardless.</p>
+            </div>
+
+            <div class="field-callout">
+                <p class="field-callout-tag"><i class="fas fa-bolt"></i> From production</p>
+                <h3>Version pinning isn't optional</h3>
+                <p>"Latest" sounds great until a vendor pushes a breaking release on a Tuesday morning. <strong>Always pin versions in production.</strong> Pin via state files (<code>pkg.installed: name: firefox_x64, version: 74.0</code>). Bump in pillar when you've tested. Roll back by changing pillar.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- §4 Coming next -->
+    <section id="whats-next" class="guide-section">
+        <div class="container">
+            <h2>Coming next.</h2>
+            <p class="section-intro">Patterns from Saltify's production deployments that don't exist anywhere in the official docs. Each becomes its own section on this page when ready.</p>
+
+            <div class="planned-grid">
+                <div class="planned-item">
+                    <i class="fas fa-id-badge"></i>
+                    <span><strong>Active Directory join</strong> — domain-join with grain detection, idempotent retries, post-join state targeting</span>
+                </div>
+                <div class="planned-item">
+                    <i class="fas fa-server"></i>
+                    <span><strong>IIS deployment</strong> — Web-Server role, app pools, sites, certificates via <code>win_servermanager</code> + <code>win_iis</code></span>
+                </div>
+                <div class="planned-item">
+                    <i class="fas fa-gears"></i>
+                    <span><strong>Service management</strong> — installing, starting, watching, recovery options, dependency chains</span>
+                </div>
+                <div class="planned-item">
+                    <i class="fas fa-clock"></i>
+                    <span><strong>Scheduled tasks</strong> — Windows Task Scheduler from Salt, with examples that actually run</span>
+                </div>
+                <div class="planned-item">
+                    <i class="fas fa-terminal"></i>
+                    <span><strong>PowerShell deep dive</strong> — <code>cmd.run</code>, <code>cmd.script</code>, idempotent <code>unless:</code> patterns, returning data via Salt</span>
+                </div>
+                <div class="planned-item">
+                    <i class="fas fa-shield-halved"></i>
+                    <span><strong>Hardening &amp; compliance</strong> — registry tweaks, security baselines, drift detection</span>
+                </div>
+            </div>
+
+            <p class="source-credit" style="margin-top: 2.5rem;">Built from <a href="https://github.com/saltstack/salt/tree/master/doc/topics/windows" target="_blank" rel="noopener">salt/doc/topics/windows/</a> (Apache 2.0) + Saltify field experience.</p>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="contact">
+        <div class="container">
+            <div class="contact-content fade-in">
+                <h2>Want a specific topic faster?</h2>
+                <p class="contact-sub">Tell us which Windows + Salt scenario you're stuck on. We'll move it up the queue, or write something custom.</p>
+                <a href="mailto:sales@saltify.work" class="contact-email">sales@saltify.work</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-inner">
+                <p class="footer-logo">
+                    <span class="logo-primary">Saltify</span>
+                    <span class="logo-secondary">Pty Ltd</span>
+                </p>
+                <p class="footer-tagline">Enterprise Salt for teams that can't afford fragile infrastructure. Based in Australia.</p>
+                <p class="footer-copy">© 2026 Saltify Pty Ltd</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/script.js?v=4"></script>
+</body>
+</html>
