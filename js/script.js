@@ -14,6 +14,8 @@ document.addEventListener('DOMContentLoaded', () => {
 function initInstallToast() {
     initToast('installToast', 'installToastClose', 'saltifyInstallToastDismissed');
     initToast('gettingStartedToast', 'gettingStartedToastClose', 'saltifyGettingStartedToastDismissed');
+    initToast('statesToast', 'statesToastClose', 'saltifyStatesToastDismissed');
+    initToast('windowsToast', 'windowsToastClose', 'saltifyWindowsToastDismissed');
 }
 
 function initToast(toastId, closeBtnId, dismissedKey) {
