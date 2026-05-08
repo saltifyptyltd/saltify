@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-    <link rel="stylesheet" href="css/style.css?v=13">
+    <link rel="stylesheet" href="css/style.css?v=14">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -338,7 +338,7 @@
     <section class="guide-section section-alt">
         <div class="container">
             <h2>2. Blue/green — the whole point</h2>
-            <p class="section-intro">This is the architecture's whole reason for existing. <strong>Blue/green isn't between the two masters in one stack. It's between two whole stacks.</strong> The 3-server stack from §1 is the unit you swap.</p>
+            <p class="section-intro">This is the architecture's whole reason for existing. <strong>Blue/green isn't between the two masters in one stack. It's between two whole stacks.</strong> The 3-server stack from section 1 is the unit you swap.</p>
 
             <div class="diagram-wrap">
                 <svg viewBox="0 -50 760 370" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="bg-title bg-desc">
@@ -431,7 +431,7 @@
 
             <div class="callout callout-tip" style="margin-top: 1.5rem;">
                 <i class="fas fa-circle-info"></i>
-                <p><strong>What this gives you:</strong> upgrades become "build a fresh stack on the new version, flip DNS." Failed install? Don't troubleshoot — rebuild. The 3-server stack is cheap and reproducible because everything's in Git. <a href="#cutover-steps" style="color: var(--color-accent); font-weight: 600;">→ Jump to the cutover steps in §7</a> when you're ready to actually do one.</p>
+                <p><strong>What this gives you:</strong> upgrades become "build a fresh stack on the new version, flip DNS." Failed install? Don't troubleshoot — rebuild. The 3-server stack is cheap and reproducible because everything's in Git. <a href="#cutover-steps" style="color: var(--color-accent); font-weight: 600;">→ Jump to the cutover steps in section 7</a> when you're ready to actually do one.</p>
             </div>
         </div>
     </section>
@@ -534,7 +534,7 @@ VMware_Salt_Raas-&lt;ver&gt;-&lt;build&gt;.el9_Installer.tar.gz</code></pre>
     <section class="guide-section section-alt">
         <div class="container">
             <h2>5. The install — eleven steps</h2>
-            <p class="section-intro">Run on the boxes from §3. The first 3 steps are on every server. After that, each step says where to run. <strong>Steps 1–7 install Salt by hand. Step 8 is the pivot — from there, Salt configures itself.</strong></p>
+            <p class="section-intro">Run on the boxes from section 3. The first 3 steps are on every server. After that, each step says where to run. <strong>Steps 1–7 install Salt by hand. Step 8 is the pivot — from there, Salt configures itself.</strong></p>
 
             <div class="quickstart-grid divider-grid install-steps">
                 <article class="quickstart-step fade-in">
@@ -1005,13 +1005,13 @@ db_password: |
     <section class="guide-section section-alt" id="cutover-steps">
         <div class="container">
             <h2>7. Cutover — when you swap</h2>
-            <p class="section-intro">You only need this when you're cutting over to a green stack — for an upgrade, a migration, or a "rebuild instead of troubleshoot." The concept and the diagram are in <a href="#" onclick="document.querySelector('h2').scrollIntoView({behavior:'smooth'}); return false;" style="color: var(--color-accent);">§2 above</a>.</p>
+            <p class="section-intro">You only need this when you're cutting over to a green stack — for an upgrade, a migration, or a "rebuild instead of troubleshoot." The concept and the diagram are in <a href="#" onclick="document.querySelector('h2').scrollIntoView({behavior:'smooth'}); return false;" style="color: var(--color-accent);">section 2 above</a>.</p>
 
             <div class="quickstart-grid divider-grid" style="grid-template-columns: repeat(2, 1fr);">
                 <article class="quickstart-step fade-in">
                     <span class="step-number">01</span>
                     <h4>Build green</h4>
-                    <p>3 fresh VMs. Run §5 on them. Don't connect anything yet.</p>
+                    <p>3 fresh VMs. Run section 5 on them. Don't connect anything yet.</p>
                 </article>
                 <article class="quickstart-step fade-in">
                     <span class="step-number">02</span>
@@ -1118,6 +1118,6 @@ db_password: |
         </div>
     </footer>
 
-    <script src="js/script.js?v=13"></script>
+    <script src="js/script.js?v=14"></script>
 </body>
 </html>
