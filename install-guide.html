@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-    <link rel="stylesheet" href="css/style.css?v=18">
+    <link rel="stylesheet" href="css/style.css?v=19">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -791,24 +791,45 @@ sudo salt prod-master2 state.highstate</code></pre>
                 <article class="quickstart-step fade-in">
                     <span class="step-number">11</span>
                     <h4>Lock it down</h4>
-                    <p>Post-install cleanup. Each master should now point at <em>itself</em>, and the install-time cross-keys can go.</p>
-                    <pre><code><span class="code-comment"># on each master</span>
-echo "master: localhost" | sudo tee \
-  /etc/salt/minion.d/master.conf
-sudo systemctl restart salt-master salt-minion
+                    <p>Post-install cleanup. Strip the install-time autoaccept, point each master's minion at itself, drop the cross-keys. Order matters — do RaaS first, then each master in turn.</p>
 
-<span class="code-comment"># delete the other master's key</span>
-sudo salt-key -d &lt;other-master-id&gt;
-
-<span class="code-comment"># on RaaS: remove install-time autoaccept</span>
+                    <p style="font-size: 0.9rem; margin-top: 1rem;"><strong>11a · Remove autoaccept on RaaS:</strong></p>
+                    <pre><code><span class="code-comment"># SSH into prod-raas, then:</span>
 sudo sed -i '/master_autoaccept: true/d' /etc/raas/raas
 sudo systemctl restart raas</code></pre>
+                    <p style="font-size: 0.85rem;">This was set in 10b so the master plugin could register. With install done, it has to come back out — leaving it on means any new master plugin registers without review.</p>
+
+                    <p style="font-size: 0.9rem; margin-top: 1rem;"><strong>11b · Lock down master 1:</strong></p>
+                    <pre><code><span class="code-comment"># on prod-master1</span>
+echo "master: localhost" | sudo tee \
+  /etc/salt/minion.d/master.conf
+sudo systemctl restart salt-master
+sudo systemctl restart salt-minion
+sudo salt '*' test.ping              <span class="code-comment"># minions still reachable?</span>
+sudo salt-key -d prod-master2        <span class="code-comment"># drop the cross-key</span>
+sudo salt '*' test.ping              <span class="code-comment"># nothing else fell off?</span></code></pre>
+
+                    <p style="font-size: 0.9rem; margin-top: 1rem;"><strong>11c · Lock down master 2:</strong></p>
+                    <pre><code><span class="code-comment"># on prod-master2</span>
+echo "master: localhost" | sudo tee \
+  /etc/salt/minion.d/master.conf
+sudo systemctl restart salt-master
+sudo systemctl restart salt-minion
+sudo salt '*' test.ping
+sudo salt-key -d prod-master1
+sudo salt '*' test.ping</code></pre>
+                    <p style="font-size: 0.85rem;">The two <code>test.ping</code> calls per master are the sanity checks. If the count drops between them, you deleted a key you shouldn't have — restore from snapshot and try again.</p>
                 </article>
+            </div>
+
+            <div class="callout callout-tip" style="margin-top: 1.5rem;">
+                <i class="fas fa-circle-check"></i>
+                <p><strong>✓ Phase 1 complete.</strong> The stack is installed and locked down. Section 6 below is the production hardening pass — license, certs, Git, GPG, master configs, minion bundles.</p>
             </div>
 
             <div class="callout callout-warn">
                 <i class="fas fa-exclamation-triangle"></i>
-                <p><strong>Don't skip step 11.</strong> Leaving <code>master_autoaccept: true</code> in place after install means any new master plugin registers without review — that's a security hole. The line goes in for 10b, comes back out in 11. Always.</p>
+                <p><strong>Don't skip step 11a.</strong> Leaving <code>master_autoaccept: true</code> in place after install means any new master plugin registers without review — that's a security hole. The line goes in for 10b, comes back out in 11a. Always.</p>
             </div>
         </div>
     </section>
@@ -1169,6 +1190,6 @@ sudo systemctl restart salt-master</code></pre>
         </div>
     </footer>
 
-    <script src="js/script.js?v=18"></script>
+    <script src="js/script.js?v=19"></script>
 </body>
 </html>
