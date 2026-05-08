@@ -146,8 +146,7 @@ p code, li code, h4 code {
     left: 0;
     right: 0;
     z-index: 100;
-    height: calc(72px + env(safe-area-inset-top, 0px));
-    padding-top: env(safe-area-inset-top, 0px);
+    height: 72px;
     background: rgba(10, 10, 10, 0.75);
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
@@ -1485,17 +1484,9 @@ pre code {
         display: flex;
     }
 
-    /* Guarantee a mobile-only top inset so the logo never sits under the
-       browser/system UI on phones that report safe-area-inset-top as 0
-       (older Android, in-app browsers, etc). */
-    .navbar {
-        height: calc(72px + max(env(safe-area-inset-top, 0px), 16px));
-        padding-top: max(env(safe-area-inset-top, 0px), 16px);
-    }
-
     .nav-menu {
         position: fixed;
-        top: calc(72px + max(env(safe-area-inset-top, 0px), 16px));
+        top: 72px;
         left: 0;
         right: 0;
         background: rgba(10, 10, 10, 0.98);
