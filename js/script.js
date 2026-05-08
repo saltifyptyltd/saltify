@@ -61,16 +61,32 @@ function initTheme() {
 
 function initNavigation() {
     const navbar = document.querySelector('.navbar');
+    const dropdown = document.querySelector('.nav-dropdown');
     const dropdownToggle = document.querySelector('.nav-dropdown-toggle');
 
-    /* Mobile: dropdown is hidden via CSS, so the parent "Learn Salt" link
-       falls through to the cheat sheet instead of being a no-op tap. */
+    function closeDropdown() {
+        dropdown?.classList.remove('is-open');
+        dropdownToggle?.setAttribute('aria-expanded', 'false');
+    }
+
+    /* Mobile: tap toggles the submenu. Desktop keeps using hover/focus. */
     dropdownToggle?.addEventListener('click', e => {
         if (window.innerWidth <= 768) {
             e.preventDefault();
             e.stopPropagation();
-            window.location.href = 'salt-cheat-sheet.html';
+            const isOpen = dropdown.classList.toggle('is-open');
+            dropdownToggle.setAttribute('aria-expanded', String(isOpen));
         }
+    });
+
+    document.addEventListener('click', e => {
+        if (dropdown?.classList.contains('is-open') && !dropdown.contains(e.target)) {
+            closeDropdown();
+        }
+    });
+
+    document.addEventListener('keydown', e => {
+        if (e.key === 'Escape' && dropdown?.classList.contains('is-open')) closeDropdown();
     });
 
     let pending = false;

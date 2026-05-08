@@ -1521,10 +1521,29 @@ pre code {
         font-size: 0.75rem !important;
     }
 
-    /* Submenu hidden on mobile — JS turns the parent into a direct link. */
-    .nav-dropdown-menu { display: none !important; }
-    .nav-caret { display: none; }
+    /* Touch screens don't have hover — switch the dropdown to tap-to-toggle.
+       JS adds .is-open to the parent on tap. */
     .nav-dropdown { padding: 0; }
+    .nav-dropdown:hover .nav-dropdown-menu,
+    .nav-dropdown:focus-within .nav-dropdown-menu {
+        opacity: 0;
+        visibility: hidden;
+        transform: translateY(-4px);
+    }
+    .nav-dropdown-menu {
+        left: auto;
+        right: 0;
+        transform: translateY(-4px);
+    }
+    .nav-dropdown.is-open .nav-dropdown-menu {
+        opacity: 1;
+        visibility: visible;
+        transform: translateY(0);
+    }
+    .nav-dropdown.is-open .nav-caret {
+        transform: rotate(180deg);
+        color: var(--color-text);
+    }
 }
 
 @media (max-width: 480px) {
