@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-    <link rel="stylesheet" href="css/style.css?v=17">
+    <link rel="stylesheet" href="css/style.css?v=18">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -335,7 +335,7 @@
     </section>
 
     <!-- 2. Blue/green — the whole point -->
-    <section class="guide-section section-alt">
+    <section class="guide-section section-alt" id="blue-green">
         <div class="container">
             <h2>2. Blue/green — the whole point</h2>
             <p class="section-intro">This is the architecture's whole reason for existing. <strong>Blue/green isn't between the two masters in one stack. It's between two whole stacks.</strong> The 3-server stack from section 1 is the unit you swap.</p>
@@ -1056,7 +1056,7 @@ sudo systemctl restart salt-master</code></pre>
     <section class="guide-section section-alt" id="cutover-steps">
         <div class="container">
             <h2>7. Cutover — when you swap</h2>
-            <p class="section-intro">You only need this when you're cutting over to a green stack — for an upgrade, a migration, or a "rebuild instead of troubleshoot." The concept and the diagram are in <a href="#" onclick="document.querySelector('h2').scrollIntoView({behavior:'smooth'}); return false;" style="color: var(--color-accent);">section 2 above</a>.</p>
+            <p class="section-intro">You only need this when you're cutting over to a green stack — for an upgrade, a migration, or a "rebuild instead of troubleshoot." The concept and the diagram are in <a href="#blue-green" style="color: var(--color-accent);">section 2 above</a>.</p>
 
             <div class="quickstart-grid divider-grid" style="grid-template-columns: repeat(2, 1fr);">
                 <article class="quickstart-step fade-in">
@@ -1169,6 +1169,6 @@ sudo systemctl restart salt-master</code></pre>
         </div>
     </footer>
 
-    <script src="js/script.js?v=17"></script>
+    <script src="js/script.js?v=18"></script>
 </body>
 </html>

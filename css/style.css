@@ -1495,7 +1495,6 @@ pre code {
 
     .nav-menu {
         position: static;
-        transform: none !important;
         flex-direction: row;
         align-items: center;
         background: transparent;
@@ -1516,9 +1515,10 @@ pre code {
         padding: 0.4rem 0;
     }
 
-    .nav-cta {
-        padding: 0.4rem 0.7rem !important;
-        font-size: 0.75rem !important;
+    /* Match the .nav-link.nav-cta specificity from the desktop rules */
+    .nav-link.nav-cta {
+        padding: 0.4rem 0.7rem;
+        font-size: 0.75rem;
     }
 
     /* Touch screens don't have hover — switch the dropdown to tap-to-toggle.
@@ -1544,44 +1544,35 @@ pre code {
         transform: rotate(180deg);
         color: var(--color-text);
     }
-}
-
-@media (max-width: 480px) {
-    .nav-menu { gap: 0.75rem; }
-    /* On the smallest screens, hide Services + About to keep the bar tidy.
-       Both anchor in-page sections, so scrolling still reaches them. */
-    .nav-menu > li:nth-child(1),
-    .nav-menu > li:nth-child(3) { display: none; }
-}
 
     .hero {
         padding: 110px 0 60px;
         min-height: auto;
     }
 
-    .what-is-salt { padding: 60px 0; }
-    .services { padding: 60px 0; }
-    .uplift { padding: 60px 0; }
-    .approach { padding: 60px 0; }
-    .salt101 { padding: 60px 0; }
-    .salt-wild { padding: 60px 0; }
-    .philosophy { padding: 80px 0; }
-    .process { padding: 60px 0; }
+    .what-is-salt,
+    .services,
+    .uplift,
+    .approach,
+    .salt101,
+    .salt-wild,
+    .process,
     .contact { padding: 60px 0; }
+    .philosophy { padding: 80px 0; }
 
     .section-header { margin-bottom: 2.5rem; }
     .subsection-title { margin-top: 3rem; }
 }
 
 @media (max-width: 480px) {
-    .container,
-    .nav-container {
-        padding: 0 1.25rem;
-    }
+    /* Smallest screens: hide Services + About to keep the inline bar tidy.
+       Both anchor in-page sections, so scrolling still reaches them. */
+    .nav-menu { gap: 0.75rem; }
+    .nav-menu > li:nth-child(1),
+    .nav-menu > li:nth-child(3) { display: none; }
 
-    .nav-menu {
-        padding: 0 1.25rem 1.5rem;
-    }
+    .container,
+    .nav-container { padding: 0 1.25rem; }
 
     .featured-header {
         flex-direction: column;
@@ -1589,9 +1580,7 @@ pre code {
     }
 
     .quickstart-step,
-    .cmd-card {
-        padding: 1.5rem 1.25rem;
-    }
+    .cmd-card { padding: 1.5rem 1.25rem; }
 
     pre {
         font-size: 0.75rem;

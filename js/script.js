@@ -64,20 +64,37 @@ function initNavigation() {
     const dropdown = document.querySelector('.nav-dropdown');
     const dropdownToggle = document.querySelector('.nav-dropdown-toggle');
 
-    function closeDropdown() {
-        dropdown?.classList.remove('is-open');
-        dropdownToggle?.setAttribute('aria-expanded', 'false');
+    function setExpanded(isOpen) {
+        dropdownToggle?.setAttribute('aria-expanded', String(isOpen));
     }
 
-    /* Mobile: tap toggles the submenu. Desktop keeps using hover/focus. */
+    function closeDropdown() {
+        dropdown?.classList.remove('is-open');
+        setExpanded(false);
+    }
+
+    /* Mobile: tap toggles the submenu. Desktop opens via :hover / :focus-within
+       in CSS — JS just keeps aria-expanded honest for screen readers. */
     dropdownToggle?.addEventListener('click', e => {
         if (window.innerWidth <= 768) {
             e.preventDefault();
             e.stopPropagation();
-            const isOpen = dropdown.classList.toggle('is-open');
-            dropdownToggle.setAttribute('aria-expanded', String(isOpen));
+            setExpanded(dropdown.classList.toggle('is-open'));
         }
     });
+
+    if (dropdown) {
+        dropdown.addEventListener('pointerenter', () => {
+            if (window.innerWidth > 768) setExpanded(true);
+        });
+        dropdown.addEventListener('pointerleave', () => {
+            if (window.innerWidth > 768) setExpanded(false);
+        });
+        dropdown.addEventListener('focusin', () => setExpanded(true));
+        dropdown.addEventListener('focusout', e => {
+            if (!dropdown.contains(e.relatedTarget)) setExpanded(false);
+        });
+    }
 
     document.addEventListener('click', e => {
         if (dropdown?.classList.contains('is-open') && !dropdown.contains(e.target)) {
@@ -89,15 +106,17 @@ function initNavigation() {
         if (e.key === 'Escape' && dropdown?.classList.contains('is-open')) closeDropdown();
     });
 
-    let pending = false;
-    window.addEventListener('scroll', () => {
-        if (pending) return;
-        pending = true;
-        requestAnimationFrame(() => {
-            navbar.classList.toggle('scrolled', window.scrollY > 50);
-            pending = false;
-        });
-    }, { passive: true });
+    if (navbar) {
+        let pending = false;
+        window.addEventListener('scroll', () => {
+            if (pending) return;
+            pending = true;
+            requestAnimationFrame(() => {
+                navbar.classList.toggle('scrolled', window.scrollY > 50);
+                pending = false;
+            });
+        }, { passive: true });
+    }
 }
 
 function initAnimations() {
