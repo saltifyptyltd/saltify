@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-    <link rel="stylesheet" href="css/style.css?v=14">
+    <link rel="stylesheet" href="css/style.css?v=15">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -871,6 +871,7 @@ cd /srv/salt &amp;&amp; git checkout &lt;branch&gt;
                         <li><code>pillar.conf</code> — pillar root per env</li>
                         <li><code>minion_deploy_delay.conf</code> — Linux 180s, Windows 3600s</li>
                     </ul>
+                    <p style="font-size: 0.85rem; margin-top: auto;"><a href="#config-deep-dive" style="color: var(--color-accent); text-decoration: none; font-weight: 600;">Full configs below ↓</a></p>
                 </article>
 
                 <article class="quickstart-step fade-in">
@@ -998,6 +999,47 @@ db_password: |
                     <p><strong><code>salt_seckey.asc</code> is your master decryption key.</strong> Treat it like a root password — vault it, transfer out-of-band, never commit it. The public key (<code>salt_pubkey.asc</code>) is fine to share — anyone can encrypt with it, only the private key can decrypt.</p>
                 </div>
             </div>
+
+            <!-- Master config deep dive -->
+            <div id="config-deep-dive" style="margin-top: 3rem; padding: 2rem 2.25rem; background: var(--color-bg-featured); border-left: 3px solid var(--color-accent); border-radius: 8px;">
+                <h3 style="margin-top: 0;">Master config deep dive</h3>
+                <p style="color: var(--color-text-muted); line-height: 1.6;">Drop each of these in <code>/etc/salt/master.d/</code>. Salt merges anything in that directory into the main master config at startup. Restart <code>salt-master</code> after each change.</p>
+
+                <h4 style="margin-top: 1.5rem; font-size: 1rem;"><code>file_roots.conf</code> — envs to state folders</h4>
+                <p style="font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.6;">Each env points at its own state tree on disk. Match the env names to your <code>top.sls</code> and your Git branch strategy — typically one env per branch.</p>
+                <pre><code>file_roots:
+  prod:
+    - /srv/salt/prod
+  staging:
+    - /srv/salt/staging
+  dr:
+    - /srv/salt/dr</code></pre>
+
+                <h4 style="margin-top: 1.75rem; font-size: 1rem;"><code>pillar.conf</code> — pillar roots per env</h4>
+                <p style="font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.6;">Same shape, but for pillar data. Pillar is rendered per-minion at the master, so this is where env-specific secrets and values live. Keep <code>prod</code> and <code>staging</code> apart even if they look identical day one — you'll thank yourself the first time staging gets a destructive test value.</p>
+                <pre><code>pillar_roots:
+  prod:
+    - /srv/salt/prod/pillar
+  staging:
+    - /srv/salt/staging/pillar</code></pre>
+
+                <h4 style="margin-top: 1.75rem; font-size: 1rem;"><code>minion_deploy_delay.conf</code> — Windows takes longer</h4>
+                <p style="font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.6;">Default deploy delay is too short for Windows. The <code>salt-minion</code> service install on Windows 2022 takes longer than the master expects, then RaaS marks the deployment failed even though it succeeded. Bump Windows to 3600 seconds. Linux 180 is fine.</p>
+                <pre><code>sseapi_linux_minion_deploy_delay: 180
+sseapi_windows_minion_deploy_delay: 3600</code></pre>
+
+                <h4 style="margin-top: 1.75rem; font-size: 1rem;">What else lives here</h4>
+                <p style="font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.6;">As you go, you'll add more:</p>
+                <ul style="font-size: 0.9rem; color: var(--color-text-muted); padding-left: 1.25rem; line-height: 1.7;">
+                    <li><code>raas.conf</code> — RaaS cluster + auth settings (highstate writes this for you)</li>
+                    <li><code>gpg.conf</code> — points Salt at the GPG keyring (covered in the GPG section above)</li>
+                    <li><code>reactor.conf</code> — event-driven orchestration mappings (event → orchestration <code>.sls</code>)</li>
+                </ul>
+                <p style="font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.6;">Anything in <code>/etc/salt/master.d/</code> loads as YAML and merges with the main config. Easier to manage than one giant <code>/etc/salt/master</code>.</p>
+
+                <pre style="margin-top: 1rem;"><code><span class="code-comment"># after dropping any new file</span>
+sudo systemctl restart salt-master</code></pre>
+            </div>
         </div>
     </section>
 
@@ -1118,6 +1160,6 @@ db_password: |
         </div>
     </footer>
 
-    <script src="js/script.js?v=14"></script>
+    <script src="js/script.js?v=15"></script>
 </body>
 </html>
