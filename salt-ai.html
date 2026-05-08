@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salt + AI — patterns that actually work | Saltify</title>
+    <meta name="description" content="AI writes plausible Salt YAML. Sometimes it runs. The state-generation, troubleshooting, and MCP patterns we use in production — plus the failure modes nobody warns you about.">
+    <link rel="icon" type="image/png" href="logo/saltify-logo-large-transparent.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="stylesheet" href="css/style.css?v=10">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .guide-hero { padding: 140px 0 60px; text-align: center; }
+        .guide-hero h1 { font-size: clamp(2rem, 4vw, 3rem); letter-spacing: -0.02em; margin-bottom: 1rem; }
+        .guide-hero h1 .hero-highlight { color: var(--color-accent); }
+        .guide-hero .lead { font-size: 1.125rem; color: var(--color-text-muted); max-width: 680px; margin: 0 auto; line-height: 1.6; }
+        .guide-hero .crumb { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--color-accent); margin-bottom: 1.25rem; }
+
+        .tldr { max-width: 780px; margin: 1.5rem auto 0; padding: 1.5rem 1.75rem; background: var(--color-accent-softer); border: 1px solid var(--color-accent-mid); border-radius: var(--radius); text-align: left; }
+        .tldr h2 { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-accent); margin-bottom: 0.75rem; }
+        .quick-nav { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .quick-nav a { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.4rem 0.875rem; border: 1px solid var(--color-border); border-radius: 999px; font-size: 0.85rem; color: var(--color-text); transition: border-color var(--transition), background var(--transition); }
+        .quick-nav a:hover { border-color: var(--color-accent); background: var(--color-accent-softer); color: var(--color-accent); }
+        .quick-nav a span.num { font-family: var(--font-mono); font-size: 0.7rem; color: var(--color-accent); font-weight: 600; }
+
+        .guide-section { padding: 60px 0; scroll-margin-top: 80px; }
+        .guide-section.section-alt { padding: 80px 0; }
+        .guide-section h2 { font-size: 1.75rem; letter-spacing: -0.015em; margin-bottom: 0.5rem; }
+        .guide-section h3 { font-size: 1.15rem; font-weight: 600; margin: 1.75rem 0 0.5rem; color: var(--color-text); }
+        .guide-section .section-intro { color: var(--color-text-muted); margin-bottom: 2rem; max-width: 720px; line-height: 1.6; }
+        .section-tag { display: inline-block; font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; color: var(--color-accent); background: var(--color-accent-softer); padding: 0.25rem 0.65rem; border-radius: 4px; margin-bottom: 0.75rem; text-transform: uppercase; }
+
+        /* Two-column "shines vs lies" grid */
+        .verdict-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1px; background: var(--color-border); border: 1px solid var(--color-border); border-radius: var(--radius); overflow: hidden; }
+        .verdict-card { padding: 1.75rem 2rem; background: var(--color-bg-card); }
+        .verdict-card.good { border-top: 3px solid var(--color-accent); }
+        .verdict-card.bad { border-top: 3px solid var(--color-danger); }
+        .verdict-tag { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; margin-bottom: 0.85rem; display: flex; align-items: center; gap: 0.4rem; }
+        .verdict-card.good .verdict-tag { color: var(--color-accent); }
+        .verdict-card.bad .verdict-tag { color: var(--color-danger); }
+        .verdict-card h4 { font-size: 1rem; font-weight: 600; color: var(--color-text); margin-bottom: 0.85rem; }
+        .verdict-card ul { list-style: none; padding: 0; margin: 0; }
+        .verdict-card li { font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.55; padding: 0.4rem 0; border-bottom: 1px solid var(--color-border); display: flex; gap: 0.6rem; align-items: flex-start; }
+        .verdict-card li:last-child { border-bottom: none; }
+        .verdict-card li i { font-size: 0.75rem; margin-top: 0.35rem; flex-shrink: 0; }
+        .verdict-card.good li i { color: var(--color-accent); }
+        .verdict-card.bad li i { color: var(--color-danger); }
+
+        /* Prompt blocks — distinct from regular code */
+        .prompt-block { padding: 1.5rem 1.75rem; background: var(--color-bg-card); border: 1px solid var(--color-border); border-left: 3px solid var(--color-accent); border-radius: 8px; margin: 1.25rem 0; }
+        .prompt-block .prompt-label { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--color-accent); margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.4rem; }
+        .prompt-block pre { margin: 0; background: var(--color-bg); padding: 1rem 1.125rem; border-radius: 6px; }
+        .prompt-block code { font-size: 0.85rem; line-height: 1.5; white-space: pre-wrap; }
+        .prompt-block .prompt-why { margin-top: 0.85rem; font-size: 0.875rem; color: var(--color-text-muted); line-height: 1.55; }
+
+        /* Workflow steps — numbered horizontal */
+        .workflow { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--color-border); border: 1px solid var(--color-border); border-radius: var(--radius); overflow: hidden; margin: 1.5rem 0; }
+        .workflow-step { padding: 1.5rem 1.75rem; background: var(--color-bg-card); }
+        .workflow-num { font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700; color: var(--color-accent); margin-bottom: 0.5rem; letter-spacing: 0.12em; }
+        .workflow-step h4 { font-size: 1rem; font-weight: 600; color: var(--color-text); margin-bottom: 0.4rem; }
+        .workflow-step p { font-size: 0.875rem; color: var(--color-text-muted); line-height: 1.55; margin: 0; }
+
+        /* Anti-patterns block */
+        .antipatterns { display: grid; gap: 1rem; margin-top: 1.5rem; }
+        .antipattern { padding: 1.25rem 1.5rem; background: var(--color-bg-card); border: 1px solid var(--color-border); border-left: 3px solid var(--color-danger); border-radius: 8px; }
+        .antipattern h4 { font-size: 0.95rem; font-weight: 600; color: var(--color-text); margin-bottom: 0.5rem; }
+        .antipattern p { font-size: 0.875rem; color: var(--color-text-muted); line-height: 1.55; margin: 0 0 0.75rem; }
+        .antipattern p:last-child { margin: 0; }
+        .antipattern pre { margin: 0.5rem 0; }
+        .antipattern .ap-fix { font-size: 0.825rem; color: var(--color-text); padding: 0.625rem 0.875rem; background: var(--color-accent-softer); border-left: 2px solid var(--color-accent); border-radius: 0 6px 6px 0; }
+
+        /* MCP architecture box */
+        .mcp-arch { padding: 1.75rem 2rem; background: linear-gradient(160deg, var(--color-bg-featured) 0%, var(--color-bg-card) 100%); border: 1px solid var(--color-accent-mid); border-radius: 12px; margin: 1.5rem 0; }
+        .mcp-arch h3 { margin-top: 0; font-size: 1.05rem; }
+        .mcp-arch ul { padding-left: 1.25rem; margin: 0.75rem 0 0; }
+        .mcp-arch li { font-size: 0.9rem; color: var(--color-text-muted); line-height: 1.55; margin-bottom: 0.4rem; }
+        .mcp-arch li code { font-size: 0.825rem; }
+        .mcp-arch li strong { color: var(--color-text); }
+
+        /* Callouts */
+        .callout { display: flex; gap: 1rem; padding: 1.125rem 1.25rem; border-radius: 10px; margin: 1.5rem 0; font-size: 0.925rem; line-height: 1.55; align-items: flex-start; }
+        .callout i { font-size: 1.1rem; margin-top: 0.15rem; flex-shrink: 0; }
+        .callout-tip { background: var(--color-accent-softer); border: 1px solid var(--color-accent-mid); }
+        .callout-tip i { color: var(--color-accent); }
+        .callout-warn { background: var(--color-bg-bad); border: 1px solid rgba(179, 84, 84, 0.4); }
+        .callout-warn i { color: var(--color-danger); }
+        .callout p { margin: 0; }
+        .callout strong { color: var(--color-text); }
+
+        .source-credit { text-align: center; margin-top: 2rem; font-size: 0.8125rem; color: var(--color-text-dim); font-style: italic; }
+        .source-credit a { color: var(--color-text-muted); border-bottom: 1px dashed var(--color-text-dim); }
+
+        @media (max-width: 768px) {
+            .verdict-grid { grid-template-columns: 1fr; }
+            .workflow { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span class="logo-primary">Saltify</span>
+                <span class="logo-secondary">Pty Ltd</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html#services" class="nav-link">Services</a></li>
+                <li class="nav-dropdown">
+                    <a href="#" class="nav-link nav-dropdown-toggle" aria-haspopup="true" aria-expanded="false" onclick="event.preventDefault();">Learn Salt <span class="nav-caret">▾</span></a>
+                    <ul class="nav-dropdown-menu" aria-label="Learn submenu">
+                        <li><a href="salt-cheat-sheet.html" class="nav-link">Cheat Sheet</a></li>
+                        <li><a href="install-guide.html" class="nav-link">Install Guide</a></li>
+                        <li><a href="getting-started.html" class="nav-link">Getting Started</a></li>
+                        <li><a href="states.html" class="nav-link">Salt States</a></li>
+                        <li><a href="windows.html" class="nav-link">Salt on Windows</a></li>
+                        <li><a href="salt-ai.html" class="nav-link" aria-current="page">Salt + AI</a></li>
+                    </ul>
+                </li>
+                <li><a href="index.html#about" class="nav-link">About</a></li>
+                <li><a href="index.html#contact" class="nav-link nav-cta">Let's talk →</a></li>
+            </ul>
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" aria-pressed="false">
+                    <i class="fas fa-sun" id="themeIcon" aria-hidden="true"></i>
+                </button>
+                <button class="hamburger" aria-label="Toggle menu" aria-expanded="false">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="guide-hero">
+        <div class="container">
+            <p class="crumb">Salt × AI · differential edge</p>
+            <h1>Salt + AI — patterns that <span class="hero-highlight">actually work</span>.</h1>
+            <p class="lead">AI writes plausible Salt YAML. Sometimes it runs. Here's how to make AI a real productivity multiplier on your Salt fleet — and how to spot when it's lying to you.</p>
+
+            <div class="tldr">
+                <h2>The cheat sheet</h2>
+                <div class="quick-nav">
+                    <a href="#shines"><span class="num">01</span> Shines vs lies</a>
+                    <a href="#prompts"><span class="num">02</span> Prompts that work</a>
+                    <a href="#troubleshoot"><span class="num">03</span> Paste-the-error</a>
+                    <a href="#mcp"><span class="num">04</span> MCP for Salt</a>
+                    <a href="#pillar"><span class="num">05</span> Pillar from prose</a>
+                    <a href="#failures"><span class="num">06</span> Failure modes</a>
+                    <a href="#uplift"><span class="num">07</span> AI uplift</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- 01 — Shines vs lies -->
+    <section id="shines" class="guide-section">
+        <div class="container">
+            <span class="section-tag">01 · The honest split</span>
+            <h2>Where AI shines, where it lies.</h2>
+            <p class="section-intro">Most "AI for Salt" content reads like a sales deck. It isn't. AI is excellent at four very specific things and terrible at four others. Knowing which is which is the whole game.</p>
+
+            <div class="verdict-grid">
+                <div class="verdict-card good">
+                    <div class="verdict-tag"><i class="fas fa-check"></i> What it's good at</div>
+                    <h4>Use AI here. Save hours.</h4>
+                    <ul>
+                        <li><i class="fas fa-check-circle"></i> <span><strong>Scaffolding.</strong> Generating the first 80% of a state file from a clear description. Read it, fix the 20%, ship.</span></li>
+                        <li><i class="fas fa-check-circle"></i> <span><strong>Reading errors.</strong> Paste a Salt traceback + the failing state. AI explains it faster than digging through `-l debug` output.</span></li>
+                        <li><i class="fas fa-check-circle"></i> <span><strong>Pillar from prose.</strong> Translating "50 web servers, 3 envs, TLS varies" into structured pillar YAML.</span></li>
+                        <li><i class="fas fa-check-circle"></i> <span><strong>Documenting your states.</strong> Generating human-readable runbooks from existing `.sls` files.</span></li>
+                    </ul>
+                </div>
+                <div class="verdict-card bad">
+                    <div class="verdict-tag"><i class="fas fa-xmark"></i> What it lies about</div>
+                    <h4>Verify everything here. No exceptions.</h4>
+                    <ul>
+                        <li><i class="fas fa-times-circle"></i> <span><strong>Module names.</strong> AI invents modules that sound right but don't exist in your Salt version.</span></li>
+                        <li><i class="fas fa-times-circle"></i> <span><strong>Require chains.</strong> Wrong order, misspelled IDs, missing dependencies — looks plausible, doesn't compile.</span></li>
+                        <li><i class="fas fa-times-circle"></i> <span><strong>Runtime state.</strong> AI doesn't know what's actually installed on your minion. It guesses.</span></li>
+                        <li><i class="fas fa-times-circle"></i> <span><strong>Anything pre-2022.</strong> Trained on docs that include patterns Salt removed years ago.</span></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="callout callout-tip">
+                <i class="fas fa-lightbulb"></i>
+                <p><strong>The pattern:</strong> AI drafts → you read every line → run on one test minion → iterate. Never apply AI-generated states to production without reading them. AI is a smart junior, not a senior. Treat it that way.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 02 — Prompts that work -->
+    <section id="prompts" class="guide-section section-alt">
+        <div class="container">
+            <span class="section-tag">02 · The prompt format</span>
+            <h2>Prompts that generate working states.</h2>
+            <p class="section-intro">The difference between AI-generated YAML that runs first try and AI-generated YAML that wastes your afternoon is almost entirely in the prompt. Here's the format.</p>
+
+            <h3>The format that works</h3>
+
+            <div class="prompt-block">
+                <div class="prompt-label"><i class="fas fa-magic-wand-sparkles"></i> Good prompt</div>
+                <pre><code>Salt minion version: 3006.4
+Target OS: Ubuntu 22.04
+Goal: install nginx, enable+start the service, allow ports 80/443 in ufw
+
+Generate a Salt state file (.sls) using these modules only:
+- pkg.installed
+- service.running
+- cmd.run
+
+Include explicit `require:` chains so order is unambiguous.
+No comments. YAML only.</code></pre>
+                <p class="prompt-why"><strong>Why it works:</strong> Version pinned (no 2019-era patterns), OS specified (right package names), goal is concrete, module list constrains the search space, explicit require: removes ordering guesswork.</p>
+            </div>
+
+            <h3>The format that wastes your time</h3>
+
+            <div class="prompt-block" style="border-left-color: var(--color-danger);">
+                <div class="prompt-label" style="color: var(--color-danger);"><i class="fas fa-bug"></i> Bad prompt</div>
+                <pre><code>Set up a webserver with Salt</code></pre>
+                <p class="prompt-why"><strong>Why it fails:</strong> No version → mixed-era YAML. No OS → wrong package names. No module constraint → AI picks weird modules. No `require:` instruction → implicit ordering. You'll spend 30 minutes debugging.</p>
+            </div>
+
+            <h3>The "minimal first, then expand" pattern</h3>
+            <p style="color: var(--color-text-muted); line-height: 1.6;">For complex states, ask AI for the smallest possible working version first. Get it to apply cleanly on one test minion. Then ask it to expand — add the firewall rules, add the TLS, add the monitoring. Each iteration stays small enough that you can read every line.</p>
+
+            <div class="callout callout-tip">
+                <i class="fas fa-circle-info"></i>
+                <p><strong>Always pin the version.</strong> Salt's release cadence means modules and signatures shift. AI trained on Salt 3001 docs will happily hand you patterns that 3006+ rejects. One line at the top of your prompt — <code>Salt minion version: 3006.x</code> — saves you hours of debugging deprecated syntax.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 03 — Paste-the-error troubleshooting -->
+    <section id="troubleshoot" class="guide-section">
+        <div class="container">
+            <span class="section-tag">03 · The fastest debug loop</span>
+            <h2>Paste-the-error troubleshooting.</h2>
+            <p class="section-intro">When a state fails, AI is faster than `-l debug` output for the first read. Not for the fix — for the diagnosis. This is the workflow.</p>
+
+            <div class="workflow">
+                <div class="workflow-step">
+                    <div class="workflow-num">STEP 01</div>
+                    <h4>Capture full debug</h4>
+                    <p>Run with <code>-l debug</code>. Copy the entire output, not just the red bit. AI uses the surrounding context.</p>
+                </div>
+                <div class="workflow-step">
+                    <div class="workflow-num">STEP 02</div>
+                    <h4>Paste with context</h4>
+                    <p>Salt version, target OS, the failing state file, the full traceback. Four pieces. Always.</p>
+                </div>
+                <div class="workflow-step">
+                    <div class="workflow-num">STEP 03</div>
+                    <h4>Ask the surgical question</h4>
+                    <p>"What's wrong, and what's the minimum change?" Not "fix this for me" — minimum change forces a focused diagnosis.</p>
+                </div>
+            </div>
+
+            <h3>Common AI wins on Salt errors</h3>
+            <ul style="color: var(--color-text-muted); line-height: 1.7; padding-left: 1.5rem;">
+                <li><strong>Typos in module names.</strong> <code>service.runing</code> vs <code>service.running</code> — humans miss it, AI catches it instantly.</li>
+                <li><strong>Missing requires.</strong> "You're calling cmd.run before the package is installed." Faster than reading 200 lines of YAML.</li>
+                <li><strong>Jinja vs YAML escaping.</strong> A stray <code>{{ }}</code> inside a quoted string. Tedious to spot manually.</li>
+                <li><strong>Version-mismatched functions.</strong> "That parameter was renamed in 3005." AI knows changelogs better than you do.</li>
+            </ul>
+
+            <h3>Where AI still loses to a senior</h3>
+            <p style="color: var(--color-text-muted); line-height: 1.6;">If the failure is a multi-minion race condition, a state that only fails under load, or a Salt master config quirk that depends on your specific GPG/PKI setup — AI can't see your environment. It'll guess. A senior with shell access wins.</p>
+        </div>
+    </section>
+
+    <!-- 04 — MCP for Salt -->
+    <section id="mcp" class="guide-section section-alt">
+        <div class="container">
+            <span class="section-tag">04 · The next level</span>
+            <h2>MCP for Salt — give Claude shell access (carefully).</h2>
+            <p class="section-intro">MCP is Anthropic's protocol for letting Claude call real tools — your tools, your environment. There's no official Salt MCP server. There should be. Here's the architecture we use.</p>
+
+            <div class="mcp-arch">
+                <h3>The wire-up, in five lines</h3>
+                <ul>
+                    <li><strong>A small Python MCP server</strong> running on the Salt master (or a sidecar with API access)</li>
+                    <li><strong>Wraps salt-call locally</strong> — or hits the salt-master REST API if you have one</li>
+                    <li><strong>Read-only tools first</strong>: <code>test.ping</code>, <code>grains.items</code>, <code>state.show_sls</code>, <code>cp.list_states</code></li>
+                    <li><strong>Mutating tools gated</strong>: anything that runs (<code>state.apply</code>, <code>cmd.run</code>) defaults to <code>test=True</code> and requires explicit confirmation</li>
+                    <li><strong>Every call logged</strong> — you want an audit trail when an LLM is targeting production</li>
+                </ul>
+            </div>
+
+            <h3>Why this matters</h3>
+            <p style="color: var(--color-text-muted); line-height: 1.6;">Without MCP, Claude generates Salt blindly. It guesses what's installed, guesses what your states look like, guesses what your grains return. With MCP and read-only tools wired up, Claude can <em>ask</em> — "what version is minion-foo running?", "what's in your existing nginx state?" — and write states that actually fit your environment.</p>
+
+            <p style="color: var(--color-text-muted); line-height: 1.6;">It's the difference between a contractor who shows up, asks questions, and writes code that fits — and one who shows up, doesn't ask, and writes code that breaks.</p>
+
+            <div class="callout callout-warn">
+                <i class="fas fa-triangle-exclamation"></i>
+                <p><strong>Never expose <code>cmd.run</code> as an unconstrained tool.</strong> An LLM with arbitrary shell access is a vulnerability waiting to happen. Always: read-only by default, mutating tools require explicit per-call approval, every action logged. If you wouldn't give the tool to a junior on day one, don't give it to Claude either.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 05 — Pillar from prose -->
+    <section id="pillar" class="guide-section">
+        <div class="container">
+            <span class="section-tag">05 · The boring win</span>
+            <h2>Pillar data from prose.</h2>
+            <p class="section-intro">Pillar generation is where AI quietly saves the most time. Repetitive structure, predictable shape, low risk if you read the diff. This is the "use it every day" pattern.</p>
+
+            <h3>Where it works</h3>
+            <ul style="color: var(--color-text-muted); line-height: 1.7; padding-left: 1.5rem;">
+                <li><strong>Repetitive shapes.</strong> "50 web servers across dev/test/prod, same shape, env-specific TLS." AI writes it in 10 seconds.</li>
+                <li><strong>Translating from CSV/spreadsheet.</strong> Paste the table, ask for pillar YAML keyed by hostname. Done.</li>
+                <li><strong>Skeleton generation.</strong> "Give me a pillar.example for an nginx + postgres + valkey stack." Filled-in placeholders, ready to customize.</li>
+                <li><strong>Refactoring.</strong> "This pillar has duplication. Show me a version with a shared base + per-env overrides."</li>
+            </ul>
+
+            <h3>Where it doesn't</h3>
+            <ul style="color: var(--color-text-muted); line-height: 1.7; padding-left: 1.5rem;">
+                <li><strong>Anything with secrets.</strong> Never paste real keys, tokens, or API credentials into an AI chat. Use placeholders, fill them in afterward.</li>
+                <li><strong>Pillar that depends on grain values.</strong> AI doesn't know what your grains return. It'll guess hostnames and IPs.</li>
+                <li><strong>Network configs with real addresses.</strong> Hallucinated subnets and VLAN IDs are common. Always cross-check.</li>
+            </ul>
+
+            <div class="callout callout-tip">
+                <i class="fas fa-shield-halved"></i>
+                <p><strong>The secret-sanitizing trick:</strong> Before pasting any pillar to AI, search-and-replace your real values with <code>&lt;PLACEHOLDER&gt;</code> tokens. Get the AI's output back. Re-substitute the real values locally. Five seconds of work, zero secret leakage.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- 06 — Failure modes -->
+    <section id="failures" class="guide-section section-alt">
+        <div class="container">
+            <span class="section-tag">06 · The honest part</span>
+            <h2>The "looks fine, doesn't run" problem.</h2>
+            <p class="section-intro">AI-generated Salt that looks plausible but isn't is the single biggest time-sink. Real examples we've seen, and how to catch them in 30 seconds instead of 30 minutes.</p>
+
+            <div class="antipatterns">
+                <div class="antipattern">
+                    <h4>1. Hallucinated modules</h4>
+                    <p>AI invents modules that sound like they should exist. They don't.</p>
+                    <pre><code>ensure_running:
+  systemd.unit_running:    <span class="code-comment"># NOT A REAL MODULE</span>
+    - name: nginx</code></pre>
+                    <div class="ap-fix"><strong>Fix:</strong> Salt has <code>service.running</code>, not <code>systemd.unit_running</code>. Verify against <a href="https://docs.saltproject.io/en/latest/ref/states/all/" target="_blank" rel="noopener" style="color: var(--color-accent);">the state module index</a> before applying.</div>
+                </div>
+
+                <div class="antipattern">
+                    <h4>2. Wrong require chains</h4>
+                    <p>AI generates <code>require:</code> blocks that reference state IDs that don't exist or are misspelled. Salt fails the compile step with a confusing error.</p>
+                    <div class="ap-fix"><strong>Fix:</strong> Always run <code>salt-call --local state.show_sls your.state</code> first. It compiles without applying. Compile errors surface in seconds.</div>
+                </div>
+
+                <div class="antipattern">
+                    <h4>3. Deprecated patterns</h4>
+                    <p>AI trained on 2019 docs will suggest module signatures that worked then but were removed in 3006+. Especially common with <code>pkg.installed</code> arguments and old <code>file.managed</code> options.</p>
+                    <div class="ap-fix"><strong>Fix:</strong> Pin the version in your prompt. <code>Salt minion version: 3006.x</code> at the top of every prompt cuts this in half.</div>
+                </div>
+
+                <div class="antipattern">
+                    <h4>4. Jinja in the wrong render phase</h4>
+                    <p>AI references grains inside pillar files (which render before grains are available), or pillar values inside states without remembering the lookup syntax. Looks fine, fails at compile.</p>
+                    <div class="ap-fix"><strong>Fix:</strong> If a state breaks with "undefined variable", suspect render order before suspecting your data. Pillar renders first, states render second, grains exist throughout but pillar can't see them.</div>
+                </div>
+
+                <div class="antipattern">
+                    <h4>5. Confidently wrong with no source</h4>
+                    <p>The dangerous one. AI states something authoritatively that's just wrong. "Salt automatically retries failed states" — it doesn't, unless you wire it up. "<code>onchanges</code> is the same as <code>watch</code>" — they're different.</p>
+                    <div class="ap-fix"><strong>Fix:</strong> Cross-reference anything load-bearing against <a href="https://docs.saltproject.io/" target="_blank" rel="noopener" style="color: var(--color-accent);">docs.saltproject.io</a>. Your <a href="salt-cheat-sheet.html" style="color: var(--color-accent);">cheat sheet</a> is also a sanity check — if AI suggests a flag that isn't on your cheat sheet, double-check it exists.</div>
+                </div>
+            </div>
+
+            <h3>The 30-second sanity check that catches all five</h3>
+            <pre style="margin-top: 1rem;"><code><span class="code-comment"># 1. Compile-only — catches typos, missing modules, bad requires</span>
+salt-call --local state.show_sls your.state
+
+<span class="code-comment"># 2. Dry-run — catches everything else, no changes made</span>
+salt 'minion-test' state.apply your.state test=True
+
+<span class="code-comment"># 3. Read the diff. Then apply for real.</span>
+salt 'minion-test' state.apply your.state</code></pre>
+        </div>
+    </section>
+
+    <!-- 07 — AI uplift -->
+    <section id="uplift" class="guide-section">
+        <div class="container">
+            <span class="section-tag">07 · The Saltify pattern</span>
+            <h2>AI uplift — what we leave behind when we exit.</h2>
+            <p class="section-intro">Most consultancies leave you with a working stack and a phone number. We leave you with a stack, a phone number, <em>and a colleague that doesn't bill</em>. This is what that means in practice.</p>
+
+            <h3>The handover kit</h3>
+            <ul style="color: var(--color-text-muted); line-height: 1.7; padding-left: 1.5rem;">
+                <li><strong>A prompt library specific to your stack.</strong> The exact prompts that generate working states for <em>your</em> minion versions, OS mix, and module conventions. Not generic prompts — yours.</li>
+                <li><strong>A Salt MCP server they can run locally.</strong> Read-only first. Plumbing already wired so Claude knows their environment without anyone re-explaining it.</li>
+                <li><strong>Runbook templates.</strong> "Paste your incident here. Get back: probable cause, the three things to check first, the rollback command." Tuned for your stack, not generic.</li>
+                <li><strong>AI-readable docs of your specific Salt setup.</strong> Architecture, env conventions, blue/green pattern, GPG key locations. So when their team asks an LLM "where do I find the prod pillar?", they get a real answer instead of a hallucination.</li>
+            </ul>
+
+            <h3>Why this changes the math</h3>
+            <p style="color: var(--color-text-muted); line-height: 1.6;">AI replaces nobody. But it makes a senior engineer faster, and it makes a junior engineer competent. When we leave a client, the senior on their team stops needing us for routine state work — they handle it with AI uplift. They call us back for the architectural decisions, the blue/green cutovers, the things that need real judgment.</p>
+
+            <p style="color: var(--color-text-muted); line-height: 1.6;">That's not "make yourself indispensable" consulting. That's the opposite. We're confident enough in our work to make ourselves <em>less</em> needed. Repeat business comes from solving the hard problems, not gatekeeping the easy ones.</p>
+
+            <div class="callout callout-tip">
+                <i class="fas fa-handshake"></i>
+                <p><strong>Want this for your team?</strong> AI uplift is bundled with every Saltify engagement — blue/green build-outs, multi-master deployments, VCF Salt installs. We don't charge extra for the prompt library, the MCP server, or the runbook templates. <a href="index.html#contact" style="color: var(--color-accent); border-bottom: 1px solid var(--color-accent-mid);">Talk to us</a>.</p>
+            </div>
+
+            <p class="source-credit">Built from production Saltify engagements + <a href="https://modelcontextprotocol.io/" target="_blank" rel="noopener noreferrer">Anthropic's MCP spec</a>. Patterns evolve as Salt and Claude both ship — last reviewed May 2026.</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p class="footer-logo">
+                    <span class="logo-primary">Saltify</span>
+                    <span class="logo-secondary">Pty Ltd</span>
+                </p>
+                <p class="footer-text">Canberra-based Salt consultancy. Event-driven, AI-uplifted, government-ready.</p>
+                <p class="footer-meta">© 2026 Saltify Pty Ltd. ABN coming soon.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/script.js?v=10"></script>
+</body>
+</html>
