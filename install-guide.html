@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-    <link rel="stylesheet" href="css/style.css?v=11">
+    <link rel="stylesheet" href="css/style.css?v=12">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -765,13 +765,26 @@ sudo salt-pip install SSEAPE-*-py3-none-any.whl</code></pre>
                 <article class="quickstart-step fade-in">
                     <span class="step-number">10</span>
                     <h4>Run the highstate</h4>
-                    <p>Data layer first, then masters. From <strong>master 1</strong>.</p>
+                    <p>Data layer first, then masters. The order matters and there's a one-line toggle in the middle. From <strong>master 1</strong>.</p>
+
+                    <p style="font-size: 0.9rem; margin-top: 1rem;"><strong>10a · Refresh and apply RaaS:</strong></p>
                     <pre><code>sudo salt '*' saltutil.refresh_grains
 sudo salt '*' saltutil.refresh_pillar
-sudo salt prod-raas    state.highstate
-sudo salt prod-master1 state.highstate
+sudo salt prod-raas state.highstate</code></pre>
+
+                    <p style="font-size: 0.9rem; margin-top: 1rem;"><strong>10b · On the RaaS node, enable autoaccept for the master plugin:</strong></p>
+                    <pre><code><span class="code-comment"># SSH into prod-raas, then:</span>
+sudo vim /etc/raas/raas
+<span class="code-comment"># add this line under the existing config, save:</span>
+master_autoaccept: true
+
+sudo systemctl restart raas</code></pre>
+                    <p style="font-size: 0.85rem;">Without this, the SSEAPE master plugin can't register with RaaS during the next highstate and the masters fail with a key-rejection error. We enable it here, run the masters, then strip it back out in step 11.</p>
+
+                    <p style="font-size: 0.9rem; margin-top: 1rem;"><strong>10c · Apply the masters:</strong></p>
+                    <pre><code>sudo salt prod-master1 state.highstate
 sudo salt prod-master2 state.highstate</code></pre>
-                    <p style="font-size: 0.85rem;">Watch <code>tail -f /var/log/messages</code> on the data node. If a master highstate fails, bounce its <code>salt-minion</code> and retry. <strong>Tip:</strong> snapshot the VMs before this step.</p>
+                    <p style="font-size: 0.85rem;">Watch <code>tail -f /var/log/messages</code> on the RaaS node. If a master highstate fails, bounce its <code>salt-minion</code> and retry. <strong>Tip:</strong> snapshot the VMs before this step.</p>
                 </article>
 
                 <article class="quickstart-step fade-in">
@@ -794,7 +807,7 @@ sudo systemctl restart raas</code></pre>
 
             <div class="callout callout-warn">
                 <i class="fas fa-exclamation-triangle"></i>
-                <p><strong>During highstate only:</strong> set <code>master_autoaccept: true</code> in <code>/etc/raas/raas</code> on the RaaS node so the master plugin can register, and <code>systemctl restart raas</code>. Step 11 removes it. Leaving it on is a security hole.</p>
+                <p><strong>Don't skip step 11.</strong> Leaving <code>master_autoaccept: true</code> in place after install means any new master plugin registers without review — that's a security hole. The line goes in for 10b, comes back out in 11. Always.</p>
             </div>
         </div>
     </section>
@@ -1104,6 +1117,6 @@ db_password: |
         </div>
     </footer>
 
-    <script src="js/script.js?v=11"></script>
+    <script src="js/script.js?v=12"></script>
 </body>
 </html>
