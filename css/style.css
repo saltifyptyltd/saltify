@@ -1589,6 +1589,26 @@ pre code {
 }
 
 /* ================================
+   Doc version pill — used in guide-hero on each Learn Salt page
+   ================================ */
+.doc-version {
+    display: inline-block;
+    margin-top: 1.25rem;
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.06em;
+    color: var(--color-text-dim);
+    padding: 0.3rem 0.75rem;
+    border: 1px solid var(--color-border);
+    border-radius: 999px;
+}
+.doc-version strong {
+    color: var(--color-accent);
+    font-weight: 600;
+}
+
+/* ================================
    Install Guide promo (home page)
    ================================ */
 .install-promo {
