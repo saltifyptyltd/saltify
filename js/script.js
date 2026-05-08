@@ -12,12 +12,16 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function initInstallToast() {
-    const toast = document.getElementById('installToast');
-    const closeBtn = document.getElementById('installToastClose');
+    initToast('installToast', 'installToastClose', 'saltifyInstallToastDismissed');
+    initToast('gettingStartedToast', 'gettingStartedToastClose', 'saltifyGettingStartedToastDismissed');
+}
+
+function initToast(toastId, closeBtnId, dismissedKey) {
+    const toast = document.getElementById(toastId);
+    const closeBtn = document.getElementById(closeBtnId);
     if (!toast || !closeBtn) return;
 
-    const DISMISSED_KEY = 'saltifyInstallToastDismissed';
-    if (localStorage.getItem(DISMISSED_KEY)) {
+    if (localStorage.getItem(dismissedKey)) {
         toast.classList.add('install-toast--hidden');
         return;
     }
@@ -26,7 +30,7 @@ function initInstallToast() {
     closeBtn.addEventListener('click', () => {
         toast.classList.add('install-toast--hidden');
         toast.setAttribute('aria-hidden', 'true');
-        localStorage.setItem(DISMISSED_KEY, '1');
+        localStorage.setItem(dismissedKey, '1');
     });
 }
 

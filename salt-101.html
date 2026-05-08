@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salt 101 — How to start, and the commands you'll use | Saltify</title>
+    <meta name="description" content="A 5-step quickstart for Salt: install the master, install minions, accept keys, wire up Git, apply your first state. Plus the seven Salt commands you'll use most.">
+    <link rel="icon" type="image/png" href="logo/saltify-logo-large-transparent.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Page-specific hero — reuse the install-guide / getting-started pattern */
+        .guide-hero {
+            padding: 140px 0 60px;
+            text-align: center;
+        }
+        .guide-hero h1 {
+            font-size: clamp(2rem, 4vw, 3rem);
+            letter-spacing: -0.02em;
+            margin-bottom: 1rem;
+        }
+        .guide-hero .lead {
+            font-size: 1.125rem;
+            color: var(--color-text-muted);
+            max-width: 640px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        .guide-hero .crumb {
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.18em;
+            text-transform: uppercase;
+            color: var(--color-accent);
+            margin-bottom: 1.25rem;
+        }
+        /* Override the .salt101 section's default top padding since hero already gives space */
+        .salt101 {
+            padding: 30px 0 100px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span class="logo-primary">Saltify</span>
+                <span class="logo-secondary">Pty Ltd</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html#services" class="nav-link">Services</a></li>
+                <li class="nav-dropdown">
+                    <a href="#" class="nav-link nav-dropdown-toggle" aria-haspopup="true" aria-expanded="false" onclick="event.preventDefault();">Learn Salt <span class="nav-caret">▾</span></a>
+                    <ul class="nav-dropdown-menu" aria-label="Learn submenu">
+                        <li><a href="salt-101.html" class="nav-link" aria-current="page">Salt 101</a></li>
+                        <li><a href="install-guide.html" class="nav-link">Install Guide</a></li>
+                        <li><a href="getting-started.html" class="nav-link">Getting Started</a></li>
+                    </ul>
+                </li>
+                <li><a href="index.html#about" class="nav-link">About</a></li>
+                <li><a href="index.html#contact" class="nav-link nav-cta">Let's talk →</a></li>
+            </ul>
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" aria-pressed="false">
+                    <i class="fas fa-sun" id="themeIcon" aria-hidden="true"></i>
+                </button>
+                <button class="hamburger" aria-label="Toggle menu" aria-expanded="false">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="guide-hero">
+        <div class="container">
+            <p class="crumb">Learn</p>
+            <h1>Salt 101.</h1>
+            <p class="lead">How to start, and the commands you'll actually use.</p>
+        </div>
+    </section>
+
+    <!-- The Salt 101 content (moved from index.html) -->
+    <section class="salt101">
+        <div class="container">
+
+            <h3 class="subsection-title">Get started in five steps</h3>
+            <div class="quickstart-grid divider-grid">
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">01</span>
+                    <h4>Install the master</h4>
+                    <p>Bootstrap on your control node. The <code>-M</code> flag installs master + minion together so the master manages itself.</p>
+                    <pre><code><span class="code-comment"># on the master host</span>
+curl -fsSL https://bootstrap.saltproject.io | sudo sh -s -- -M</code></pre>
+                </article>
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">02</span>
+                    <h4>Install a minion</h4>
+                    <p>Same bootstrap, no flag. Then point it at your master in <code>/etc/salt/minion</code>.</p>
+                    <pre><code><span class="code-comment"># on each managed host</span>
+curl -fsSL https://bootstrap.saltproject.io | sudo sh
+echo "master: salt-master.your.domain" | \
+  sudo tee /etc/salt/minion.d/master.conf
+sudo systemctl restart salt-minion</code></pre>
+                </article>
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">03</span>
+                    <h4>Accept the keys</h4>
+                    <p>Minions register with a public key. Inspect, then accept.</p>
+                    <pre><code><span class="code-comment"># on the master</span>
+sudo salt-key -L           <span class="code-comment"># list pending keys</span>
+sudo salt-key -A           <span class="code-comment"># accept all pending</span></code></pre>
+                </article>
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">04</span>
+                    <h4>Wire up git</h4>
+                    <p>Treat <code>/srv/salt</code> as a git checkout. A <code>gitpull.service</code> systemd unit lets your CI pipeline trigger a pull over SSH on every promotion.</p>
+                    <pre><code><span class="code-comment"># pulled by your pipeline on each release</span>
+sudo systemctl start gitpull.service</code></pre>
+                </article>
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">05</span>
+                    <h4>Apply your first state</h4>
+                    <p>Define a state in <code>/srv/salt/top.sls</code>, then push it to a target.</p>
+                    <pre><code>sudo salt 'web*' state.apply
+sudo salt '*'    state.highstate</code></pre>
+                </article>
+            </div>
+
+            <h3 class="subsection-title">Essential commands</h3>
+            <div class="commands-grid divider-grid">
+                <div class="cmd-card hover-card fade-in">
+                    <div class="cmd-label">Connectivity</div>
+                    <pre><code>salt '*' test.ping</code></pre>
+                    <p>Are my minions alive and authenticated?</p>
+                </div>
+                <div class="cmd-card hover-card fade-in">
+                    <div class="cmd-label">Apply states</div>
+                    <pre><code>salt '*' state.apply
+salt 'db*' state.apply mysql</code></pre>
+                    <p>Run the top file, or apply a specific state to a target.</p>
+                </div>
+                <div class="cmd-card hover-card fade-in">
+                    <div class="cmd-label">Inspect facts</div>
+                    <pre><code>salt '*' grains.items
+salt '*' pillar.items</code></pre>
+                    <p>Read grains (host facts) and pillar (your data tree).</p>
+                </div>
+                <div class="cmd-card hover-card fade-in">
+                    <div class="cmd-label">Run anything</div>
+                    <pre><code>salt 'web*' cmd.run 'systemctl status nginx'</code></pre>
+                    <p>Ad-hoc shell across a fleet. Use sparingly — prefer states.</p>
+                </div>
+                <div class="cmd-card hover-card fade-in">
+                    <div class="cmd-label">Local dry run</div>
+                    <pre><code>salt-call --local state.apply test=True</code></pre>
+                    <p>From the minion itself, no master, no commit. Iterate fast.</p>
+                </div>
+                <div class="cmd-card hover-card fade-in">
+                    <div class="cmd-label">Watch the bus</div>
+                    <pre><code>salt-run state.event pretty=True</code></pre>
+                    <p>Tail every event on the master. The first thing you open when something's off.</p>
+                </div>
+                <div class="cmd-card hover-card fade-in">
+                    <div class="cmd-label">Orchestration</div>
+                    <pre><code>salt-run state.orch orch.deploy_app</code></pre>
+                    <p>Multi-step, multi-host workflows. Blue/green cutovers live here.</p>
+                </div>
+                <div class="cmd-card hover-card fade-in">
+                    <div class="cmd-label">Targeting</div>
+                    <pre><code>salt -G 'os:Windows' test.ping
+salt -C 'web* and G@env:prod' state.apply</code></pre>
+                    <p>Grain match (<code>-G</code>) and compound (<code>-C</code>) — the targeting you'll use every day.</p>
+                </div>
+            </div>
+
+            <h3 class="subsection-title">Further reading</h3>
+            <ul class="links-row">
+                <li><a href="https://saltproject.io/" target="_blank" rel="noopener">Salt Project ↗</a></li>
+                <li><a href="https://docs.saltproject.io/" target="_blank" rel="noopener">Documentation ↗</a></li>
+                <li><a href="https://github.com/saltstack/salt" target="_blank" rel="noopener">GitHub repo ↗</a></li>
+                <li><a href="https://docs.saltproject.io/salt/install-guide/en/latest/" target="_blank" rel="noopener">Install guide ↗</a></li>
+                <li><a href="https://www.vmware.com/products/aria-automation-config.html" target="_blank" rel="noopener">VMware Aria Automation Config ↗</a></li>
+            </ul>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-inner">
+                <p class="footer-logo">
+                    <span class="logo-primary">Saltify</span>
+                    <span class="logo-secondary">Pty Ltd</span>
+                </p>
+                <p class="footer-tagline">Enterprise Salt for teams that can't afford fragile infrastructure. Based in Australia.</p>
+                <p class="footer-copy">© 2026 Saltify Pty Ltd</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/script.js"></script>
+</body>
+</html>

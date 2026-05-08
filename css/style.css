@@ -255,6 +255,87 @@ p code, li code, h4 code {
     display: none;
 }
 
+/* ================================
+   Nav dropdown ("Learn" menu)
+   ================================ */
+.nav-dropdown {
+    position: relative;
+}
+
+.nav-dropdown-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    cursor: pointer;
+    user-select: none;
+}
+
+.nav-caret {
+    font-size: 0.7em;
+    line-height: 1;
+    transition: transform var(--transition);
+    color: var(--color-text-muted);
+}
+
+.nav-dropdown:hover .nav-caret,
+.nav-dropdown:focus-within .nav-caret {
+    transform: rotate(180deg);
+    color: var(--color-text);
+}
+
+.nav-dropdown-menu {
+    position: absolute;
+    top: calc(100% + 0.6rem);
+    left: 50%;
+    min-width: 200px;
+    padding: 0.5rem 0;
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: 10px;
+    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.3);
+    list-style: none;
+    margin: 0;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateX(-50%) translateY(-4px);
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+    z-index: 99;
+}
+
+.nav-dropdown:hover .nav-dropdown-menu,
+.nav-dropdown:focus-within .nav-dropdown-menu {
+    opacity: 1;
+    visibility: visible;
+    transform: translateX(-50%) translateY(0);
+}
+
+.nav-dropdown-menu li {
+    list-style: none;
+    margin: 0;
+}
+
+.nav-dropdown-menu .nav-link {
+    display: block;
+    padding: 0.55rem 1.25rem;
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    white-space: nowrap;
+    transition: color var(--transition), background var(--transition);
+}
+
+.nav-dropdown-menu .nav-link::after {
+    display: none;
+}
+
+.nav-dropdown-menu .nav-link:hover {
+    color: var(--color-text);
+    background: var(--color-bg-card-hover);
+}
+
+.nav-dropdown-menu .nav-link[aria-current="page"] {
+    color: var(--color-accent);
+}
+
 .nav-right {
     display: flex;
     align-items: center;
@@ -1447,6 +1528,40 @@ pre code {
         display: none;
     }
 
+    /* On mobile, dropdown becomes a flat list. Hide the toggle, show items inline. */
+    .nav-dropdown-toggle {
+        display: none;
+    }
+    .nav-dropdown-menu {
+        position: static;
+        opacity: 1;
+        visibility: visible;
+        transform: none;
+        background: transparent;
+        border: none;
+        box-shadow: none;
+        padding: 0;
+        margin: 0;
+        min-width: 0;
+    }
+    .nav-dropdown-menu li {
+        border-bottom: 1px solid var(--color-border);
+    }
+    .nav-dropdown-menu .nav-link {
+        padding: 1rem 0;
+        font-size: 1rem;
+        color: var(--color-text);
+        text-align: left;
+    }
+    .nav-dropdown-menu .nav-link:hover {
+        background: transparent;
+    }
+    /* The dropdown wrapper li shouldn't have its own border on mobile */
+    .nav-dropdown {
+        border-bottom: none !important;
+        padding: 0;
+    }
+
     .hero {
         padding: 110px 0 60px;
         min-height: auto;
@@ -1500,14 +1615,32 @@ pre code {
     background: var(--color-bg);
 }
 
-.install-promo-card {
-    max-width: 760px;
+.install-promo-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.5rem;
+    max-width: 1080px;
     margin: 0 auto;
-    padding: 3rem 2.5rem;
+}
+
+.install-promo-card {
+    padding: 2.5rem 2rem;
     background: linear-gradient(160deg, var(--color-bg-featured) 0%, var(--color-bg-card) 100%);
     border: 1px solid var(--color-accent-mid);
     border-radius: var(--radius);
     text-align: center;
+    display: flex;
+    flex-direction: column;
+}
+
+.install-promo-card-tag {
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    color: var(--color-accent);
+    text-transform: uppercase;
+    margin-bottom: 0.875rem;
+    font-family: var(--font-mono);
 }
 
 .install-promo-eyebrow {
@@ -1579,6 +1712,13 @@ pre code {
     font-style: italic;
 }
 
+@media (max-width: 900px) {
+    .install-promo-grid {
+        grid-template-columns: 1fr;
+        max-width: 760px;
+    }
+}
+
 @media (max-width: 600px) {
     .install-promo { padding: 60px 0; }
     .install-promo-card { padding: 2rem 1.5rem; }
@@ -1589,22 +1729,37 @@ pre code {
 /* ================================
    Install guide toast (animated, dismissable)
    ================================ */
-.install-toast {
+/* Stack wrapper — both toasts queue vertically in the bottom-right */
+.toast-stack {
     position: fixed;
     bottom: 1.5rem;
     right: 1.5rem;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    gap: 0.875rem;
+    align-items: flex-end;
+}
+
+.install-toast {
+    position: relative;
     width: 320px;
     background: linear-gradient(160deg, var(--color-bg-featured) 0%, var(--color-bg-card) 100%);
     border: 1px solid var(--color-accent-mid);
     border-radius: 12px;
     padding: 1.25rem 1.5rem;
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(6, 182, 212, 0.05);
-    z-index: 1000;
     transform: translateX(0);
     opacity: 1;
     transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
     animation: install-toast-slide-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) 0.8s both,
                install-toast-glow 2.4s ease-out 1.6s 1;
+}
+
+/* Getting Started toast — same look, delayed entry so it appears after the install toast settles */
+.install-toast--gs {
+    animation: install-toast-slide-in 0.6s cubic-bezier(0.16, 1, 0.3, 1) 3s both,
+               install-toast-glow 2.4s ease-out 3.8s 1;
 }
 
 @keyframes install-toast-slide-in {

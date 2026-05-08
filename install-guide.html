@@ -203,9 +203,14 @@
             </a>
             <ul class="nav-menu">
                 <li><a href="index.html#services" class="nav-link">Services</a></li>
-                <li><a href="index.html#salt101" class="nav-link">Salt 101</a></li>
-                <li><a href="install-guide.html" class="nav-link" aria-current="page">Install Guide</a></li>
-                <li><a href="getting-started.html" class="nav-link">Getting Started</a></li>
+                <li class="nav-dropdown">
+                    <a href="#" class="nav-link nav-dropdown-toggle" aria-haspopup="true" aria-expanded="false" onclick="event.preventDefault();">Learn Salt <span class="nav-caret">▾</span></a>
+                    <ul class="nav-dropdown-menu" aria-label="Learn submenu">
+                        <li><a href="salt-101.html" class="nav-link">Salt 101</a></li>
+                        <li><a href="install-guide.html" class="nav-link" aria-current="page">Install Guide</a></li>
+                        <li><a href="getting-started.html" class="nav-link">Getting Started</a></li>
+                    </ul>
+                </li>
                 <li><a href="index.html#about" class="nav-link">About</a></li>
                 <li><a href="index.html#contact" class="nav-link nav-cta">Let's talk →</a></li>
             </ul>

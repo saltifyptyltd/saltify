@@ -24,11 +24,15 @@
             </a>
             <ul class="nav-menu">
                 <li><a href="#services" class="nav-link">Services</a></li>
-                <li><a href="#salt101" class="nav-link">Salt 101</a></li>
-                <li><a href="install-guide.html" class="nav-link">Install Guide</a></li>
-                <li><a href="getting-started.html" class="nav-link">Getting Started</a></li>
+                <li class="nav-dropdown">
+                    <a href="#" class="nav-link nav-dropdown-toggle" aria-haspopup="true" aria-expanded="false" onclick="event.preventDefault();">Learn Salt <span class="nav-caret">▾</span></a>
+                    <ul class="nav-dropdown-menu" aria-label="Learn submenu">
+                        <li><a href="salt-101.html" class="nav-link">Salt 101</a></li>
+                        <li><a href="install-guide.html" class="nav-link">Install Guide</a></li>
+                        <li><a href="getting-started.html" class="nav-link">Getting Started</a></li>
+                    </ul>
+                </li>
                 <li><a href="#about" class="nav-link">About</a></li>
-                <li><a href="#contact" class="nav-link">Contact</a></li>
                 <li><a href="#contact" class="nav-link nav-cta">Let's talk →</a></li>
             </ul>
             <div class="nav-right">
@@ -299,139 +303,54 @@
         </div>
     </section>
 
-    <!-- Salt 101 -->
-    <section id="salt101" class="salt101 section-alt">
-        <div class="container">
-            <header class="section-header">
-                <h2>Salt 101</h2>
-                <p>How to start, and the commands you'll actually use.</p>
-            </header>
-
-            <h3 class="subsection-title">Get started in five steps</h3>
-            <div class="quickstart-grid divider-grid">
-                <article class="quickstart-step fade-in">
-                    <span class="step-number">01</span>
-                    <h4>Install the master</h4>
-                    <p>Bootstrap on your control node. The <code>-M</code> flag installs master + minion together so the master manages itself.</p>
-                    <pre><code><span class="code-comment"># on the master host</span>
-curl -fsSL https://bootstrap.saltproject.io | sudo sh -s -- -M</code></pre>
-                </article>
-                <article class="quickstart-step fade-in">
-                    <span class="step-number">02</span>
-                    <h4>Install a minion</h4>
-                    <p>Same bootstrap, no flag. Then point it at your master in <code>/etc/salt/minion</code>.</p>
-                    <pre><code><span class="code-comment"># on each managed host</span>
-curl -fsSL https://bootstrap.saltproject.io | sudo sh
-echo "master: salt-master.your.domain" | \
-  sudo tee /etc/salt/minion.d/master.conf
-sudo systemctl restart salt-minion</code></pre>
-                </article>
-                <article class="quickstart-step fade-in">
-                    <span class="step-number">03</span>
-                    <h4>Accept the keys</h4>
-                    <p>Minions register with a public key. Inspect, then accept.</p>
-                    <pre><code><span class="code-comment"># on the master</span>
-sudo salt-key -L           <span class="code-comment"># list pending keys</span>
-sudo salt-key -A           <span class="code-comment"># accept all pending</span></code></pre>
-                </article>
-                <article class="quickstart-step fade-in">
-                    <span class="step-number">04</span>
-                    <h4>Wire up git</h4>
-                    <p>Treat <code>/srv/salt</code> as a git checkout. A <code>gitpull.service</code> systemd unit lets your CI pipeline trigger a pull over SSH on every promotion.</p>
-                    <pre><code><span class="code-comment"># pulled by your pipeline on each release</span>
-sudo systemctl start gitpull.service</code></pre>
-                </article>
-                <article class="quickstart-step fade-in">
-                    <span class="step-number">05</span>
-                    <h4>Apply your first state</h4>
-                    <p>Define a state in <code>/srv/salt/top.sls</code>, then push it to a target.</p>
-                    <pre><code>sudo salt 'web*' state.apply
-sudo salt '*'    state.highstate</code></pre>
-                </article>
-            </div>
-
-            <h3 class="subsection-title">Essential commands</h3>
-            <div class="commands-grid divider-grid">
-                <div class="cmd-card hover-card fade-in">
-                    <div class="cmd-label">Connectivity</div>
-                    <pre><code>salt '*' test.ping</code></pre>
-                    <p>Are my minions alive and authenticated?</p>
-                </div>
-                <div class="cmd-card hover-card fade-in">
-                    <div class="cmd-label">Apply states</div>
-                    <pre><code>salt '*' state.apply
-salt 'db*' state.apply mysql</code></pre>
-                    <p>Run the top file, or apply a specific state to a target.</p>
-                </div>
-                <div class="cmd-card hover-card fade-in">
-                    <div class="cmd-label">Inspect facts</div>
-                    <pre><code>salt '*' grains.items
-salt '*' pillar.items</code></pre>
-                    <p>Read grains (host facts) and pillar (your data tree).</p>
-                </div>
-                <div class="cmd-card hover-card fade-in">
-                    <div class="cmd-label">Run anything</div>
-                    <pre><code>salt 'web*' cmd.run 'systemctl status nginx'</code></pre>
-                    <p>Ad-hoc shell across a fleet. Use sparingly — prefer states.</p>
-                </div>
-                <div class="cmd-card hover-card fade-in">
-                    <div class="cmd-label">Local dry run</div>
-                    <pre><code>salt-call --local state.apply test=True</code></pre>
-                    <p>From the minion itself, no master, no commit. Iterate fast.</p>
-                </div>
-                <div class="cmd-card hover-card fade-in">
-                    <div class="cmd-label">Watch the bus</div>
-                    <pre><code>salt-run state.event pretty=True</code></pre>
-                    <p>Tail every event on the master. The first thing you open when something's off.</p>
-                </div>
-                <div class="cmd-card hover-card fade-in">
-                    <div class="cmd-label">Orchestration</div>
-                    <pre><code>salt-run state.orch orch.deploy_app</code></pre>
-                    <p>Multi-step, multi-host workflows. Blue/green cutovers live here.</p>
-                </div>
-                <div class="cmd-card hover-card fade-in">
-                    <div class="cmd-label">Targeting</div>
-                    <pre><code>salt -G 'os:Windows' test.ping
-salt -C 'web* and G@env:prod' state.apply</code></pre>
-                    <p>Grain match (<code>-G</code>) and compound (<code>-C</code>) — the targeting you'll use every day.</p>
-                </div>
-            </div>
-
-            <h3 class="subsection-title">Further reading</h3>
-            <ul class="links-row">
-                <li><a href="https://saltproject.io/" target="_blank" rel="noopener">Salt Project ↗</a></li>
-                <li><a href="https://docs.saltproject.io/" target="_blank" rel="noopener">Documentation ↗</a></li>
-                <li><a href="https://github.com/saltstack/salt" target="_blank" rel="noopener">GitHub repo ↗</a></li>
-                <li><a href="https://docs.saltproject.io/salt/install-guide/en/latest/" target="_blank" rel="noopener">Install guide ↗</a></li>
-                <li><a href="https://www.vmware.com/products/aria-automation-config.html" target="_blank" rel="noopener">VMware Aria Automation Config ↗</a></li>
-            </ul>
-        </div>
-    </section>
-
-    <!-- Install Guide promo -->
+    <!-- Free guides promo: install + getting-started -->
     <section class="install-promo">
         <div class="container">
-            <div class="install-promo-card fade-in">
-                <p class="install-promo-eyebrow">FREE WALKTHROUGH · NO SIGNUP</p>
-                <h2>Build VCF Salt the right way.</h2>
-                <p class="install-promo-lead">The 3-server architecture we run in production. Eleven install steps. Blue/green ready. <strong>Never roll back a database again.</strong></p>
-                <div class="install-promo-stats">
-                    <div class="install-promo-stat">
-                        <span class="install-promo-stat-num">3</span>
-                        <span class="install-promo-stat-label">servers</span>
+            <p class="install-promo-eyebrow" style="text-align: center; margin-bottom: 2rem;">FREE WALKTHROUGHS · NO SIGNUP</p>
+            <div class="install-promo-grid">
+                <div class="install-promo-card fade-in">
+                    <p class="install-promo-card-tag">Step 1 · Install</p>
+                    <h2>Build VCF Salt the right way.</h2>
+                    <p class="install-promo-lead">The 3-server architecture we run in production. Eleven install steps. Blue/green ready. <strong>Never roll back a database again.</strong></p>
+                    <div class="install-promo-stats">
+                        <div class="install-promo-stat">
+                            <span class="install-promo-stat-num">3</span>
+                            <span class="install-promo-stat-label">servers</span>
+                        </div>
+                        <div class="install-promo-stat">
+                            <span class="install-promo-stat-num">11</span>
+                            <span class="install-promo-stat-label">steps</span>
+                        </div>
+                        <div class="install-promo-stat">
+                            <span class="install-promo-stat-num">10<span class="install-promo-stat-unit">min</span></span>
+                            <span class="install-promo-stat-label">rebuild</span>
+                        </div>
                     </div>
-                    <div class="install-promo-stat">
-                        <span class="install-promo-stat-num">11</span>
-                        <span class="install-promo-stat-label">steps</span>
-                    </div>
-                    <div class="install-promo-stat">
-                        <span class="install-promo-stat-num">10<span class="install-promo-stat-unit">min</span></span>
-                        <span class="install-promo-stat-label">rebuild</span>
-                    </div>
+                    <a href="install-guide.html" class="btn-primary">Read the install guide →</a>
                 </div>
-                <a href="install-guide.html" class="btn-primary">Read the install guide →</a>
-                <p class="install-promo-note">No signup. No email gate. Just the playbook.</p>
+
+                <div class="install-promo-card fade-in">
+                    <p class="install-promo-card-tag">Step 2 · Use it</p>
+                    <h2>Then write your first states.</h2>
+                    <p class="install-promo-lead">From hello-world to pillar to Git. Windows + Linux side by side. <strong>Same rebuild-from-Git pattern, applied to your day-one workflow.</strong></p>
+                    <div class="install-promo-stats">
+                        <div class="install-promo-stat">
+                            <span class="install-promo-stat-num">5</span>
+                            <span class="install-promo-stat-label">first states</span>
+                        </div>
+                        <div class="install-promo-stat">
+                            <span class="install-promo-stat-num">11</span>
+                            <span class="install-promo-stat-label">real-world</span>
+                        </div>
+                        <div class="install-promo-stat">
+                            <span class="install-promo-stat-num">Git</span>
+                            <span class="install-promo-stat-label">ready</span>
+                        </div>
+                    </div>
+                    <a href="getting-started.html" class="btn-primary">Read the tutorial →</a>
+                </div>
             </div>
+            <p class="install-promo-note" style="text-align: center; margin-top: 1.75rem;">No signup. No email gate. Just the playbook.</p>
         </div>
     </section>
 
@@ -512,31 +431,53 @@ salt -C 'web* and G@env:prod' state.apply</code></pre>
         </div>
     </footer>
 
-    <!-- Install guide promo toast (slides in via CSS animation, dismissable) -->
-    <div class="install-toast" id="installToast" role="dialog" aria-label="Install guide announcement">
-        <button class="install-toast-close" id="installToastClose" aria-label="Dismiss">×</button>
-        <div class="install-toast-body">
-            <div class="install-toast-doc" aria-hidden="true">
-                <svg viewBox="0 0 56 68" width="48" height="58" xmlns="http://www.w3.org/2000/svg">
-                    <!-- Document body with folded corner -->
-                    <path d="M4,3 L36,3 L52,19 L52,63 Q52,65 50,65 L6,65 Q4,65 4,63 Z" class="doc-paper"/>
-                    <!-- Folded corner -->
-                    <path d="M36,3 L36,17 Q36,19 38,19 L52,19" class="doc-fold"/>
-                    <!-- Animated text lines (drawn in sequence) -->
-                    <line x1="11" y1="29" x2="45" y2="29" class="doc-line" style="--d: 0.1s"/>
-                    <line x1="11" y1="37" x2="42" y2="37" class="doc-line" style="--d: 0.25s"/>
-                    <line x1="11" y1="45" x2="45" y2="45" class="doc-line" style="--d: 0.4s"/>
-                    <line x1="11" y1="53" x2="35" y2="53" class="doc-line" style="--d: 0.55s"/>
-                    <!-- Checkmark badge that pops in after lines -->
-                    <circle cx="46" cy="56" r="9" class="doc-check-bg"/>
-                    <path d="M41.5,55.5 L45,59 L50.5,52.5" class="doc-check-mark"/>
-                </svg>
+    <!-- Promo toast stack (slides in via CSS animation, dismissable) -->
+    <div class="toast-stack">
+        <div class="install-toast" id="installToast" role="dialog" aria-label="Install guide announcement">
+            <button class="install-toast-close" id="installToastClose" aria-label="Dismiss">×</button>
+            <div class="install-toast-body">
+                <div class="install-toast-doc" aria-hidden="true">
+                    <svg viewBox="0 0 56 68" width="48" height="58" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4,3 L36,3 L52,19 L52,63 Q52,65 50,65 L6,65 Q4,65 4,63 Z" class="doc-paper"/>
+                        <path d="M36,3 L36,17 Q36,19 38,19 L52,19" class="doc-fold"/>
+                        <line x1="11" y1="29" x2="45" y2="29" class="doc-line" style="--d: 0.1s"/>
+                        <line x1="11" y1="37" x2="42" y2="37" class="doc-line" style="--d: 0.25s"/>
+                        <line x1="11" y1="45" x2="45" y2="45" class="doc-line" style="--d: 0.4s"/>
+                        <line x1="11" y1="53" x2="35" y2="53" class="doc-line" style="--d: 0.55s"/>
+                        <circle cx="46" cy="56" r="9" class="doc-check-bg"/>
+                        <path d="M41.5,55.5 L45,59 L50.5,52.5" class="doc-check-mark"/>
+                    </svg>
+                </div>
+                <div class="install-toast-text">
+                    <p class="install-toast-eyebrow">NEW · FREE GUIDE</p>
+                    <h3 class="install-toast-title">VCF Salt — install playbook</h3>
+                    <p class="install-toast-sub">3 servers · 11 steps · 10-min rebuild</p>
+                    <a href="install-guide.html" class="install-toast-cta">Read it now <span class="install-toast-arrow">→</span></a>
+                </div>
             </div>
-            <div class="install-toast-text">
-                <p class="install-toast-eyebrow">NEW · FREE GUIDE</p>
-                <h3 class="install-toast-title">VCF Salt — install playbook</h3>
-                <p class="install-toast-sub">3 servers · 11 steps · 10-min rebuild</p>
-                <a href="install-guide.html" class="install-toast-cta">Read it now <span class="install-toast-arrow">→</span></a>
+        </div>
+
+        <div class="install-toast install-toast--gs" id="gettingStartedToast" role="dialog" aria-label="Getting started tutorial announcement">
+            <button class="install-toast-close" id="gettingStartedToastClose" aria-label="Dismiss">×</button>
+            <div class="install-toast-body">
+                <div class="install-toast-doc" aria-hidden="true">
+                    <svg viewBox="0 0 56 68" width="48" height="58" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4,3 L36,3 L52,19 L52,63 Q52,65 50,65 L6,65 Q4,65 4,63 Z" class="doc-paper"/>
+                        <path d="M36,3 L36,17 Q36,19 38,19 L52,19" class="doc-fold"/>
+                        <line x1="11" y1="29" x2="45" y2="29" class="doc-line" style="--d: 0.1s"/>
+                        <line x1="11" y1="37" x2="42" y2="37" class="doc-line" style="--d: 0.25s"/>
+                        <line x1="11" y1="45" x2="45" y2="45" class="doc-line" style="--d: 0.4s"/>
+                        <line x1="11" y1="53" x2="35" y2="53" class="doc-line" style="--d: 0.55s"/>
+                        <circle cx="46" cy="56" r="9" class="doc-check-bg"/>
+                        <path d="M41.5,55.5 L45,59 L50.5,52.5" class="doc-check-mark"/>
+                    </svg>
+                </div>
+                <div class="install-toast-text">
+                    <p class="install-toast-eyebrow">NEW · FREE GUIDE</p>
+                    <h3 class="install-toast-title">Salt — your first states</h3>
+                    <p class="install-toast-sub">Windows + Linux · Pillar · Git</p>
+                    <a href="getting-started.html" class="install-toast-cta">Read the tutorial <span class="install-toast-arrow">→</span></a>
+                </div>
             </div>
         </div>
     </div>

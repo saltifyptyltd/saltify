@@ -199,9 +199,14 @@
             </a>
             <ul class="nav-menu">
                 <li><a href="index.html#services" class="nav-link">Services</a></li>
-                <li><a href="index.html#salt101" class="nav-link">Salt 101</a></li>
-                <li><a href="install-guide.html" class="nav-link">Install Guide</a></li>
-                <li><a href="getting-started.html" class="nav-link" aria-current="page">Getting Started</a></li>
+                <li class="nav-dropdown">
+                    <a href="#" class="nav-link nav-dropdown-toggle" aria-haspopup="true" aria-expanded="false" onclick="event.preventDefault();">Learn Salt <span class="nav-caret">▾</span></a>
+                    <ul class="nav-dropdown-menu" aria-label="Learn submenu">
+                        <li><a href="salt-101.html" class="nav-link">Salt 101</a></li>
+                        <li><a href="install-guide.html" class="nav-link">Install Guide</a></li>
+                        <li><a href="getting-started.html" class="nav-link" aria-current="page">Getting Started</a></li>
+                    </ul>
+                </li>
                 <li><a href="index.html#about" class="nav-link">About</a></li>
                 <li><a href="index.html#contact" class="nav-link nav-cta">Let's talk →</a></li>
             </ul>
@@ -635,7 +640,62 @@ add_to_{{ group | replace(' ', '_') }}:
         </div>
     </section>
 
-    <!-- §5 Modules reference -->
+    <!-- §5 Put it in Git — version control everything -->
+    <section class="guide-section section-alt">
+        <div class="container">
+            <h2>Put it in Git.</h2>
+            <p class="section-intro">Your states are useful on this master. They become an <strong>asset</strong> when they're in Git — versioned, reviewable, and ready to clone onto the next master in your blue/green pair (or any future stack you build).</p>
+
+            <div class="quickstart-grid divider-grid gs-steps">
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">15</span>
+                    <h4>Initialize and commit</h4>
+                    <p>Make <code>/srv/salt</code> a Git repo. Add a sensible <code>.gitignore</code>. Stage everything. Commit.</p>
+                    <pre><code><span class="code-comment"># on master 1, as root</span>
+cd /srv/salt
+git init</code></pre>
+                    <pre><code><span class="code-comment"># /srv/salt/.gitignore — keep noise out</span>
+*.swp
+*~
+.DS_Store
+__pycache__/
+*.pyc</code></pre>
+                    <pre><code><span class="code-comment"># stage and commit everything</span>
+git add .
+git commit -m "Initial: states from getting-started tutorial"</code></pre>
+                </article>
+
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">16</span>
+                    <h4>Push to a remote</h4>
+                    <p>Create an empty repo on GitHub, GitLab, Azure DevOps, or your internal Git host. Point <code>/srv/salt</code> at it. Push.</p>
+                    <pre><code><span class="code-comment"># add the remote and push</span>
+git remote add origin &lt;your git repo url&gt;
+git branch -M main
+git push -u origin main</code></pre>
+                    <p style="font-size: 0.85rem; margin-top: 0.5rem;">Internal Git host with self-signed cert? <code>git config --global http.sslVerify false</code> works for testing — for production, install your CA chain in <code>/etc/pki/ca-trust/source/anchors/</code> instead.</p>
+                </article>
+            </div>
+
+            <div class="callout callout-tip" style="margin-top: 1.75rem;">
+                <i class="fas fa-link"></i>
+                <p><strong>You've just closed the loop with the install guide.</strong> When you build a green stack later, the master doesn't need to be configured by hand. The <a href="install-guide.html" style="color: var(--color-accent);">install guide's GIT card (§6)</a> does this exact pattern in reverse — clones your repo into <code>/srv/salt</code> and adds a 10-minute cron pull. <strong>Future masters get every state you wrote, automatically.</strong></p>
+            </div>
+
+            <pre style="max-width: 760px; margin: 1rem auto 0;"><code><span class="code-comment"># on every future master in your blue/green setup</span>
+sudo mkdir ~/install_backup
+sudo mv /srv/salt/* ~/install_backup/
+sudo git clone &lt;your git repo url&gt; /srv/salt
+cd /srv/salt &amp;&amp; git checkout main</code></pre>
+
+            <div class="callout callout-tip" style="margin-top: 1.75rem;">
+                <i class="fas fa-shield-halved"></i>
+                <p><strong>About <code>/srv/pillar</code>.</strong> Pillar belongs in Git too — it's just data. <strong>Encrypt secrets first with GPG</strong> (we covered the setup in the <a href="install-guide.html#gpg-deep-dive" style="color: var(--color-accent);">install guide's GPG deep-dive</a>). Many teams keep pillar in a <em>separate</em> repo from <code>/srv/salt</code> for tighter access control — same <code>git init</code> / <code>push</code> pattern, different repo.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- §6 Modules reference -->
     <section class="guide-section section-alt" id="modules-reference">
         <div class="container">
             <h2>Modules used in this guide.</h2>
