@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-    <link rel="stylesheet" href="css/style.css?v=20">
+    <link rel="stylesheet" href="css/style.css?v=21">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -643,13 +643,13 @@ sudo salt '*' test.ping</code></pre>
                     <h5 style="font-size: 0.95rem; font-weight: 600; margin: 1.75rem 0 0.5rem; color: var(--color-text);">8.1 — Stage the installer files</h5>
                     <p>On <strong>master 1 only</strong>:</p>
                     <pre><code>cd ~/Config-*/sse-installer
-sudo mkdir -p /srv/salt /srv/pillar
+sudo mkdir -p /srv/salt/pillar
 sudo cp -r salt/sse        /srv/salt/
 sudo cp -r salt/top.sls    /srv/salt/
-sudo cp -r pillar/sse      /srv/pillar/
-sudo cp -r pillar/top.sls  /srv/pillar/</code></pre>
+sudo cp -r pillar/sse      /srv/salt/pillar/
+sudo cp -r pillar/top.sls  /srv/salt/pillar/</code></pre>
 
-                    <h5 style="font-size: 0.95rem; font-weight: 600; margin: 1.5rem 0 0.5rem; color: var(--color-text);">8.2 — Edit <code>/srv/pillar/top.sls</code></h5>
+                    <h5 style="font-size: 0.95rem; font-weight: 600; margin: 1.5rem 0 0.5rem; color: var(--color-text);">8.2 — Edit <code>/srv/salt/pillar/top.sls</code></h5>
                     <p>List the minion IDs of every box in this deployment. Salt uses this to know which boxes get the SSE pillar data.</p>
                     <pre><code>{# Pillar Top File #}
 
@@ -667,7 +667,7 @@ base:
     - sse
   {% endfor %}</code></pre>
 
-                    <h5 style="font-size: 0.95rem; font-weight: 600; margin: 1.5rem 0 0.5rem; color: var(--color-text);">8.3 — Edit <code>/srv/pillar/sse/sse_settings.yaml</code></h5>
+                    <h5 style="font-size: 0.95rem; font-weight: 600; margin: 1.5rem 0 0.5rem; color: var(--color-text);">8.3 — Edit <code>/srv/salt/pillar/sse/sse_settings.yaml</code></h5>
                     <p>The file has five sections. <strong>Most fields are fine at default.</strong> The fields you actually need to set are highlighted <span style="color: var(--color-accent); font-weight: 600;">in cyan</span> below.</p>
 
                     <div style="margin: 1rem 0 1.25rem; padding: 1rem 1.25rem; background: rgba(0,0,0,0.2); border-radius: 8px;">
@@ -1190,6 +1190,6 @@ sudo systemctl restart salt-master</code></pre>
         </div>
     </footer>
 
-    <script src="js/script.js?v=20"></script>
+    <script src="js/script.js?v=21"></script>
 </body>
 </html>
