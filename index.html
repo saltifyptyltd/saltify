@@ -9,8 +9,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-    <link rel="stylesheet" href="css/style.css?v=28">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css?v=30">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -84,14 +84,17 @@
     <section class="academy" aria-labelledby="academy-heading">
         <div class="academy-glow" aria-hidden="true"></div>
         <div class="container">
-            <header class="academy-intro fade-in">
-                <p class="academy-eyebrow">
-                    <span class="academy-mark" aria-hidden="true">⬡</span>
-                    <span>Saltify Academy</span>
-                    <span class="academy-eyebrow-dot" aria-hidden="true"></span>
-                    <span class="academy-eyebrow-tail">Free · No sign-up</span>
-                </p>
-                <h2 id="academy-heading">Learn Salt the Saltify way.</h2>
+          <article class="academy-diploma-frame fade-in">
+            <span class="diploma-corner diploma-corner-tl" aria-hidden="true"></span>
+            <span class="diploma-corner diploma-corner-tr" aria-hidden="true"></span>
+            <span class="diploma-corner diploma-corner-bl" aria-hidden="true"></span>
+            <span class="diploma-corner diploma-corner-br" aria-hidden="true"></span>
+
+            <header class="academy-intro">
+                <p class="diploma-overline"><span class="academy-mark" aria-hidden="true">⬡</span> Free · No sign-up · Honorary credential</p>
+                <h2 id="academy-heading" class="diploma-name">Saltify <span class="diploma-name-script">Academy</span></h2>
+                <div class="diploma-rule" aria-hidden="true"></div>
+                <p class="diploma-tagline">Learn Salt the Saltify way.</p>
                 <p class="academy-sub">Seven free guides. Zero sign-ups. From your first <code>salt-call</code> to AWS, Windows, and AI — all in plain English. <strong>The course we wish we had.</strong></p>
 
                 <div class="academy-stats" role="list">
@@ -122,7 +125,7 @@
             <ol class="academy-path">
                 <li class="academy-step fade-in">
                     <a href="install-guide.html">
-                        <span class="step-num">01</span>
+                        <span class="step-num">SALT 101</span>
                         <span class="step-title">Install Guide</span>
                         <span class="step-blurb">Build VCF Salt the right way. 3 servers, 11 steps, blue/green ready.</span>
                         <span class="step-meta"><i class="far fa-clock" aria-hidden="true"></i> ~20 min read</span>
@@ -130,7 +133,7 @@
                 </li>
                 <li class="academy-step fade-in">
                     <a href="getting-started.html">
-                        <span class="step-num">02</span>
+                        <span class="step-num">SALT 102</span>
                         <span class="step-title">Getting Started</span>
                         <span class="step-blurb">Your first state files. Pillar. GPG. Push to Git. Hello-world to source-of-truth.</span>
                         <span class="step-meta"><i class="far fa-clock" aria-hidden="true"></i> ~15 min</span>
@@ -138,7 +141,7 @@
                 </li>
                 <li class="academy-step fade-in">
                     <a href="states.html">
-                        <span class="step-num">03</span>
+                        <span class="step-num">SALT 201</span>
                         <span class="step-title">Salt States</span>
                         <span class="step-blurb">Six modules cover 90%. Requisites, top file, real production patterns.</span>
                         <span class="step-meta"><i class="far fa-clock" aria-hidden="true"></i> ~10 min</span>
@@ -146,7 +149,7 @@
                 </li>
                 <li class="academy-step fade-in">
                     <a href="windows.html">
-                        <span class="step-num">04</span>
+                        <span class="step-num">SALT 301</span>
                         <span class="step-title">Salt on Windows</span>
                         <span class="step-blurb">Production patterns, not theory. The 6 quirks. winrepo. Fleet-wide.</span>
                         <span class="step-meta"><i class="far fa-clock" aria-hidden="true"></i> ~12 min</span>
@@ -154,7 +157,7 @@
                 </li>
                 <li class="academy-step fade-in">
                     <a href="salt-ai.html">
-                        <span class="step-num">05</span>
+                        <span class="step-num">SALT 401</span>
                         <span class="step-title">Salt + AI</span>
                         <span class="step-blurb">Use Claude, ChatGPT, Cursor with Salt. Pillar-aware prompts that actually work.</span>
                         <span class="step-meta"><i class="far fa-clock" aria-hidden="true"></i> ~10 min</span>
@@ -169,18 +172,37 @@
             </div>
             <div class="academy-reference">
                 <a href="salt-cheat-sheet.html" class="academy-ref-card fade-in">
+                    <span class="ref-code">SALT REF · 01</span>
                     <span class="ref-icon"><i class="fas fa-bolt" aria-hidden="true"></i></span>
                     <h4>Salt Cheat Sheet</h4>
                     <p>The 50 commands you'll actually use, on one scrollable page. No spec sheet, no docstrings.</p>
                     <span class="ref-link">Open the cheat sheet →</span>
                 </a>
                 <a href="salt-state-modules.html" class="academy-ref-card fade-in">
+                    <span class="ref-code">SALT REF · 02</span>
                     <span class="ref-icon"><i class="fas fa-list-ul" aria-hidden="true"></i></span>
                     <h4>State Modules Index</h4>
                     <p>Every state module — 360 of them — grouped by what they do, with usage examples.</p>
                     <span class="ref-link">Browse all 360 →</span>
                 </a>
             </div>
+
+            <!-- Closing signature -->
+            <footer class="diploma-signature">
+                <span class="signature-seal" aria-hidden="true">
+                    <span class="seal-hex">⬡</span>
+                    <span class="seal-check"><i class="fas fa-check"></i></span>
+                </span>
+                <p class="signature-line">
+                    <em>Awarded to anyone who reads all <strong>5 courses</strong> + <strong>2 references</strong>. <span class="diploma-pun">No sign-up. No exam. Just the work.</span></em>
+                </p>
+                <dl class="diploma-meta">
+                    <div><dt>Issued by</dt><dd>Saltify Pty Ltd · Canberra</dd></div>
+                    <div><dt>Curriculum</dt><dd>SALT 101 → 401 + REF · 01–02</dd></div>
+                    <div><dt>Serial</dt><dd>SA-2026-0001</dd></div>
+                </dl>
+            </footer>
+          </article>
         </div>
     </section>
 

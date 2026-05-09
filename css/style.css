@@ -2016,49 +2016,101 @@ pre code {
 
 .academy .container { position: relative; z-index: 1; }
 
+/* ── Diploma frame: wraps the whole Academy section ──────────────── */
+.academy-diploma-frame {
+    position: relative;
+    padding: 3.5rem 3rem;
+    background:
+        linear-gradient(180deg, var(--color-bg-featured) 0%, var(--color-bg-card) 100%);
+    border: 1px solid var(--color-accent-mid);
+    border-radius: var(--radius);
+    /* Faux double-border via box-shadow inset */
+    box-shadow:
+        inset 0 0 0 1px var(--color-bg),
+        inset 0 0 0 2px var(--color-accent-mid),
+        0 30px 60px -30px rgba(6, 182, 212, 0.18);
+}
+.diploma-corner {
+    position: absolute;
+    width: 28px;
+    height: 28px;
+    border: 0 solid var(--color-accent);
+    opacity: 0.7;
+    pointer-events: none;
+}
+.diploma-corner-tl { top: 14px; left: 14px;  border-top-width: 2px; border-left-width: 2px; }
+.diploma-corner-tr { top: 14px; right: 14px; border-top-width: 2px; border-right-width: 2px; }
+.diploma-corner-bl { bottom: 14px; left: 14px; border-bottom-width: 2px; border-left-width: 2px; }
+.diploma-corner-br { bottom: 14px; right: 14px; border-bottom-width: 2px; border-right-width: 2px; }
+
 .academy-intro {
     text-align: center;
     max-width: 760px;
     margin: 0 auto 4rem;
 }
-.academy-eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.625rem;
+.diploma-overline {
     font-family: var(--font-mono);
     font-size: 0.72rem;
     font-weight: 700;
-    letter-spacing: 0.18em;
+    letter-spacing: 0.2em;
     text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin-bottom: 1.25rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.diploma-overline .academy-mark {
     color: var(--color-accent);
-    background: var(--color-accent-softer);
-    border: 1px solid var(--color-accent-mid);
-    padding: 0.45rem 0.9rem;
-    border-radius: 999px;
-    margin-bottom: 1.5rem;
+    font-size: 0.95rem;
+    line-height: 1;
 }
 .academy-mark {
     font-size: 0.95rem;
     line-height: 1;
-    transform: translateY(-1px);
 }
-.academy-eyebrow-dot {
-    width: 4px;
-    height: 4px;
-    border-radius: 50%;
-    background: var(--color-accent);
-    opacity: 0.6;
-}
-.academy-eyebrow-tail {
-    color: var(--color-text-muted);
-    font-weight: 500;
-    letter-spacing: 0.1em;
-}
-.academy h2 {
-    font-size: clamp(2rem, 4vw, 2.875rem);
-    letter-spacing: -0.02em;
-    margin-bottom: 1rem;
+/* Big serif title — the "diploma name" */
+.diploma-name {
+    font-family: 'Playfair Display', 'Times New Roman', serif;
+    font-weight: 700;
+    font-size: clamp(2.75rem, 6vw, 4.5rem);
+    letter-spacing: -0.005em;
     color: var(--color-text);
+    margin: 0 0 1rem;
+    line-height: 1.05;
+}
+.diploma-name-script {
+    font-style: italic;
+    font-weight: 600;
+    color: var(--color-accent);
+}
+/* Decorative rule under the institution name */
+.diploma-rule {
+    width: 96px;
+    height: 1px;
+    margin: 0 auto 1.25rem;
+    background: var(--color-accent-mid);
+    position: relative;
+}
+.diploma-rule::before,
+.diploma-rule::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 6px;
+    height: 6px;
+    background: var(--color-accent);
+    border-radius: 50%;
+    transform: translateY(-50%);
+}
+.diploma-rule::before { left: -12px; }
+.diploma-rule::after  { right: -12px; }
+.diploma-tagline {
+    font-size: clamp(1.1rem, 2vw, 1.375rem);
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    color: var(--color-text);
+    margin: 0 0 1rem;
 }
 .academy-sub {
     font-size: 1.0625rem;
@@ -2162,13 +2214,13 @@ pre code {
     padding: 1.25rem 0 0;
     margin: 0;
 }
-/* The connector line — runs through the centres of the .step-num circles. */
+/* The connector line — runs through the centres of the SALT-code pills. */
 .academy-path::before {
     content: '';
     position: absolute;
-    top: calc(1.25rem + 22px); /* padding-top + half number-circle height */
-    left: calc(10% + 22px);
-    right: calc(10% + 22px);
+    top: calc(1rem + 14px); /* padding-top + half pill height */
+    left: 8%;
+    right: 8%;
     height: 2px;
     background: linear-gradient(90deg,
         var(--color-accent-mid) 0%,
@@ -2211,16 +2263,17 @@ pre code {
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 44px;
-    height: 44px;
-    border-radius: 50%;
+    padding: 0.4rem 0.875rem;
+    border-radius: 999px;
     background: var(--color-bg);
-    border: 2px solid var(--color-accent);
+    border: 1.5px solid var(--color-accent);
     font-family: var(--font-mono);
-    font-size: 0.95rem;
-    font-weight: 600;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.08em;
     color: var(--color-accent);
     box-shadow: 0 0 0 4px var(--color-bg-card);
+    white-space: nowrap;
 }
 .academy-step a:hover .step-num {
     background: var(--color-accent);
@@ -2264,6 +2317,7 @@ pre code {
     gap: 1rem;
 }
 .academy-ref-card {
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 0.65rem;
@@ -2275,6 +2329,15 @@ pre code {
     transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1),
                 border-color 160ms,
                 box-shadow 160ms;
+}
+.ref-code {
+    font-family: var(--font-mono);
+    font-size: 0.65rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    color: var(--color-text-dim);
+    text-transform: uppercase;
+    margin-bottom: 0.2rem;
 }
 .academy-ref-card:hover {
     transform: translateY(-3px);
@@ -2314,6 +2377,81 @@ pre code {
     margin-top: 0.25rem;
 }
 
+/* ── Closing signature — the diploma's "issued by" footer ────────── */
+.diploma-signature {
+    margin-top: 3.25rem;
+    padding-top: 2rem;
+    border-top: 1px dashed var(--color-border);
+    text-align: center;
+}
+.signature-seal {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    margin-bottom: 0.875rem;
+}
+.seal-hex {
+    font-size: 64px;
+    line-height: 1;
+    color: var(--color-accent);
+    opacity: 0.22;
+    text-shadow: 0 0 18px var(--color-accent-mid);
+}
+.seal-check {
+    position: absolute;
+    inset: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    margin: auto;
+    border-radius: 50%;
+    background: var(--color-accent);
+    color: var(--color-bg);
+    font-size: 0.78rem;
+    box-shadow: 0 0 0 5px var(--color-bg-featured);
+}
+.signature-line {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    max-width: 640px;
+    margin: 0 auto 1.5rem;
+}
+.signature-line em { font-style: italic; }
+.diploma-pun {
+    color: var(--color-text);
+    font-weight: 500;
+}
+.diploma-meta {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.25rem 2.5rem;
+    margin: 0;
+}
+.diploma-meta > div { min-width: 0; }
+.diploma-meta dt {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.16em;
+    color: var(--color-text-dim);
+    text-transform: uppercase;
+    margin-bottom: 0.25rem;
+}
+.diploma-meta dd {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--color-text);
+    margin: 0;
+}
+
 /* ── Mobile ──────────────────────────────────────────────────────── */
 @media (max-width: 900px) {
     .academy { padding: 70px 0 80px; }
@@ -2325,11 +2463,19 @@ pre code {
         gap: 0.75rem;
     }
     .academy-path::before { display: none; }
-    .academy-step a { flex-direction: row; align-items: center; text-align: left; }
+    .academy-step a { flex-direction: row; align-items: center; text-align: left; flex-wrap: wrap; }
     .academy-step a .step-num { flex-shrink: 0; }
-    .step-blurb { flex: 1; }
+    .step-title { flex: 1; min-width: 200px; }
+    .step-blurb { flex: 1 1 100%; }
     .step-meta { width: auto; border-top: 0; padding-top: 0; margin-left: auto; }
     .academy-reference { grid-template-columns: 1fr; }
+
+    .academy-diploma-frame { padding: 2.25rem 1.5rem; }
+    .diploma-corner { width: 20px; height: 20px; }
+    .diploma-corner-tl, .diploma-corner-tr { top: 10px; }
+    .diploma-corner-bl, .diploma-corner-br { bottom: 10px; }
+    .diploma-corner-tl, .diploma-corner-bl { left: 10px; }
+    .diploma-corner-tr, .diploma-corner-br { right: 10px; }
 }
 @media (max-width: 600px) {
     .academy-stat-num { font-size: 1.75rem; }
