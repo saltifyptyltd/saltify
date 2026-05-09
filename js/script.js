@@ -254,22 +254,19 @@ function initStateMap() {
 
 function renderStateMap(data) {
     const container = document.getElementById('mapContainer');
-    const { categories, modules, extensions, stats } = data;
+    const { categories, modules, stats } = data;
 
     /* Hero stat counters */
     const statTotal = document.getElementById('statTotal');
     const statCurated = document.getElementById('statCurated');
-    if (statTotal) statTotal.textContent = stats.core_total + stats.extensions_total;
-    if (statCurated) statCurated.textContent = stats.core_curated;
+    if (statTotal) statTotal.textContent = stats.total;
+    if (statCurated) statCurated.textContent = stats.curated;
 
-    /* Group modules + extensions by category */
+    /* Group modules by category */
     const byCat = {};
     categories.forEach(c => byCat[c.id] = []);
     modules.forEach(m => {
         if (m.category && byCat[m.category]) byCat[m.category].push(m);
-    });
-    extensions.forEach(e => {
-        if (e.category && byCat[e.category]) byCat[e.category].push(e);
     });
 
     /* Render each category section */
@@ -299,8 +296,10 @@ function renderStateMap(data) {
 }
 
 function stateMapCard(m) {
-    const isExt = !!m.is_extension;
-    const osBadges = (m.os || []).map(o => {
+    const safeName = escHtml(m.name);
+    const os = m.os || [];
+    const summary = m.summary || '';
+    const osBadges = os.map(o => {
         const cls = `os-${String(o).replace(/[^a-z0-9-]/gi, '-').toLowerCase()}`;
         return `<span class="map-os-badge ${cls}">${escHtml(o)}</span>`;
     }).join('');
@@ -308,12 +307,9 @@ function stateMapCard(m) {
 
     const exHtml = (m.examples || []).map(ex => `<pre><code>${escHtml(ex)}</code></pre>`).join('');
     const fnsHtml = (m.functions || []).map(f =>
-        `<div><code><span class="fn-name">${escHtml(m.name)}.${escHtml(f.name)}</span><span class="fn-sig">${escHtml(f.signature)}</span></code></div>`
+        `<div><code><span class="fn-name">${safeName}.${escHtml(f.name)}</span><span class="fn-sig">${escHtml(f.signature)}</span></code></div>`
     ).join('');
 
-    /* Show details if we have anything to show. Core modules nearly always have
-       a function list; extensions only get details when the docs cache had a
-       YAML example (~203/233). */
     let detailsHtml = '';
     let toggleHtml = '';
     if (exHtml || fnsHtml) {
@@ -326,16 +322,14 @@ function stateMapCard(m) {
     }
 
     const docLink = `<a class="map-card-doclink" href="${escHtml(m.docs_url)}" target="_blank" rel="noopener">More detail? Official docs ↗</a>`;
-    const extTag = isExt ? `<span class="map-card-ext-tag">ext</span>` : '';
 
     return `
-        <article class="map-card${isExt ? ' is-extension' : ''}" data-name="${escHtml(m.name)}" data-os="${escHtml((m.os || []).join(' '))}" data-summary="${escHtml((m.summary || '').toLowerCase())}">
+        <article class="map-card" data-name="${safeName}" data-os="${escHtml(os.join(' '))}" data-summary="${escHtml(summary.toLowerCase())}">
             <div class="map-card-top">
-                <h4 class="map-card-name">${escHtml(m.name)}</h4>
-                ${extTag}
+                <h4 class="map-card-name">${safeName}</h4>
             </div>
             <div class="map-card-os">${osBadges}</div>
-            <p class="map-card-summary">${escHtml(m.summary || '')}</p>
+            <p class="map-card-summary">${escHtml(summary)}</p>
             ${mainFn}
             <div class="map-card-actions">
                 ${toggleHtml}

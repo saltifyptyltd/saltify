@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Salt State Modules Index — every module, grouped by what they do | Saltify</title>
-    <meta name="description" content="The complete index of every Salt state module — grouped by function (packages, networking, auth, cloud, containers, monitoring...), not alphabetised. Search, filter by OS, click for usage examples.">
+    <meta name="description" content="The complete index of every Salt state module in current master — grouped by function (packages, files, services, networking, auth, data, sysconfig, salt-meta, monitoring), not alphabetised. Search, filter by OS, click for usage examples.">
 
     <!-- Open Graph / social -->
     <meta property="og:type" content="website">
@@ -71,10 +71,8 @@
         /* ── Module cards ──────────────────────────────────────────────── */
         .map-card { padding: 1.125rem 1.25rem; background: var(--color-bg); border: 1px solid var(--color-border); border-radius: 10px; display: flex; flex-direction: column; gap: 0.6rem; transition: border-color 120ms; }
         .map-card:hover { border-color: var(--color-accent-mid); }
-        .map-card.is-extension { border-style: dashed; }
         .map-card-top { display: flex; align-items: baseline; justify-content: space-between; gap: 0.75rem; }
         .map-card-name { font-family: var(--font-mono); font-size: 1rem; font-weight: 600; color: var(--color-text); margin: 0; }
-        .map-card-ext-tag { font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text-dim); border: 1px solid var(--color-border); padding: 0.15rem 0.4rem; border-radius: 4px; }
         .map-card-os { display: flex; flex-wrap: wrap; gap: 0.3rem; }
         .map-os-badge { font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.06em; padding: 0.18rem 0.5rem; border-radius: 4px; text-transform: lowercase; }
         .map-os-badge.os-linux       { background: rgba(255, 165, 0, 0.12);   color: #f0a040; border: 1px solid rgba(255, 165, 0, 0.25); }

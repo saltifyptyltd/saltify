@@ -37,7 +37,7 @@ CATEGORIES = [
     {"id": "salt-meta",    "label": "Salt-on-Salt, orchestration, meta",
      "blurb": "Cross-minion orchestration, calling other configuration tools (Ansible, idem), and stateconf glue."},
     {"id": "monitoring",   "label": "Monitoring & observability",
-     "blurb": "Web-server uptime monitoring (and the only state-modules monitoring entry left in core after the saltext purge)."},
+     "blurb": "Web-server uptime monitoring."},
 ]
 
 # Hand-curated metadata for core modules. Format:
@@ -240,11 +240,6 @@ CURATION = {
     "uptime":               {"category": "monitoring", "os": ["cross-platform"]},
 }
 
-# Curated extension modules — modules that ship in saltext-* packages, not in
-# the core Salt repo. We don't have their source locally, so we only ship a
-# name + 1-line summary + link to the official docs.
-# Format: (name, category, os, summary)
-EXTENSIONS = []  # All saltext-* extensions removed; master docs scope only.
 
 
 def extract_module(path: Path) -> dict:
@@ -264,8 +259,7 @@ def extract_module(path: Path) -> dict:
 
     return {
         "name": path.stem,
-        "filename": path.name,
-        "doc_first_line": first_sentence(module_doc),
+        "_doc_first_line": first_sentence(module_doc),  # build-time only; dropped before output
         "functions": functions,
         "examples": examples[:2],
         "docs_url": DOC_URL.format(name=path.stem),
@@ -358,40 +352,37 @@ def main():
         if cur:
             data["category"] = cur["category"]
             data["os"] = cur["os"]
-            data["summary"] = cur.get("summary") or data["doc_first_line"] or "(No description available.)"
+            data["summary"] = cur.get("summary") or data["_doc_first_line"] or "(No description available.)"
             data["main"] = cur.get("main") or (
                 f"{py.stem}.{data['functions'][0]['name']}" if data["functions"] else py.stem
             )
         else:
             data["category"] = "uncategorized"
             data["os"] = ["unknown"]
-            data["summary"] = data["doc_first_line"] or "(No description available.)"
+            data["summary"] = data["_doc_first_line"] or "(No description available.)"
             data["main"] = data["functions"][0]["name"] if data["functions"] else ""
             data["main"] = f"{py.stem}.{data['main']}" if data["main"] else ""
 
+        # Strip build-time-only helpers prefixed with underscore.
+        for key in [k for k in data if k.startswith("_")]:
+            del data[key]
         modules.append(data)
-
-    # Extensions list is empty in the master-scope build — see EXTENSIONS = []
-    # at the top of this file. The 233 historical entries were removed when
-    # the Salt project moved them out of the main docs into saltext-* packages.
-    extensions = []
 
     output = {
         "categories": CATEGORIES,
         "modules": modules,
-        "extensions": extensions,
         "stats": {
-            "core_total": len(modules),
-            "core_curated": sum(1 for m in modules if m["category"] != "uncategorized"),
-            "extensions_total": len(extensions),
+            "total": len(modules),
+            "curated": sum(1 for m in modules if m["category"] != "uncategorized"),
         },
     }
 
-    out_path.write_text(json.dumps(output, indent=2) + "\n")
-    print(f"Wrote {out_path}")
-    print(f"  core modules: {output['stats']['core_total']} total, "
-          f"{output['stats']['core_curated']} curated")
-    print(f"  extensions:   {output['stats']['extensions_total']}")
+    # Compact JSON — saves ~30 KB over the wire vs indent=2, no readability cost
+    # since this file is consumed by the page JS, not browsed by humans.
+    out_path.write_text(json.dumps(output, separators=(",", ":")) + "\n")
+    size = out_path.stat().st_size
+    print(f"Wrote {out_path}  ({size:,} bytes)")
+    print(f"  modules: {output['stats']['total']} total, {output['stats']['curated']} curated")
 
 
 if __name__ == "__main__":
