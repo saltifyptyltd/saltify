@@ -2229,3 +2229,153 @@ pre code {
     .academy-step a { flex-direction: column; align-items: center; text-align: center; }
     .step-meta { width: 100%; border-top: 1px dashed var(--color-border); padding-top: 0.4rem; margin-left: 0; }
 }
+
+/* ================================
+   Academy launch toast — single dismissable popup announcing the
+   Saltify Academy. Lives on Learn Salt deep pages only (not on the
+   home page where Academy is already prominent, not on the standalone
+   Academy page itself).
+   ================================ */
+.academy-toast {
+    position: fixed;
+    bottom: 1.5rem;
+    right: 1.5rem;
+    z-index: 1000;
+    width: 320px;
+    background: linear-gradient(160deg, var(--color-bg-featured) 0%, var(--color-bg-card) 100%);
+    border: 1px solid var(--color-accent-mid);
+    border-radius: 12px;
+    padding: 1.25rem 1.5rem;
+    box-shadow:
+        0 12px 40px rgba(0, 0, 0, 0.4),
+        inset 0 0 0 1px var(--color-bg),
+        inset 0 0 0 2px var(--color-accent-mid);
+    transform: translateX(0);
+    opacity: 1;
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+    animation: academy-toast-slide-in 0.65s cubic-bezier(0.16, 1, 0.3, 1) 0.9s both,
+               academy-toast-glow 2.6s ease-out 1.7s 1;
+}
+.academy-toast--hidden {
+    transform: translateX(calc(100% + 2rem));
+    opacity: 0;
+    pointer-events: none;
+    animation: none;
+}
+@keyframes academy-toast-slide-in {
+    from { transform: translateX(calc(100% + 2rem)); opacity: 0; }
+    to   { transform: translateX(0); opacity: 1; }
+}
+@keyframes academy-toast-glow {
+    0%   { box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), inset 0 0 0 1px var(--color-bg), inset 0 0 0 2px var(--color-accent-mid); }
+    50%  { box-shadow: 0 12px 50px rgba(0, 0, 0, 0.45), inset 0 0 0 1px var(--color-bg), inset 0 0 0 2px var(--color-accent), 0 0 30px rgba(6, 182, 212, 0.25); }
+    100% { box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4), inset 0 0 0 1px var(--color-bg), inset 0 0 0 2px var(--color-accent-mid); }
+}
+.academy-toast-close {
+    position: absolute;
+    top: 0.4rem;
+    right: 0.6rem;
+    background: transparent;
+    border: none;
+    color: var(--color-text-muted);
+    font-size: 1.4rem;
+    cursor: pointer;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    border-radius: 6px;
+    transition: color 120ms, background 120ms;
+    padding: 0;
+}
+.academy-toast-close:hover {
+    color: var(--color-text);
+    background: rgba(255, 255, 255, 0.05);
+}
+.academy-toast-body {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.875rem;
+}
+.academy-toast-seal {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+}
+.academy-toast-seal .seal-hex {
+    font-size: 44px;
+    line-height: 1;
+    color: var(--color-accent);
+    opacity: 0.25;
+}
+.toast-seal-check {
+    position: absolute;
+    inset: 0;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    margin: auto;
+    border-radius: 50%;
+    background: var(--color-accent);
+    color: var(--color-bg);
+    font-size: 0.6rem;
+    box-shadow: 0 0 0 3px var(--color-bg-featured);
+}
+.academy-toast-text { flex: 1; min-width: 0; }
+.academy-toast-eyebrow {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    color: var(--color-accent);
+    margin: 0 0 0.4rem;
+    text-transform: uppercase;
+}
+.academy-toast-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin: 0 0 0.3rem;
+    line-height: 1.25;
+    letter-spacing: -0.005em;
+}
+.academy-toast-title em {
+    font-style: italic;
+    color: var(--color-accent);
+}
+.academy-toast-sub {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--color-text-muted);
+    margin: 0 0 0.875rem;
+    line-height: 1.45;
+}
+.academy-toast-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-accent);
+    text-decoration: none;
+    transition: color 120ms, gap 120ms;
+}
+.academy-toast-cta:hover { color: var(--color-text); gap: 0.55rem; }
+
+@media (max-width: 600px) {
+    .academy-toast {
+        bottom: 1rem;
+        right: 1rem;
+        left: 1rem;
+        width: auto;
+    }
+}

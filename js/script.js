@@ -10,7 +10,27 @@ document.addEventListener('DOMContentLoaded', () => {
     initSaltFeed();
     initStateMap();
     initAcademy();
+    initAcademyToast();
 });
+
+function initAcademyToast() {
+    const toast = document.getElementById('academyToast');
+    const closeBtn = document.getElementById('academyToastClose');
+    if (!toast || !closeBtn) return;
+
+    const dismissedKey = 'saltifyAcademyToastDismissed';
+    if (localStorage.getItem(dismissedKey)) {
+        toast.classList.add('academy-toast--hidden');
+        return;
+    }
+    toast.setAttribute('aria-hidden', 'false');
+
+    closeBtn.addEventListener('click', () => {
+        toast.classList.add('academy-toast--hidden');
+        toast.setAttribute('aria-hidden', 'true');
+        localStorage.setItem(dismissedKey, '1');
+    });
+}
 
 function initTheme() {
     const toggle = document.getElementById('themeToggle');

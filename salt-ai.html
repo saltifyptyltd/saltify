@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-    <link rel="stylesheet" href="css/style.css?v=26">
+    <link rel="stylesheet" href="css/style.css?v=31">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -114,6 +114,7 @@
                 <li class="nav-dropdown">
                     <a href="#" class="nav-link nav-dropdown-toggle" aria-haspopup="true" aria-expanded="false" onclick="event.preventDefault();">Learn Salt <span class="nav-caret">▾</span></a>
                     <ul class="nav-dropdown-menu" aria-label="Learn submenu">
+                        <li><a href="salt-academy.html" class="nav-link">Saltify Academy</a></li>
                         <li><a href="salt-cheat-sheet.html" class="nav-link">Cheat Sheet</a></li>
                         <li><a href="install-guide.html" class="nav-link">Install Guide</a></li>
                         <li><a href="getting-started.html" class="nav-link">Getting Started</a></li>
@@ -434,6 +435,23 @@ salt 'minion-test' state.apply your.state</code></pre>
         </div>
     </footer>
 
-    <script src="js/script.js?v=26"></script>
+    <!-- Saltify Academy launch toast -->
+    <aside class="academy-toast" id="academyToast" role="dialog" aria-label="Saltify Academy launch announcement">
+        <button class="academy-toast-close" id="academyToastClose" aria-label="Dismiss">×</button>
+        <div class="academy-toast-body">
+            <span class="academy-toast-seal" aria-hidden="true">
+                <span class="seal-hex">⬡</span>
+                <span class="toast-seal-check"><i class="fas fa-check"></i></span>
+            </span>
+            <div class="academy-toast-text">
+                <p class="academy-toast-eyebrow">NEW · NOW LIVE</p>
+                <h3 class="academy-toast-title"><em>Saltify</em> Academy is live</h3>
+                <p class="academy-toast-sub">5 free courses · 2 references · No sign-up</p>
+                <a href="salt-academy.html" class="academy-toast-cta">Open the Academy <span aria-hidden="true">→</span></a>
+            </div>
+        </div>
+    </aside>
+
+    <script src="js/script.js?v=31"></script>
 </body>
 </html>
