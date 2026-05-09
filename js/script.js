@@ -8,35 +8,9 @@ document.addEventListener('DOMContentLoaded', () => {
     initNavigation();
     initAnimations();
     initSaltFeed();
-    initInstallToast();
     initStateMap();
     initAcademy();
 });
-
-function initInstallToast() {
-    initToast('installToast', 'installToastClose', 'saltifyInstallToastDismissed');
-    initToast('gettingStartedToast', 'gettingStartedToastClose', 'saltifyGettingStartedToastDismissed');
-    initToast('statesToast', 'statesToastClose', 'saltifyStatesToastDismissed');
-    initToast('windowsToast', 'windowsToastClose', 'saltifyWindowsToastDismissed');
-}
-
-function initToast(toastId, closeBtnId, dismissedKey) {
-    const toast = document.getElementById(toastId);
-    const closeBtn = document.getElementById(closeBtnId);
-    if (!toast || !closeBtn) return;
-
-    if (localStorage.getItem(dismissedKey)) {
-        toast.classList.add('install-toast--hidden');
-        return;
-    }
-    toast.setAttribute('aria-hidden', 'false');
-
-    closeBtn.addEventListener('click', () => {
-        toast.classList.add('install-toast--hidden');
-        toast.setAttribute('aria-hidden', 'true');
-        localStorage.setItem(dismissedKey, '1');
-    });
-}
 
 function initTheme() {
     const toggle = document.getElementById('themeToggle');
