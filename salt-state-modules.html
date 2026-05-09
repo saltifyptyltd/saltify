@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salt State Modules Index — every module, grouped by what they do | Saltify</title>
+    <meta name="description" content="The complete index of every Salt state module — grouped by function (packages, networking, auth, cloud, containers, monitoring...), not alphabetised. Search, filter by OS, click for usage examples.">
+    <link rel="icon" type="image/png" href="logo/saltify-logo-large-transparent.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="stylesheet" href="css/style.css?v=27">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* ── Page hero ─────────────────────────────────────────────────── */
+        .guide-hero { padding: 140px 0 40px; text-align: center; }
+        .guide-hero h1 { font-size: clamp(2rem, 4vw, 3rem); letter-spacing: -0.02em; margin-bottom: 1rem; }
+        .guide-hero .lead { font-size: 1.125rem; color: var(--color-text-muted); max-width: 720px; margin: 0 auto; line-height: 1.6; }
+        .guide-hero .crumb { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--color-accent); margin-bottom: 1.25rem; }
+
+        .map-stats { display: flex; justify-content: center; gap: 2.5rem; margin: 1.75rem 0 0.75rem; flex-wrap: wrap; }
+        .map-stat { display: flex; flex-direction: column; align-items: center; }
+        .map-stat-num { font-family: var(--font-mono); font-size: 1.875rem; font-weight: 600; color: var(--color-accent); line-height: 1; }
+        .map-stat-label { font-size: 0.7rem; color: var(--color-text-muted); margin-top: 0.4rem; letter-spacing: 0.12em; text-transform: uppercase; }
+
+        /* ── Sticky filter bar ─────────────────────────────────────────── */
+        .map-filter-bar { position: sticky; top: 64px; z-index: 50; background: var(--color-bg); border-bottom: 1px solid var(--color-border); padding: 0.875rem 0; backdrop-filter: blur(8px); }
+        .map-filter-row { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+        .map-search-wrap { position: relative; flex: 1 1 280px; min-width: 240px; max-width: 400px; }
+        .map-search-wrap i { position: absolute; left: 0.875rem; top: 50%; transform: translateY(-50%); color: var(--color-text-dim); font-size: 0.875rem; }
+        .map-search { width: 100%; padding: 0.625rem 0.875rem 0.625rem 2.25rem; background: var(--color-bg-card); border: 1px solid var(--color-border); border-radius: 8px; color: var(--color-text); font-size: 0.9rem; font-family: inherit; }
+        .map-search:focus { outline: none; border-color: var(--color-accent); }
+        .map-chips { display: flex; gap: 0.4rem; flex-wrap: wrap; }
+        .map-chip { padding: 0.4rem 0.75rem; background: var(--color-bg-card); border: 1px solid var(--color-border); border-radius: 999px; font-size: 0.8rem; color: var(--color-text-muted); cursor: pointer; transition: all 120ms; user-select: none; font-family: var(--font-mono); }
+        .map-chip:hover { border-color: var(--color-accent-mid); color: var(--color-text); }
+        .map-chip.active { background: var(--color-accent); border-color: var(--color-accent); color: var(--color-bg); }
+        .map-chip-label { font-size: 0.7rem; color: var(--color-text-dim); margin-right: 0.4rem; letter-spacing: 0.1em; text-transform: uppercase; font-family: inherit; }
+
+        /* ── Category sections ─────────────────────────────────────────── */
+        .map-body { padding: 1.5rem 0 80px; }
+        .map-category { margin-bottom: 1rem; border: 1px solid var(--color-border); border-radius: var(--radius); overflow: hidden; background: var(--color-bg-card); }
+        .map-cat-head { display: flex; align-items: center; gap: 1rem; padding: 1rem 1.5rem; cursor: pointer; user-select: none; transition: background 120ms; }
+        .map-cat-head:hover { background: var(--color-accent-softer); }
+        .map-cat-toggle { font-family: var(--font-mono); color: var(--color-accent); font-size: 0.875rem; transition: transform 180ms; flex-shrink: 0; }
+        .map-cat-head[aria-expanded="true"] .map-cat-toggle { transform: rotate(90deg); }
+        .map-cat-title { font-size: 1.05rem; font-weight: 600; color: var(--color-text); margin: 0; flex: 1; }
+        .map-cat-blurb { font-size: 0.85rem; color: var(--color-text-muted); margin: 0.2rem 0 0; line-height: 1.5; font-weight: 400; }
+        .map-cat-count { font-family: var(--font-mono); font-size: 0.8rem; color: var(--color-text-muted); background: var(--color-bg-featured); padding: 0.25rem 0.6rem; border-radius: 999px; flex-shrink: 0; }
+        .map-cat-empty { padding: 1.5rem; color: var(--color-text-dim); font-style: italic; font-size: 0.9rem; text-align: center; border-top: 1px solid var(--color-border); }
+
+        .map-cat-body { display: none; padding: 1rem 1.25rem 1.5rem; border-top: 1px solid var(--color-border); }
+        .map-category[data-open="true"] .map-cat-body { display: block; }
+
+        .map-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1rem; }
+
+        /* ── Module cards ──────────────────────────────────────────────── */
+        .map-card { padding: 1.125rem 1.25rem; background: var(--color-bg); border: 1px solid var(--color-border); border-radius: 10px; display: flex; flex-direction: column; gap: 0.6rem; transition: border-color 120ms; }
+        .map-card:hover { border-color: var(--color-accent-mid); }
+        .map-card.is-extension { border-style: dashed; }
+        .map-card-top { display: flex; align-items: baseline; justify-content: space-between; gap: 0.75rem; }
+        .map-card-name { font-family: var(--font-mono); font-size: 1rem; font-weight: 600; color: var(--color-text); margin: 0; }
+        .map-card-ext-tag { font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--color-text-dim); border: 1px solid var(--color-border); padding: 0.15rem 0.4rem; border-radius: 4px; }
+        .map-card-os { display: flex; flex-wrap: wrap; gap: 0.3rem; }
+        .map-os-badge { font-family: var(--font-mono); font-size: 0.65rem; letter-spacing: 0.06em; padding: 0.18rem 0.5rem; border-radius: 4px; text-transform: lowercase; }
+        .map-os-badge.os-linux       { background: rgba(255, 165, 0, 0.12);   color: #f0a040; border: 1px solid rgba(255, 165, 0, 0.25); }
+        .map-os-badge.os-windows     { background: rgba(0, 120, 215, 0.12);   color: #4ea3e0; border: 1px solid rgba(0, 120, 215, 0.30); }
+        .map-os-badge.os-mac         { background: rgba(170, 170, 170, 0.12); color: var(--color-text-muted); border: 1px solid rgba(170, 170, 170, 0.25); }
+        .map-os-badge.os-freebsd     { background: rgba(170, 0, 0, 0.10);     color: #d97070; border: 1px solid rgba(170, 0, 0, 0.25); }
+        .map-os-badge.os-cross-platform { background: var(--color-accent-softer); color: var(--color-accent); border: 1px solid var(--color-accent-mid); }
+        .map-os-badge.os-network-device { background: rgba(127, 0, 255, 0.10); color: #a884ff; border: 1px solid rgba(127, 0, 255, 0.30); }
+        .map-os-badge.os-unknown     { background: var(--color-bg-featured); color: var(--color-text-dim); border: 1px solid var(--color-border); }
+
+        .map-card-summary { font-size: 0.875rem; color: var(--color-text-muted); line-height: 1.5; margin: 0; }
+        .map-card-main { font-size: 0.78rem; color: var(--color-text-muted); margin: 0; }
+        .map-card-main code { font-family: var(--font-mono); color: var(--color-accent); background: var(--color-accent-softer); padding: 0.1rem 0.4rem; border-radius: 4px; font-size: 0.78rem; }
+
+        .map-card-actions { display: flex; gap: 0.75rem; align-items: center; margin-top: auto; padding-top: 0.5rem; border-top: 1px dashed var(--color-border); flex-wrap: wrap; }
+        .map-card-toggle { background: none; border: 0; padding: 0; color: var(--color-accent); font-size: 0.8rem; font-weight: 600; cursor: pointer; font-family: inherit; }
+        .map-card-toggle:hover { text-decoration: underline; }
+        .map-card-doclink { margin-left: auto; font-size: 0.78rem; color: var(--color-text-muted); font-weight: 500; }
+        .map-card-doclink:hover { color: var(--color-accent); text-decoration: underline; }
+
+        .map-card-details { display: none; padding-top: 0.75rem; border-top: 1px dashed var(--color-border); margin-top: 0.25rem; }
+        .map-card[data-open="true"] .map-card-details { display: block; }
+        .map-card-details h5 { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--color-text-dim); margin: 0.5rem 0 0.4rem; }
+        .map-card-details h5:first-child { margin-top: 0; }
+        .map-card-details pre { margin: 0 0 0.75rem; font-size: 0.78rem; padding: 0.875rem 1rem; }
+        .map-fnlist { display: flex; flex-direction: column; gap: 0.25rem; font-family: var(--font-mono); font-size: 0.75rem; }
+        .map-fnlist code { background: transparent; padding: 0; color: var(--color-text); }
+        .map-fnlist .fn-name { color: var(--color-accent); }
+        .map-fnlist .fn-sig  { color: var(--color-text-dim); }
+
+        /* ── Loading + empty states ────────────────────────────────────── */
+        .map-loading { padding: 2.5rem; text-align: center; color: var(--color-text-muted); }
+        .map-loading i { color: var(--color-accent); margin-right: 0.5rem; }
+        .map-error { padding: 1.5rem; text-align: center; color: var(--color-danger); border: 1px solid rgba(179, 84, 84, 0.4); border-radius: var(--radius); background: var(--color-bg-bad); margin: 2rem 0; }
+
+        /* ── Mobile ────────────────────────────────────────────────────── */
+        @media (max-width: 768px) {
+            .map-filter-bar { top: 60px; }
+            .map-stats { gap: 1.5rem; }
+            .map-cat-head { padding: 0.875rem 1rem; gap: 0.75rem; }
+            .map-cat-blurb { display: none; }
+            .map-cards { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span class="logo-primary">Saltify</span>
+                <span class="logo-secondary">Pty Ltd</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="index.html#services" class="nav-link">Services</a></li>
+                <li class="nav-dropdown">
+                    <a href="#" class="nav-link nav-dropdown-toggle" aria-haspopup="true" aria-expanded="false" onclick="event.preventDefault();">Learn Salt <span class="nav-caret">▾</span></a>
+                    <ul class="nav-dropdown-menu" aria-label="Learn submenu">
+                        <li><a href="salt-cheat-sheet.html" class="nav-link">Cheat Sheet</a></li>
+                        <li><a href="install-guide.html" class="nav-link">Install Guide</a></li>
+                        <li><a href="getting-started.html" class="nav-link">Getting Started</a></li>
+                        <li><a href="states.html" class="nav-link">Salt States</a></li>
+                        <li><a href="salt-state-modules.html" class="nav-link" aria-current="page">State Modules Index</a></li>
+                        <li><a href="windows.html" class="nav-link">Salt on Windows</a></li>
+                        <li><a href="salt-ai.html" class="nav-link">Salt + AI</a></li>
+                    </ul>
+                </li>
+                <li><a href="index.html#about" class="nav-link">About</a></li>
+                <li><a href="index.html#contact" class="nav-link nav-cta">Let's talk →</a></li>
+            </ul>
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" aria-pressed="false">
+                    <i class="fas fa-sun" id="themeIcon" aria-hidden="true"></i>
+                </button>
+                <button class="hamburger" aria-label="Toggle menu" aria-expanded="false">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="guide-hero">
+        <div class="container">
+            <p class="crumb"><i class="fas fa-list-ul"></i> State Modules Index</p>
+            <h1>Every Salt state module. Grouped by what they do.</h1>
+            <p class="lead">The official Salt docs list 357 state modules in alphabetical order — handy when you know the module name, harder when you don't. <strong>This is the same list reorganised by function</strong> — so you find what you need by what you're trying to <em>do</em>.</p>
+            <p class="doc-version" id="mapVersion"><strong>v1.0</strong> · All 357 modules from <a href="https://docs.saltproject.io/en/3006/ref/states/all/index.html" target="_blank" rel="noopener" style="color: var(--color-accent);">docs.saltproject.io</a> mapped · 329 cards with inline examples · plus 3 newer local-only modules</p>
+
+            <div class="map-stats" id="mapStats">
+                <div class="map-stat"><span class="map-stat-num" id="statTotal">—</span><span class="map-stat-label">total modules</span></div>
+                <div class="map-stat"><span class="map-stat-num" id="statCurated">—</span><span class="map-stat-label">curated</span></div>
+                <div class="map-stat"><span class="map-stat-num">11</span><span class="map-stat-label">categories</span></div>
+                <div class="map-stat"><span class="map-stat-num">6</span><span class="map-stat-label">OS targets</span></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sticky filter bar -->
+    <div class="map-filter-bar">
+        <div class="container">
+            <div class="map-filter-row">
+                <label class="map-search-wrap">
+                    <i class="fas fa-search" aria-hidden="true"></i>
+                    <input id="mapSearch" class="map-search" type="search" placeholder="Search by name, summary, or function…" autocomplete="off">
+                </label>
+                <div class="map-chips" id="mapOsChips" role="group" aria-label="Filter by OS">
+                    <span class="map-chip-label">OS</span>
+                    <button type="button" class="map-chip active" data-os="all">all</button>
+                    <button type="button" class="map-chip" data-os="cross-platform">cross-platform</button>
+                    <button type="button" class="map-chip" data-os="linux">linux</button>
+                    <button type="button" class="map-chip" data-os="windows">windows</button>
+                    <button type="button" class="map-chip" data-os="mac">mac</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Map body -->
+    <section class="map-body">
+        <div class="container">
+            <div id="mapContainer">
+                <div class="map-loading"><i class="fas fa-circle-notch fa-spin"></i> Loading state modules…</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-inner">
+                <p class="footer-logo">
+                    <span class="logo-primary">Saltify</span>
+                    <span class="logo-secondary">Pty Ltd</span>
+                </p>
+                <p class="footer-tagline">Enterprise Salt for teams that can't afford fragile infrastructure. Based in Australia.</p>
+                <p class="footer-copy">© 2026 Saltify Pty Ltd</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/script.js?v=27"></script>
+</body>
+</html>

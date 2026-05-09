@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initAnimations();
     initSaltFeed();
     initInstallToast();
+    initStateMap();
 });
 
 function initInstallToast() {
@@ -237,4 +238,178 @@ function escHtml(str) {
         .replace(/</g, '&lt;')
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;');
+}
+
+/* ================================
+   State Modules Map (salt-states-map.html)
+   Loads data/salt-states.json, renders a card per module grouped into
+   functional categories. Search + OS chip filters; first category open.
+   ================================ */
+function initStateMap() {
+    const container = document.getElementById('mapContainer');
+    if (!container) return;
+
+    fetch('data/salt-states.json')
+        .then(r => { if (!r.ok) throw new Error('fetch failed'); return r.json(); })
+        .then(renderStateMap)
+        .catch(() => {
+            container.innerHTML = '<div class="map-error"><i class="fas fa-triangle-exclamation"></i> Couldn\'t load the modules map. Refresh the page or try again later.</div>';
+        });
+}
+
+function renderStateMap(data) {
+    const container = document.getElementById('mapContainer');
+    const { categories, modules, extensions, stats } = data;
+
+    /* Hero stat counters */
+    const statTotal = document.getElementById('statTotal');
+    const statCurated = document.getElementById('statCurated');
+    if (statTotal) statTotal.textContent = stats.core_total + stats.extensions_total;
+    if (statCurated) statCurated.textContent = stats.core_curated;
+
+    /* Group modules + extensions by category */
+    const byCat = {};
+    categories.forEach(c => byCat[c.id] = []);
+    modules.forEach(m => {
+        if (m.category && byCat[m.category]) byCat[m.category].push(m);
+    });
+    extensions.forEach(e => {
+        if (e.category && byCat[e.category]) byCat[e.category].push(e);
+    });
+
+    /* Render each category section */
+    container.innerHTML = categories.map((cat, i) => {
+        const cards = byCat[cat.id] || [];
+        const open = i === 0; // first category open
+        const cardsHtml = cards.length
+            ? `<div class="map-cards">${cards.map(stateMapCard).join('')}</div>`
+            : `<div class="map-cat-empty">Curation in progress — coming soon.</div>`;
+        return `
+            <div class="map-category" data-open="${open}" data-cat="${escHtml(cat.id)}">
+                <div class="map-cat-head" role="button" tabindex="0" aria-expanded="${open}" aria-controls="cat-body-${escHtml(cat.id)}">
+                    <span class="map-cat-toggle">▸</span>
+                    <div style="flex:1; min-width:0;">
+                        <h3 class="map-cat-title">${escHtml(cat.label)}</h3>
+                        <p class="map-cat-blurb">${escHtml(cat.blurb)}</p>
+                    </div>
+                    <span class="map-cat-count">${cards.length}</span>
+                </div>
+                <div class="map-cat-body" id="cat-body-${escHtml(cat.id)}">
+                    ${cardsHtml}
+                </div>
+            </div>`;
+    }).join('');
+
+    wireStateMapInteractions();
+}
+
+function stateMapCard(m) {
+    const isExt = !!m.is_extension;
+    const osBadges = (m.os || []).map(o => {
+        const cls = `os-${String(o).replace(/[^a-z0-9-]/gi, '-').toLowerCase()}`;
+        return `<span class="map-os-badge ${cls}">${escHtml(o)}</span>`;
+    }).join('');
+    const mainFn = m.main ? `<p class="map-card-main">main: <code>${escHtml(m.main)}</code></p>` : '';
+
+    const exHtml = (m.examples || []).map(ex => `<pre><code>${escHtml(ex)}</code></pre>`).join('');
+    const fnsHtml = (m.functions || []).map(f =>
+        `<div><code><span class="fn-name">${escHtml(m.name)}.${escHtml(f.name)}</span><span class="fn-sig">${escHtml(f.signature)}</span></code></div>`
+    ).join('');
+
+    /* Show details if we have anything to show. Core modules nearly always have
+       a function list; extensions only get details when the docs cache had a
+       YAML example (~203/233). */
+    let detailsHtml = '';
+    let toggleHtml = '';
+    if (exHtml || fnsHtml) {
+        detailsHtml = `
+            <div class="map-card-details">
+                ${exHtml ? `<h5>Example</h5>${exHtml}` : ''}
+                ${fnsHtml ? `<h5>Functions</h5><div class="map-fnlist">${fnsHtml}</div>` : ''}
+            </div>`;
+        toggleHtml = `<button type="button" class="map-card-toggle">▸ details</button>`;
+    }
+
+    const docLink = `<a class="map-card-doclink" href="${escHtml(m.docs_url)}" target="_blank" rel="noopener">More detail? Official docs ↗</a>`;
+    const extTag = isExt ? `<span class="map-card-ext-tag">ext</span>` : '';
+
+    return `
+        <article class="map-card${isExt ? ' is-extension' : ''}" data-name="${escHtml(m.name)}" data-os="${escHtml((m.os || []).join(' '))}" data-summary="${escHtml((m.summary || '').toLowerCase())}">
+            <div class="map-card-top">
+                <h4 class="map-card-name">${escHtml(m.name)}</h4>
+                ${extTag}
+            </div>
+            <div class="map-card-os">${osBadges}</div>
+            <p class="map-card-summary">${escHtml(m.summary || '')}</p>
+            ${mainFn}
+            <div class="map-card-actions">
+                ${toggleHtml}
+                ${docLink}
+            </div>
+            ${detailsHtml}
+        </article>`;
+}
+
+function wireStateMapInteractions() {
+    /* Category fold toggle */
+    document.querySelectorAll('.map-cat-head').forEach(head => {
+        const open = () => {
+            const cat = head.closest('.map-category');
+            const isOpen = cat.dataset.open === 'true';
+            cat.dataset.open = String(!isOpen);
+            head.setAttribute('aria-expanded', String(!isOpen));
+        };
+        head.addEventListener('click', open);
+        head.addEventListener('keydown', e => {
+            if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); }
+        });
+    });
+
+    /* Per-card details toggle */
+    document.querySelectorAll('.map-card-toggle').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const card = btn.closest('.map-card');
+            const isOpen = card.dataset.open === 'true';
+            card.dataset.open = String(!isOpen);
+            btn.textContent = (isOpen ? '▸' : '▾') + ' details';
+        });
+    });
+
+    /* Search + OS filter */
+    const searchInput = document.getElementById('mapSearch');
+    const osChips = document.querySelectorAll('#mapOsChips .map-chip');
+    let activeOs = 'all';
+
+    function applyFilters() {
+        const q = (searchInput?.value || '').trim().toLowerCase();
+        document.querySelectorAll('.map-category').forEach(cat => {
+            let visible = 0;
+            cat.querySelectorAll('.map-card').forEach(card => {
+                const name = card.dataset.name || '';
+                const summary = card.dataset.summary || '';
+                const os = card.dataset.os || '';
+                const matchSearch = !q || name.includes(q) || summary.includes(q);
+                const matchOs = activeOs === 'all' || os.split(/\s+/).includes(activeOs);
+                const show = matchSearch && matchOs;
+                card.style.display = show ? '' : 'none';
+                if (show) visible++;
+            });
+            /* Auto-open category with matches when filtering, auto-collapse when no matches */
+            if (q || activeOs !== 'all') {
+                cat.dataset.open = visible > 0 ? 'true' : 'false';
+                cat.querySelector('.map-cat-head')?.setAttribute('aria-expanded', String(visible > 0));
+            }
+            cat.querySelector('.map-cat-count').textContent = visible;
+        });
+    }
+
+    searchInput?.addEventListener('input', applyFilters);
+    osChips.forEach(chip => {
+        chip.addEventListener('click', () => {
+            osChips.forEach(c => c.classList.remove('active'));
+            chip.classList.add('active');
+            activeOs = chip.dataset.os;
+            applyFilters();
+        });
+    });
 }

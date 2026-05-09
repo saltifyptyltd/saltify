@@ -1,0 +1,732 @@
+{
+  "boto_apigateway": [
+    "Ensure Apigateway API exists:\n  boto_apigateway.present:\n    - name: myfunction\n    - region: us-east-1\n    - keyid: GKTADJGHEIQSXMKKRBJ08H\n    - key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs",
+    "usage plan absent:\n  boto_apigateway.usage_plan_absent:\n    - plan_name: my_usage_plan\n    - profile: my_profile"
+  ],
+  "boto_asg": [
+    "Ensure myasg exists:\n  boto_asg.present:\n    - name: myasg\n    - launch_config_name: mylc\n    - availability_zones:\n      - us-east-1a\n      - us-east-1b\n    - min_size: 1\n    - max_size: 1\n    - desired_capacity: 1\n    - load_balancers:\n      - myelb\n    - suspended_processes:\n        - AddToLoadBalancer\n        - AlarmNotification\n    - scaling_policies\n        - adjustment_type: ChangeInCapacity\n        - as_name: api-production-iad\n        - cooldown: 1800\n        - min_adjustment_step: None\n        - name: ScaleDown\n        - scaling_adjustment: -1\n    - region: us-east-1\n    - keyid: GKTADJGHEIQSXMKKRBJ08H\n    - key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs\n\n# Using a profile from pillars.\nEnsure myasg exists:\n  boto_asg.present:\n    - name: myasg\n    - launch_config_name: mylc\n    - availability_zones:\n      - us-east-1a\n      - us-east-1b\n    - min_size: 1\n    - max_size: 1\n    - desired_capacity: 1\n    - load_balancers:\n      - myelb\n    - profile: myprofile\n\n# Passing in a profile.\nEnsure myasg exists:\n  boto_asg.present:\n    - name: myasg\n    - launch_config_name: mylc\n    - availability_zones:\n      - us-east-1a\n      - us-east-1b\n    - min_size: 1\n    - max_size: 1\n    - desired_capacity: 1\n    - load_balancers:\n      - myelb\n    - profile:\n        keyid: GKTADJGHEIQSXMKKRBJ08H\n        key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs\n        region: us-east-1\n\n# Deleting an autoscale group with running instances.\nEnsure myasg is deleted:\n  boto_asg.absent:\n    - name: myasg\n    # If instances exist, we must force the deletion of the asg.\n    - force: True",
+    "Ensure myasg exists:\n  boto_asg.present:\n    - name: myasg\n    - launch_config_name: mylc\n    - availability_zones:\n      - us-east-1a\n      - us-east-1b\n    - min_size: 1\n    - max_size: 1\n    - desired_capacity: 1\n    - load_balancers:\n      - myelb\n    - profile: myprofile\n    - alarms:\n        CPU:\n          name: 'ASG CPU **MANAGED BY SALT**'\n          attributes:\n            metric: CPUUtilization\n            namespace: AWS/EC2\n            statistic: Average\n            comparison: '>='\n            threshold: 65.0\n            period: 60\n            evaluation_periods: 30\n            unit: null\n            description: 'ASG CPU'\n            alarm_actions: [ 'arn:aws:sns:us-east-1:12345:myalarm' ]\n            insufficient_data_actions: []\n            ok_actions: [ 'arn:aws:sns:us-east-1:12345:myalarm' ]"
+  ],
+  "boto_cfn": [
+    "stack-present:\n  boto_cfn.present:\n    - name: mystack\n    - template_body: salt://base/mytemplate.json\n    - disable_rollback: true\n    - region: eu-west-1\n    - keyid: 'AKIAJHTMIQ2ASDFLASDF'\n    - key: 'fdkjsafkljsASSADFalkfjasdf'",
+    "stack-absent:\n  boto_cfn.absent:\n    - name: mystack"
+  ],
+  "boto_cloudfront": [
+    "Manage my_distribution CloudFront distribution:\n    boto_cloudfront.present:\n      - name: my_distribution\n      - config:\n          Comment: 'partial config shown, most parameters elided'\n          Enabled: True\n      - tags:\n          testing_key: testing_value"
+  ],
+  "boto_cloudtrail": [
+    "Ensure trail exists:\n    boto_cloudtrail.present:\n        - Name: mytrail\n        - S3BucketName: mybucket\n        - S3KeyPrefix: prefix\n        - region: us-east-1\n        - keyid: GKTADJGHEIQSXMKKRBJ08H\n        - key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs"
+  ],
+  "boto_cloudwatch_alarm": [
+    "my test alarm:\n  boto_cloudwatch_alarm.present:\n    - name: my test alarm\n    - attributes:\n        metric: ApproximateNumberOfMessagesVisible\n        namespace: AWS/SQS\n        statistic: Average\n        comparison: \">=\"\n        threshold: 20000.0\n        period: 60\n        evaluation_periods: 1\n        description: test alarm via salt\n        dimensions:\n          QueueName:\n            - the-sqs-queue-name\n        alarm_actions:\n          - arn:aws:sns:us-east-1:1111111:myalerting-action"
+  ],
+  "boto_cloudwatch_event": [
+    "Ensure event rule exists:\n    boto_cloudwatch_event.present:\n        - Name: mytrail\n        - ScheduleExpression: 'rate(120 minutes)'\n        - State: 'DISABLED'\n        - Targets:\n          - Id: \"target1\"\n            Arn: \"arn:aws:lambda:us-west-1:124456715622:function:my_function\"\n            Input: '{\"arbitrary\": \"json\"}'\n        - region: us-east-1\n        - keyid: GKTADJGHEIQSXMKKRBJ08H\n        - key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs"
+  ],
+  "boto_cognitoidentity": [
+    "Ensure function exists:\n    boto_cognitoidentity.pool_present:\n        - PoolName: my_identity_pool\n        - region: us-east-1\n        - keyid: GKTADJGHEIQSXMKKRBJ08H\n        - key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs"
+  ],
+  "boto_datapipeline": [
+    "Ensure daily data pipeline exists:\n  boto_datapipeline.present:\n    - name: my-datapipeline\n    - pipeline_objects:\n        DefaultSchedule:\n          name: Every 1 day\n          fields:\n            period: 1 Day\n            type: Schedule\n            startAt: FIRST_ACTIVATION_DATE_TIME\n    - parameter_values:\n        myDDBTableName: my-dynamo-table"
+  ],
+  "boto_dynamodb": [
+    "Ensure DynamoDB table does not exist:\n  boto_dynamodb.absent:\n    - table_name: new_table\n    - keyid: GKTADJGHEIQSXMKKRBJ08H\n    - key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs\n    - region: us-east-1\n\nEnsure DynamoDB table exists:\n  boto_dynamodb.present:\n    - table_name: new_table\n    - read_capacity_units: 1\n    - write_capacity_units: 2\n    - hash_key: primary_id\n    - hash_key_data_type: N\n    - range_key: start_timestamp\n    - range_key_data_type: N\n    - keyid: GKTADJGHEIQSXMKKRBJ08H\n    - key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs\n    - region: us-east-1\n    - local_indexes:\n        - index:\n            - name: \"primary_id_end_timestamp_index\"\n            - hash_key: primary_id\n            - hash_key_data_type: N\n            - range_key: end_timestamp\n            - range_key_data_type: N\n    - global_indexes:\n        - index:\n            - name: \"name_end_timestamp_index\"\n            - hash_key: name\n            - hash_key_data_type: S\n            - range_key: end_timestamp\n            - range_key_data_type: N\n            - read_capacity_units: 3\n            - write_capacity_units: 4",
+    "Ensure DynamoDB table exists:\n  boto_dynamodb.present:\n    - name: new_table\n    - read_capacity_units: 1\n    - write_capacity_units: 2\n    - hash_key: primary_id\n    - hash_key_data_type: N\n    - range_key: start_timestamp\n    - range_key_data_type: N\n    - alarms:\n         ConsumedWriteCapacityUnits:\n            name: 'DynamoDB ConsumedWriteCapacityUnits **MANAGED BY SALT**'\n            attributes:\n              metric: ConsumedWriteCapacityUnits\n              namespace: AWS/DynamoDB\n              statistic: Sum\n              comparison: '>='\n              # threshold_percent is used to calculate the actual threshold\n              # based on the provisioned capacity for the table.\n              threshold_percent: 0.75\n              period: 300\n              evaluation_periods: 2\n              unit: Count\n              description: 'DynamoDB ConsumedWriteCapacityUnits'\n              alarm_actions: [ 'arn:aws:sns:us-east-1:1234:my-alarm' ]\n              insufficient_data_actions: []\n              ok_actions: [ 'arn:aws:sns:us-east-1:1234:my-alarm' ]\n    - keyid: GKTADJGHEIQSXMKKRBJ08H\n    - key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs\n    - region: us-east-1"
+  ],
+  "boto_ec2": [
+    "create-key-pair:\n  boto_ec2.key_present:\n    - name: mykeypair\n    - save_private: /root/\n    - region: eu-west-1\n    - keyid: GKTADJGHEIQSXMKKRBJ08H\n    - key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs",
+    "import-key-pair:\n   boto_ec2.key_present:\n    - name: mykeypair\n    - upload_public: 'ssh-rsa AAAA'\n    - keyid: GKTADJGHEIQSXMKKRBJ08H\n    - key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs"
+  ],
+  "boto_elasticache": [
+    "Ensure myelasticache exists:\n  boto_elasticache.present:\n    - name: myelasticache\n    - engine: redis\n    - cache_node_type: cache.t1.micro\n    - num_cache_nodes: 1\n    - notification_topic_arn: arn:aws:sns:us-east-1:879879:my-sns-topic\n    - region: us-east-1\n    - keyid: GKTADJGHEIQSXMKKRBJ08H\n    - key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs\n\n# Using a profile from pillars\nEnsure myelasticache exists:\n  boto_elasticache.present:\n    - name: myelasticache\n    - engine: redis\n    - cache_node_type: cache.t1.micro\n    - num_cache_nodes: 1\n    - notification_topic_arn: arn:aws:sns:us-east-1:879879:my-sns-topic\n    - region: us-east-1\n    - profile: myprofile\n\n# Passing in a profile\nEnsure myelasticache exists:\n  boto_elasticache.present:\n    - name: myelasticache\n    - engine: redis\n    - cache_node_type: cache.t1.micro\n    - num_cache_nodes: 1\n    - notification_topic_arn: arn:aws:sns:us-east-1:879879:my-sns-topic\n    - region: us-east-1\n    - profile:\n        keyid: GKTADJGHEIQSXMKKRBJ08H\n        key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs"
+  ],
+  "boto_elasticsearch_domain": [
+    "Ensure domain exists:\n    boto_elasticsearch_domain.present:\n        - DomainName: mydomain\n        - profile='user-credentials'\n        - ElasticsearchVersion: \"2.3\"\n        - ElasticsearchClusterConfig:\n            InstanceType\": \"t2.micro.elasticsearch\"\n            InstanceCount: 1\n            DedicatedMasterEnabled: False\n            ZoneAwarenessEnabled: False\n        - EBSOptions:\n            EBSEnabled: True\n            VolumeType: \"gp2\"\n            VolumeSize: 10\n            Iops: 0\n        - AccessPolicies:\n            Version: \"2012-10-17\"\n            Statement:\n              - Effect: \"Allow\"\n              - Principal:\n                  AWS: \"*\"\n              - Action:\n                - \"es:*\"\n              - Resource: \"arn:aws:es:*:111111111111:domain/mydomain/*\"\n              - Condition:\n                  IpAddress:\n                    \"aws:SourceIp\":\n                      - \"127.0.0.1\"\n                      - \"127.0.0.2\"\n        - SnapshotOptions:\n            AutomatedSnapshotStartHour: 0\n        - AdvancedOptions:\n            rest.action.multi.allow_explicit_index\": \"true\"\n        - Tags:\n            a: \"b\"\n        - region: us-east-1\n        - keyid: GKTADJGHEIQSXMKKRBJ08H\n        - key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs"
+  ],
+  "boto_elb": [
+    "Ensure myelb ELB exists:\n    boto_elb.present:\n        - name: myelb\n        - region: us-east-1\n        - attributes_from_pillar: my_elb_attributes\n        # override cross_zone_load_balancing:enabled\n        - attributes:\n            cross_zone_load_balancing:\n              enabled: false\n        - profile: myelbprofile",
+    "Ensure myelb ELB exists:\n    boto_elb.present:\n        - name: myelb\n        - region: us-east-1\n        - profile: myelbprofile\n        - alarms:\n            UnHealthyHostCount:\n              name: 'ELB UnHealthyHostCount **MANAGED BY SALT**'\n              attributes:\n                metric: UnHealthyHostCount\n                namespace: AWS/ELB\n                statistic: Average\n                comparison: '>='\n                threshold: 1.0\n                period: 600\n                evaluation_periods: 6\n                unit: null\n                description: ELB UnHealthyHostCount\n                alarm_actions: ['arn:aws:sns:us-east-1:12345:myalarm']\n                insufficient_data_actions: []\n                ok_actions: ['arn:aws:sns:us-east-1:12345:myalarm']"
+  ],
+  "boto_elbv2": [
+    "elbv2.keyid: GKTADJGHEIQSXMKKRBJ08H\nelbv2.key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs\nelbv2.region: us-west-2",
+    "myprofile:\n    keyid: GKTADJGHEIQSXMKKRBJ08H\n    key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs\n    region: us-east-1"
+  ],
+  "boto_iam": [
+    "delete-user:\n  boto_iam.user_absent:\n    - name: myuser\n    - delete_keys: true",
+    "delete-keys:\n  boto_iam.keys_absent:\n    - access_keys:\n      - 'AKIAJHTMIQ2ASDFLASDF'\n      - 'PQIAJHTMIQ2ASRTLASFR'\n    - user_name: myuser"
+  ],
+  "boto_iam_role": [
+    "myrole:\n    boto_iam_role.present:\n        - region: us-east-1\n        - key: GKTADJGHEIQSXMKKRBJ08H\n        - keyid: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs\n        - policies_from_pillars:\n            - shared_iam_bootstrap_policy\n        - policies:\n            MySQSPolicy:\n                Statement:\n                  - Action:\n                        - sqs:*\n                    Effect: Allow\n                    Resource:\n                        - arn:aws:sqs:*:*:*\n                    Sid: MyPolicySQS1\n            MyS3Policy:\n                Statement:\n                  - Action:\n                        - s3:GetObject\n                    Effect: Allow\n                    Resource:\n                        - arn:aws:s3:*:*:mybucket/*\n\n# Using a credentials profile from pillars\nmyrole:\n    boto_iam_role.present:\n        - profile: myiamprofile\n\n# Passing in a credentials profile\nmyrole:\n    boto_iam_role.present:\n        - profile:\n            key: GKTADJGHEIQSXMKKRBJ08H\n            keyid: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs\n            region: us-east-1"
+  ],
+  "boto_iot": [
+    "Ensure policy exists:\n    boto_iot.policy_present:\n        - policyName: mypolicy\n        - policyDocument:\n            Version: \"2012-10-17\"\n            Statement:\n              Action:\n                - iot:Publish\n              Resource:\n                - \"*\"\n              Effect: \"Allow\"\n        - region: us-east-1\n        - keyid: GKTADJGHEIQSXMKKRBJ08H\n        - key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs\n\nEnsure topic rule exists:\n    boto_iot.topic_rule_present:\n        - ruleName: myrule\n        - sql: \"SELECT * FROM 'iot/test'\"\n        - description: 'test rule'\n        - ruleDisabled: false\n        - actions:\n          - lambda:\n              functionArn: \"arn:aws:us-east-1:1234:function/functionname\"\n        - region: us-east-1\n        - keyid: GKTADJGHEIQSXMKKRBJ08H\n        - key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs"
+  ],
+  "boto_kinesis": [
+    "Ensure Kinesis stream does not exist:\n  boto_kinesis.absent:\n    - name: new_stream\n    - keyid: GKTADJGHEIQSXMKKRBJ08H\n    - key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs\n    - region: us-east-1\n\nEnsure Kinesis stream exists:\n  boto_kinesis.present:\n    - name: new_stream\n    - retention_hours: 168\n    - enhanced_monitoring: ['ALL']\n    - num_shards: 2\n    - keyid: GKTADJGHEIQSXMKKRBJ08H\n    - key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs\n    - region: us-east-1"
+  ],
+  "boto_kms": [
+    "Ensure mykey key exists:\n  boto_kms.key_present:\n    - name: mykey\n    - region: us-east-1\n\n# Using a profile from pillars\nEnsure mykey key exists:\n  boto_kms.key_present:\n    - name: mykey\n    - region: us-east-1\n    - profile: myprofile\n\n# Passing in a profile\nEnsure mykey key exists:\n  boto_key.key_present:\n    - name: mykey\n    - region: us-east-1\n    - profile:\n        keyid: GKTADJGHEIQSXMKKRBJ08H\n        key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs"
+  ],
+  "boto_lambda": [
+    "Ensure function exists:\n    boto_lambda.function_present:\n        - FunctionName: myfunction\n        - Runtime: python2.7\n        - Role: iam_role_name\n        - Handler: entry_function\n        - ZipFile: code.zip\n        - S3Bucket: bucketname\n        - S3Key: keyname\n        - S3ObjectVersion: version\n        - Description: \"My Lambda Function\"\n        - Timeout: 3\n        - MemorySize: 128\n        - region: us-east-1\n        - keyid: GKTADJGHEIQSXMKKRBJ08H\n        - key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs"
+  ],
+  "boto_lc": [
+    "Ensure mylc exists:\n  boto_lc.present:\n    - name: mylc\n    - image_id: ami-0b9c9f62\n    - key_name: mykey\n    - security_groups:\n        - mygroup\n    - instance_type: m1.small\n    - instance_monitoring: true\n    - block_device_mappings:\n        - '/dev/sda1':\n            size: 20\n            volume_type: 'io1'\n            iops: 220\n            delete_on_termination: true\n    - cloud_init:\n        boothooks:\n          'disable-master.sh': |\n            #!/bin/bash\n            echo \"manual\" > /etc/init/salt-master.override\n        scripts:\n          'run_salt.sh': |\n            #!/bin/bash\n\n            add-apt-repository -y ppa:saltstack/salt\n            apt-get update\n            apt-get install -y salt-minion\n            salt-call state.highstate\n    - region: us-east-1\n    - keyid: GKTADJGHEIQSXMKKRBJ08H\n    - key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs\n\n# Using a profile from pillars.\nEnsure mylc exists:\n  boto_lc.present:\n    - name: mylc\n    - image_id: ami-0b9c9f62\n    - profile: myprofile\n\n# Passing in a profile.\nEnsure mylc exists:\n  boto_lc.present:\n    - name: mylc\n    - image_id: ami-0b9c9f62\n    - profile:\n        keyid: GKTADJGHEIQSXMKKRBJ08H\n        key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs\n        region: us-east-1"
+  ],
+  "boto_rds": [
+    "Ensure myrds RDS exists:\n  boto_rds.present:\n    - name: myrds\n    - allocated_storage: 5\n    - storage_type: standard\n    - db_instance_class: db.t2.micro\n    - engine: MySQL\n    - master_username: myuser\n    - master_user_password: mypass\n    - region: us-east-1\n    - keyid: GKTADJGHEIQSXMKKRBJ08H\n    - key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs\n    - tags:\n        key: value",
+    "Ensure parameter group exists:\n    create-parameter-group:\n      boto_rds.parameter_present:\n        - name: myparametergroup\n        - db_parameter_group_family: mysql5.6\n        - description: \"parameter group family\"\n        - parameters:\n          - binlog_cache_size: 32768\n          - binlog_checksum: CRC32\n        - region: eu-west-1"
+  ],
+  "boto_route53": [
+    "mycnamerecord:\n  boto_route53.present:\n    - name: test.example.com.\n    - value: my-elb.us-east-1.elb.amazonaws.com.\n    - zone: example.com.\n    - ttl: 60\n    - record_type: CNAME\n    - region: us-east-1\n    - keyid: GKTADJGHEIQSXMKKRBJ08H\n    - key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs\n\n# Using a profile from pillars\nmyarecord:\n  boto_route53.present:\n    - name: test.example.com.\n    - value: 1.1.1.1\n    - zone: example.com.\n    - ttl: 60\n    - record_type: A\n    - region: us-east-1\n    - profile: myprofile\n\n# Passing in a profile\nmyarecord:\n  boto_route53.present:\n    - name: test.example.com.\n    - value: 1.1.1.1\n    - zone: example.com.\n    - ttl: 60\n    - record_type: A\n    - region: us-east-1\n    - profile:\n        keyid: GKTADJGHEIQSXMKKRBJ08H\n        key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs"
+  ],
+  "boto_s3": [
+    "Ensure s3 object exists:\n    boto_s3.object_present:\n        - name: s3-bucket/s3-key\n        - source: /path/to/local/file\n        - region: us-east-1\n        - keyid: GKTADJGHEIQSXMKKRBJ08H\n        - key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs\n        - profile: my-profile"
+  ],
+  "boto_s3_bucket": [
+    "vpc.keyid: GKTADJGHEIQSXMKKRBJ08H\nvpc.key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs",
+    "myprofile:\n    keyid: GKTADJGHEIQSXMKKRBJ08H\n    key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs\n    region: us-east-1"
+  ],
+  "boto_secgroup": [
+    "Ensure mysecgroup exists:\n    boto_secgroup.present:\n        - name: mysecgroup\n        - description: My security group\n        - vpc_name: myvpc\n        - rules:\n            - ip_protocol: tcp\n              from_port: 80\n              to_port: 80\n              cidr_ip:\n                - 10.0.0.0/8\n                - 192.168.0.0/16\n            - ip_protocol: tcp\n              from_port: 8080\n              to_port: 8090\n              cidr_ip:\n                - 10.0.0.0/8\n                - 192.168.0.0/16\n            - ip_protocol: icmp\n              from_port: -1\n              to_port: -1\n              source_group_name: mysecgroup\n            - ip_protocol: tcp\n              from_port: 8080\n              to_port: 8080\n              source_group_name: MyOtherSecGroup\n              source_group_name_vpc: MyPeeredVPC\n        - rules_egress:\n            - ip_protocol: all\n              from_port: -1\n              to_port: -1\n              cidr_ip:\n                - 10.0.0.0/8\n                - 192.168.0.0/16\n        - tags:\n            SomeTag: 'My Tag Value'\n            SomeOtherTag: 'Other Tag Value'\n        - region: us-east-1\n        - keyid: GKTADJGHEIQSXMKKRBJ08H\n        - key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs\n\n# Using a profile from pillars\nEnsure mysecgroup exists:\n    boto_secgroup.present:\n        - name: mysecgroup\n        - description: My security group\n        - profile: myprofile\n\n# Passing in a profile\nEnsure mysecgroup exists:\n    boto_secgroup.present:\n        - name: mysecgroup\n        - description: My security group\n        - profile:\n            keyid: GKTADJGHEIQSXMKKRBJ08H\n            key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs\n            region: us-east-1"
+  ],
+  "boto_sns": [
+    "mytopic:\n    boto_sns.present:\n        - region: us-east-1\n        - keyid: GKTADJGHEIQSXMKKRBJ08H\n        - key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs\n\n# Using a profile from pillars\nmytopic:\n    boto_sns.present:\n        - region: us-east-1\n        - profile: mysnsprofile\n\n# Passing in a profile\nmytopic:\n    boto_sns.present:\n        - region: us-east-1\n        - profile:\n            keyid: GKTADJGHEIQSXMKKRBJ08H\n            key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs"
+  ],
+  "boto_sqs": [
+    "myqueue:\n    boto_sqs.present:\n        - region: us-east-1\n        - keyid: GKTADJGHEIQSXMKKRBJ08H\n        - key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs\n        - attributes:\n            ReceiveMessageWaitTimeSeconds: 20\n\n# Using a profile from pillars\nmyqueue:\n    boto_sqs.present:\n        - region: us-east-1\n        - profile: mysqsprofile\n\n# Passing in a profile\nmyqueue:\n    boto_sqs.present:\n        - region: us-east-1\n        - profile:\n            keyid: GKTADJGHEIQSXMKKRBJ08H\n            key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs"
+  ],
+  "boto_vpc": [
+    "accept the vpc peering connection:\n  boto_vpc.accept_vpc_peering_connection:\n    - conn_name: salt_vpc_peering\n    - region: us-west-2\n    - require:\n      - boto_vpc: request a vpc peering connection\n\nrequest a vpc peering connection:\n  boto_vpc.request_vpc_peering_connection:\n    - requester_vpc_id: vpc-4a3d522e\n    - peer_vpc_id: vpc-ae81e9ca\n    - region: us-west-2\n    - conn_name: salt_vpc_peering",
+    "accept the vpc peering connection:\n  boto_vpc.accept_vpc_peering_connection:\n    - conn_id: pcx-1873c371\n    - region: us-west-2"
+  ],
+  "boto3_elasticache": [
+    "Ensure myelasticache exists:\n  boto3_elasticache.present:\n    - name: myelasticache\n    - engine: redis\n    - cache_node_type: cache.t1.micro\n    - num_cache_nodes: 1\n    - notification_topic_arn: arn:aws:sns:us-east-1:879879:my-sns-topic\n    - region: us-east-1\n    - keyid: GKTADJGHEIQSXMKKRBJ08H\n    - key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs",
+    "# Using a profile from pillars\nEnsure myelasticache exists:\n  boto3_elasticache.present:\n    - name: myelasticache\n    - engine: redis\n    - cache_node_type: cache.t1.micro\n    - num_cache_nodes: 1\n    - notification_topic_arn: arn:aws:sns:us-east-1:879879:my-sns-topic\n    - region: us-east-1\n    - profile: myprofile"
+  ],
+  "boto3_elasticsearch": [
+    "Remove Elasticsearch Domain:\n  boto3_elasticsearch.absent:\n  - name: my_domain\n  - region: eu-west-1",
+    "Upgrade Elasticsearch Domain:\n  boto3_elasticsearch.latest:\n  - name: my_domain\n  - minor_only: True\n  - region: eu-west-1"
+  ],
+  "boto3_route53": [
+    "route53.keyid: GKTADJGHEIQSXMKKRBJ08H\nroute53.key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs",
+    "myprofile:\n  keyid: GKTADJGHEIQSXMKKRBJ08H\n  key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs\n  region: us-east-1"
+  ],
+  "boto3_sns": [
+    "mytopic:\n    boto3_sns.topic_present:\n        - region: us-east-1\n        - keyid: GKTADJGHEIQSXMKKRBJ08H\n        - key: askdjghsdfjkghWupUjasdflkdfklgjsdfjajkghs",
+    "mytopic:\n    boto3_sns.topic_present:\n        - region: us-east-1\n        - profile: mysnsprofile"
+  ],
+  "aws_sqs": [
+    "myqueue:\n    aws_sqs.exists:\n        - region: eu-west-1"
+  ],
+  "azurearm_compute": [
+    "Ensure availability set exists:\n    azurearm_compute.availability_set_present:\n        - name: aset1\n        - resource_group: group1\n        - platform_update_domain_count: 5\n        - platform_fault_domain_count: 3\n        - sku: aligned\n        - tags:\n            contact_name: Elmer Fudd Gantry\n        - connection_auth: {{ profile }}\n        - require:\n          - azurearm_resource: Ensure resource group exists"
+  ],
+  "azurearm_dns": [
+    "Ensure record set exists:\n    azurearm_dns.record_set_present:\n        - name: web\n        - zone_name: contoso.com\n        - resource_group: my_rg\n        - record_type: A\n        - ttl: 300\n        - arecords:\n          - ipv4_address: 10.0.0.1\n        - metadata:\n            how_awesome: very\n            contact_name: Elmer Fudd Gantry\n        - connection_auth: {{ profile }}",
+    "Ensure DNS zone exists:\n    azurearm_dns.zone_present:\n        - name: contoso.com\n        - resource_group: my_rg\n        - zone_type: Private\n        - registration_virtual_networks:\n          - /subscriptions/{{ sub }}/resourceGroups/my_rg/providers/Microsoft.Network/virtualNetworks/test_vnet\n        - tags:\n            how_awesome: very\n            contact_name: Elmer Fudd Gantry\n        - connection_auth: {{ profile }}"
+  ],
+  "azurearm_network": [
+    "Ensure load balancer exists:\n    azurearm_network.load_balancer_present:\n        - name: lb1\n        - resource_group: group1\n        - location: eastus\n        - frontend_ip_configurations:\n          - name: lb1_feip1\n            public_ip_address: pub_ip1\n        - backend_address_pools:\n          - name: lb1_bepool1\n        - probes:\n          - name: lb1_webprobe1\n            protocol: tcp\n            port: 80\n            interval_in_seconds: 5\n            number_of_probes: 2\n        - load_balancing_rules:\n          - name: lb1_webprobe1\n            protocol: tcp\n            frontend_port: 80\n            backend_port: 80\n            idle_timeout_in_minutes: 4\n            frontend_ip_configuration: lb1_feip1\n            backend_address_pool: lb1_bepool1\n            probe: lb1_webprobe1\n        - tags:\n            contact_name: Elmer Fudd Gantry\n        - connection_auth: {{ profile }}\n        - require:\n          - azurearm_resource: Ensure resource group exists\n          - azurearm_network: Ensure public IP exists",
+    "Ensure network interface exists:\n    azurearm_network.network_interface_present:\n        - name: iface1\n        - subnet: vnet1_sn1\n        - virtual_network: vnet1\n        - resource_group: group1\n        - ip_configurations:\n          - name: iface1_ipc1\n            public_ip_address: pub_ip2\n        - dns_settings:\n            internal_dns_name_label: decisionlab-int-test-label\n        - primary: True\n        - enable_accelerated_networking: True\n        - enable_ip_forwarding: False\n        - network_security_group: nsg1\n        - connection_auth: {{ profile }}\n        - require:\n          - azurearm_network: Ensure subnet exists\n          - azurearm_network: Ensure network security group exists\n          - azurearm_network: Ensure another public IP exists"
+  ],
+  "azurearm_resource": [
+    "Ensure policy assignment exists:\n    azurearm_resource.policy_assignment_present:\n        - name: testassign\n        - scope: /subscriptions/bc75htn-a0fhsi-349b-56gh-4fghti-f84852\n        - definition_name: testpolicy\n        - display_name: Test Assignment\n        - description: Test assignment for testing assignments.\n        - connection_auth: {{ profile }}",
+    "Ensure policy definition exists:\n    azurearm_resource.policy_definition_present:\n        - name: testpolicy\n        - display_name: Test Policy\n        - description: Test policy for testing policies.\n        - policy_rule:\n            if:\n              allOf:\n                - equals: Microsoft.Compute/virtualMachines/write\n                  source: action\n                - field: location\n                  in:\n                    - eastus\n                    - eastus2\n                    - centralus\n            then:\n              effect: deny\n        - connection_auth: {{ profile }}"
+  ],
+  "keystone": [
+    "Keystone tenants:\n  keystone.tenant_present:\n    - names:\n      - admin\n      - demo\n      - service\n\nKeystone roles:\n  keystone.role_present:\n    - names:\n      - admin\n      - Member\n\nadmin:\n  keystone.user_present:\n    - password: R00T_4CC3SS\n    - email: admin@domain.com\n    - roles:\n        admin:   # tenants\n          - admin  # roles\n        service:\n          - admin\n          - Member\n    - require:\n      - keystone: Keystone tenants\n      - keystone: Keystone roles\n\nnova:\n  keystone.user_present:\n    - password: '$up3rn0v4'\n    - email: nova@domain.com\n    - tenant: service\n    - roles:\n        service:\n          - admin\n    - require:\n      - keystone: Keystone tenants\n      - keystone: Keystone roles\n\ndemo:\n  keystone.user_present:\n    - password: 'd3m0n$trati0n'\n    - email: demo@domain.com\n    - tenant: demo\n    - roles:\n        demo:\n          - Member\n    - require:\n      - keystone: Keystone tenants\n      - keystone: Keystone roles\n\nnova service:\n  keystone.service_present:\n    - name: nova\n    - service_type: compute\n    - description: OpenStack Compute Service",
+    "delete_nova:\n    keystone.project_absent:\n        - name: nova"
+  ],
+  "keystone_domain": [
+    "create domain:\n  keystone_domain.present:\n    - name: domain1\n\ncreate domain with optional params:\n  keystone_domain.present:\n    - name: domain1\n    - enabled: False\n    - description: 'my domain'\n\ndelete domain:\n  keystone_domain.absent:\n    - name: domain1"
+  ],
+  "keystone_endpoint": [
+    "create endpoint:\n  keystone_endpoint.present:\n    - name: public\n    - url: https://example.org:9292\n    - region: RegionOne\n    - service_name: glance\n\ndestroy endpoint:\n  keystone_endpoint.absent:\n    - name: public\n    - url: https://example.org:9292\n    - region: RegionOne\n    - service_name: glance\n\ncreate multiple endpoints:\n  keystone_endpoint.absent:\n    - names:\n        - public\n        - admin\n        - internal\n    - url: https://example.org:9292\n    - region: RegionOne\n    - service_name: glance"
+  ],
+  "keystone_group": [
+    "create group:\n  keystone_group.present:\n    - name: group1\n\ndelete group:\n  keystone_group.absent:\n    - name: group1\n\ncreate group with optional params:\n  keystone_group.present:\n    - name: group1\n    - domain: domain1\n    - description: 'my group'"
+  ],
+  "keystone_project": [
+    "create project:\n  keystone_project.present:\n    - name: project1\n\ndelete project:\n  keystone_project.absent:\n    - name: project1\n\ncreate project with optional params:\n  keystone_project.present:\n    - name: project1\n    - domain: domain1\n    - enabled: False\n    - description: 'my project'"
+  ],
+  "keystone_role": [
+    "create role:\n  keystone_role.present:\n    - name: role1\n\ndelete role:\n  keystone_role.absent:\n    - name: role1\n\ncreate role with optional params:\n  keystone_role.present:\n    - name: role1\n    - description: 'my group'"
+  ],
+  "keystone_role_grant": [
+    "create group:\n  keystone_group.present:\n    - name: group1\n\ndelete group:\n  keystone_group.absent:\n    - name: group1\n\ncreate group with optional params:\n  keystone_group.present:\n    - name: group1\n    - domain: domain1\n    - description: 'my group'"
+  ],
+  "keystone_service": [
+    "create service:\n  keystone_service.present:\n    - name: glance\n    - type: image\n\ndelete service:\n  keystone_service.absent:\n    - name: glance\n\ncreate service with optional params:\n  keystone_service.present:\n    - name: glance\n    - type: image\n    - enabled: False\n    - description: 'OpenStack Image'"
+  ],
+  "keystone_user": [
+    "create user:\n  keystone_user.present:\n    - name: user1\n\ndelete user:\n  keystone_user.absent:\n    - name: user1\n\ncreate user with optional params:\n  keystone_user.present:\n    - name: user1\n    - domain: domain1\n    - enabled: False\n    - password: password123\n    - email: \"user1@example.org\"\n    - description: 'my user'"
+  ],
+  "neutron_network": [
+    "create network:\n  neutron_network.present:\n    - name: network1\n\ndelete network:\n  neutron_network.absent:\n    - name: network1\n\ncreate network with optional params:\n  neutron_network.present:\n    - name: network1\n    - vlan: 200\n    - shared: False\n    - external: False\n    - project: project1"
+  ],
+  "neutron_secgroup": [
+    "create security group;\n  neutron_secgroup.present:\n    - name: security_group1\n    - description: \"Very Secure Security Group\"\n\ndelete security group:\n  neutron_secgroup.absent:\n    - name_or_id: security_group1\n    - project_name: Project1\n\ncreate security group with optional params:\n  neutron_secgroup.present:\n    - name: security_group1\n    - description: \"Very Secure Security Group\"\n    - project_id: 1dcac318a83b4610b7a7f7ba01465548\n\ncreate security group with optional params:\n  neutron_secgroup.present:\n    - name: security_group1\n    - description: \"Very Secure Security Group\"\n    - project_name: Project1"
+  ],
+  "neutron_secgroup_rule": [
+    "create security group rule:\n  neutron_secgroup_rule.present:\n    - name: security_group1\n    - project_name: Project1\n    - protocol: icmp\n\ndelete security group:\n  neutron_secgroup_rule.absent:\n    - name_or_id: security_group1\n\ncreate security group with optional params:\n  neutron_secgroup_rule.present:\n    - name: security_group1\n    - description: \"Very Secure Security Group\"\n    - project_id: 1dcac318a83b4610b7a7f7ba01465548"
+  ],
+  "neutron_subnet": [
+    "create subnet:\n  neutron_subnet.present:\n    - name: subnet1\n    - network_name_or_id: network1\n    - cidr: 192.168.199.0/24\n\n\ndelete subnet:\n  neutron_subnet.absent:\n    - name: subnet2\n\ncreate subnet with optional params:\n  neutron_subnet.present:\n    - name: subnet1\n    - network_name_or_id: network1\n    - enable_dhcp: True\n    - cidr: 192.168.199.0/24\n    - allocation_pools:\n      - start: 192.168.199.5\n        end: 192.168.199.250\n    - host_routes:\n      - destination: 192.168..0.0/24\n        nexthop: 192.168.0.1\n    - gateway_ip: 192.168.199.1\n    - dns_nameservers:\n      - 8.8.8.8\n      - 8.8.8.7\n\ncreate ipv6 subnet:\n  neutron_subnet.present:\n    - name: v6subnet1\n    - network_name_or_id: network1\n    - ip_version: 6"
+  ],
+  "glance_image": [
+    "create image:\n  glance_image.present:\n    - name: cirros\n    - filename: cirros.raw\n    - image_format: raw\n\ndelete image:\n  glance_image.absent:\n    - name: cirros"
+  ],
+  "heat": [
+    "heat.deployed:\n  - name:\n  - template: #Required\n  - environment:\n  - params: {}\n  - poll: 5\n  - rollback: False\n  - timeout: 60\n\nheat.absent:\n  - name:\n  - poll: 5"
+  ],
+  "openstack_config": [],
+  "libcloud_dns": [
+    "my-zone:\n  libcloud_dns.zone_present:\n    - name: mywebsite.com\n    - profile: profile1\nmy-website:\n  libcloud_dns.record_present:\n    - name: www\n    - zone: mywebsite.com\n    - type: A\n    - data: 12.34.32.3\n    - profile: profile1\n    - require:\n      - libcloud_dns: my-zone"
+  ],
+  "libcloud_loadbalancer": [
+    "lb_test:\n    libcloud_loadbalancer.balancer_present:\n        - name: example\n        - port: 80\n        - protocol: http\n        - profile: google\n        - ex_region: us-east1"
+  ],
+  "libcloud_storage": [
+    "web_things:\n  libcloud_storage.container_present:\n    name: my_container_name\n    profile: profile1\n  libcloud_storage.object_present:\n    name: my_file.jpg\n    container: my_container_name\n    path: /path/to/local/file.jpg\n    profile: profile1",
+    "web_things:\n  libcloud_storage.file_present:\n    name: my_file.jpg\n    container: my_container_name\n    path: /path/to/local/file.jpg\n    profile: profile1"
+  ],
+  "bigip": [],
+  "pyrax_queues": [
+    "myqueue:\n    pyrax_queues.present:\n        - provider: my-pyrax\n\nmyqueue:\n    pyrax_queues.absent:\n        - provider: my-pyrax"
+  ],
+  "docker_container": [
+    "mycontainer:\n  docker_container.absent\n\nmultiple_containers:\n  docker_container.absent:\n    - names:\n      - foo\n      - bar\n      - baz",
+    "mycontainer:\n  docker_container.running:\n    - image: 7.3.1611\n    - port_bindings:\n      - 10.2.9.10:8080:80"
+  ],
+  "docker_image": [
+    "remove_images:\n  docker_image.absent:\n    - names:\n      - busybox\n      - centos:6\n      - nginx",
+    "remove_images:\n  docker_image.absent:\n    - images:\n      - busybox\n      - centos:6\n      - nginx"
+  ],
+  "docker_network": [
+    "network_foo:\n  docker_network.absent",
+    "mynet:\n  docker_network.present:\n    - driver: macvlan"
+  ],
+  "docker_volume": [
+    "volume_foo:\n  docker_volume.absent",
+    "volume_foo:\n  docker_volume.present"
+  ],
+  "lxd": [],
+  "lxd_container": [],
+  "lxd_image": [
+    "source:\n    type: lxd\n    name: ubuntu/xenial/amd64  # This can also be a fingerprint.\n    remote_addr: https://images.linuxcontainers.org:8443\n    cert: ~/.config/lxd/client.crt\n    key: ~/.config/lxd/client.key\n    verify_cert: False",
+    "source:\n    type: file\n    filename: salt://lxd/files/busybox.tar.xz\n    saltenv: base"
+  ],
+  "lxd_profile": [],
+  "lxc": [
+    "web01:\n  lxc.absent",
+    "web01:\n  lxc.frozen\n\nweb02:\n  lxc.frozen:\n    - start: False"
+  ],
+  "virt": [
+    "libvirt_keys:\n  virt.keys",
+    "domain_name:\n  virt.defined:\n    - cpu: 2\n    - mem: 2048\n    - boot_dev: network hd\n    - disk_profile: prod\n    - disks:\n      - name: system\n        size: 8192\n        overlay_image: True\n        pool: default\n        image: /path/to/image.qcow2\n      - name: data\n        size: 16834\n    - nic_profile: prod\n    - interfaces:\n      - name: eth0\n        mac: 01:23:45:67:89:AB\n      - name: eth1\n        type: network\n        source: admin\n    - graphics:\n        type: spice\n        listen:\n            type: address\n            address: 192.168.0.125"
+  ],
+  "kubernetes": [
+    "my-nginx:\n  kubernetes.deployment_present:\n    - namespace: default\n      metadata:\n        app: frontend\n      spec:\n        replicas: 1\n        template:\n          metadata:\n            labels:\n              run: my-nginx\n          spec:\n            containers:\n            - name: my-nginx\n              image: nginx\n              ports:\n              - containerPort: 80\n\nmy-mariadb:\n  kubernetes.deployment_absent:\n    - namespace: default\n\n# kubernetes deployment as specified inside of\n# a file containing the definition of the the\n# deployment using the official kubernetes format\nredis-master-deployment:\n  kubernetes.deployment_present:\n    - name: redis-master\n    - source: salt://k8s/redis-master-deployment.yml\n  require:\n    - pip: kubernetes-python-module\n\n# kubernetes service as specified inside of\n# a file containing the definition of the the\n# service using the official kubernetes format\nredis-master-service:\n  kubernetes.service_present:\n    - name: redis-master\n    - source: salt://k8s/redis-master-service.yml\n  require:\n    - kubernetes.deployment_present: redis-master\n\n# kubernetes deployment as specified inside of\n# a file containing the definition of the the\n# deployment using the official kubernetes format\n# plus some jinja directives\n nginx-source-template:\n  kubernetes.deployment_present:\n    - source: salt://k8s/nginx.yml.jinja\n    - template: jinja\n  require:\n    - pip: kubernetes-python-module\n\n\n# Kubernetes secret\nk8s-secret:\n  kubernetes.secret_present:\n    - name: top-secret\n      data:\n        key1: value1\n        key2: value2\n        key3: value3"
+  ],
+  "helm": [
+    "helm_release_is_absent:\n  helm.release_absent:\n    - name: release_name\n\n# In dry-run mode.\nhelm_release_is_absent_dry-run:\n  helm.release_absent:\n    - name: release_name\n    - flags:\n      - dry-run",
+    "helm_release_is_present:\n  helm.release_present:\n    - name: release_name\n    - chart: repo/chart\n\n# In dry-run mode.\nhelm_release_is_present_dry-run:\n  helm.release_present:\n    - name: release_name\n    - chart: repo/chart\n    - flags:\n      - dry-run\n\n# With values.yaml file.\nhelm_release_is_present_values:\n  helm.release_present:\n    - name: release_name\n    - chart: repo/chart\n    - kvflags:\n        values: /path/to/values.yaml"
+  ],
+  "marathon_app": [
+    "my_app:\n  marathon_app.config:\n    - config:\n        cmd: \"while [ true ] ; do echo 'Hello Marathon' ; sleep 5 ; done\"\n        cpus: 0.1\n        mem: 10\n        instances: 3"
+  ],
+  "chronos_job": [
+    "my_job:\n  chronos_job.config:\n    - config:\n        schedule: \"R//PT2S\"\n        command: \"echo 'hi'\"\n        owner: \"me@example.com\""
+  ],
+  "vbox_guest": [],
+  "vagrant": [
+    "# EXAMPLE:\n# file /etc/salt/minion.d/vagrant_sdb.conf on the host computer\n#  -- this sdb database is required by the Vagrant module --\nvagrant_sdb_data:  # The sdb database must have this name.\n  driver: sqlite3  # Let's use SQLite to store the data ...\n  database: /var/cache/salt/vagrant.sqlite  # ... in this file ...\n  table: sdb  # ... using this table name.\n  create_table: True  # if not present",
+    "node_name:\n  vagrant.destroyed"
+  ],
+  "esxi": [
+    "configure-host-coredump:\n  esxi.coredump_configured:\n    - enabled: True\n    - dump_ip: 'my-coredump-ip.example.com'",
+    "configure-host-ntp:\n  esxi.ntp_configured:\n    - service_running: True\n    - ntp_servers:\n      - 192.174.1.100\n      - 192.174.1.200\n    - service_policy: 'on'\n    - service_restart: True"
+  ],
+  "esxcluster": [
+    "drs:\n    default_vm_behavior: fullyAutomated\n    enabled: true\n    vmotion_rate: 3\nha:\n    admission_control\n    _enabled: false\n    default_vm_settings:\n        isolation_response: powerOff\n        restart_priority: medium\n    enabled: true\n    hb_ds_candidate_policy: userSelectedDs\n    host_monitoring: enabled\n    options:\n        - key: das.ignoreinsufficienthbdatastore\n          value: 'true'\n    vm_monitoring: vmMonitoringDisabled\nvm_swap_placement: vmDirectory\nvsan:\n    auto_claim_storage: false\n    compression_enabled: true\n    dedup_enabled: true\n    enabled: true"
+  ],
+  "esxdatacenter": [
+    "datacenter_state:\n  esxdatacenter.datacenter_configured"
+  ],
+  "esxvm": [],
+  "dvs": [],
+  "zabbix_action": [
+    "zabbix-action-absent:\n    zabbix_action.absent:\n        - name: Action name",
+    "zabbix-action-present:\n    zabbix_action.present:\n        - name: VMs\n        - params:\n            eventsource: 2\n            status: 0\n            filter:\n                evaltype: 2\n                conditions:\n                    - conditiontype: 24\n                      operator: 2\n                      value: 'virtual'\n                    - conditiontype: 24\n                      operator: 2\n                      value: 'kvm'\n            operations:\n                - operationtype: 2\n                - operationtype: 4\n                  opgroup:\n                      - groupid:\n                          query_object: hostgroup\n                          query_name: Virtual machines\n                      - groupid:\n                          query_object: hostgroup\n                          query_name: Databases"
+  ],
+  "zabbix_host": [
+    "TestHostWithInterfaces:\n    zabbix_host.absent",
+    "add_zabbix_templates_to_host:\n    zabbix_host.assign_templates:\n        - host: TestHost\n        - templates:\n            - \"Template OS Linux\"\n            - \"Template App MySQL\""
+  ],
+  "zabbix_hostgroup": [
+    "delete_testing_host_group:\n    zabbix_hostgroup.absent:\n        - name: 'My hostgroup name'",
+    "create_testing_host_group:\n    zabbix_hostgroup.present:\n        - name: 'My hostgroup name'"
+  ],
+  "zabbix_mediatype": [
+    "delete_mediatype:\n    zabbix_mediatype.absent:\n        - name: 'Email'",
+    "make_new_mediatype:\n    zabbix_mediatype.present:\n        - name: 'Email'\n        - mediatype: 0\n        - smtp_server: smtp.example.com\n        - smtp_hello: zabbix.example.com\n        - smtp_email: zabbix@example.com"
+  ],
+  "zabbix_template": [
+    "zabbix-template-absent:\n    zabbix_template.absent:\n        - name: Ceph OSD",
+    "does_zabbix-template-exist:\n    zabbix_template.is_present:\n        - name: Template OS Linux"
+  ],
+  "zabbix_user": [
+    "George:\n    zabbix_user.absent",
+    "# password taken from pillar or _connection_password\nzabbix-admin-password:\n    zabbix_user.admin_password_present\n\n# directly set password\nzabbix-admin-password:\n    zabbix_user.admin_password_present:\n        - password: SECRET_PASS"
+  ],
+  "zabbix_usergroup": [
+    "delete_thai_monks_usrgrp:\n    zabbix_usergroup.absent:\n        - name: 'Thai monks'",
+    "make_new_thai_monks_usergroup:\n    zabbix_usergroup.present:\n        - name: 'Thai monks'\n        - gui_access: 1\n        - debug_mode: 0\n        - users_status: 0"
+  ],
+  "zabbix_usermacro": [
+    "delete_usermacro:\n    zabbix_usermacro.absent:\n        - name: '{$SNMP_COMMUNITY}'",
+    "override host usermacro:\n    zabbix_usermacro.present:\n        - name: '{$SNMP_COMMUNITY}''\n        - value: 'public'\n        - hostid: 21"
+  ],
+  "zabbix_valuemap": [
+    "zabbix-valuemap-absent:\n    zabbix_valuemap.absent:\n        - name: Value map name",
+    "zabbix-valuemap-present:\n    zabbix_valuemap.present:\n        - name: Number mapping\n        - params:\n            mappings:\n                - value: 1\n                  newvalue: one\n                - value: 2\n                  newvalue: two"
+  ],
+  "grafana": [],
+  "grafana_datasource": [
+    "Ensure influxdb data source is present:\n  grafana_datasource.present:\n    - name: influxdb\n    - type: influxdb\n    - url: http://localhost:8086\n    - access: proxy\n    - basic_auth: true\n    - basic_auth_user: myuser\n    - basic_auth_password: mypass\n    - is_default: true"
+  ],
+  "grafana_dashboard": [
+    "Ensure minimum dashboard is managed:\n  grafana_dashboard.present:\n    - name: insightful-dashboard\n    - base_dashboards_from_pillar:\n      - default_dashboard\n    - base_rows_from_pillar:\n      - default_row\n    - base_panels_from_pillar:\n      - default_panel\n    - dashboard:\n        rows:\n          - title: Usage\n            panels:\n              - targets:\n                  - target: alias(constantLine(50), 'max')\n                title: Imaginary\n                type: graph"
+  ],
+  "grafana4_datasource": [
+    "Ensure influxdb data source is present:\n  grafana4_datasource.present:\n    - name: influxdb\n    - type: influxdb\n    - url: http://localhost:8086\n    - access: proxy\n    - basic_auth: true\n    - basic_auth_user: myuser\n    - basic_auth_password: mypass\n    - is_default: true"
+  ],
+  "grafana4_dashboard": [
+    "Ensure minimum dashboard is managed:\n  grafana4_dashboard.present:\n    - name: insightful-dashboard\n    - base_dashboards_from_pillar:\n      - default_dashboard\n    - base_rows_from_pillar:\n      - default_row\n    - base_panels_from_pillar:\n      - default_panel\n    - dashboard:\n        rows:\n          - title: Usage\n            panels:\n              - targets:\n                  - target: alias(constantLine(50), 'max')\n                title: Imaginary\n                type: graph"
+  ],
+  "grafana4_org": [
+    "Ensure foobar org is present:\n  grafana4_org.present:\n    - name: foobar\n    - theme:  \"\"\n    - home_dashboard_id: 0\n    - timezone: \"utc\"\n    - address1: \"\"\n    - address2: \"\"\n    - city: \"\"\n    - zip_code: \"\"\n    - state: \"\"\n    - country: \"\""
+  ],
+  "grafana4_user": [
+    "Ensure foobar user is present:\n  grafana4_user.present:\n    - name: foobar\n    - password: mypass\n    - email: \"foobar@localhost\"\n    - fullname: Foo Bar\n    - is_admin: true"
+  ],
+  "pagerduty": [
+    "server-warning-message:\n  pagerduty.create_event:\n    - name: 'This is a server warning message'\n    - details: 'This is a much more detailed message'\n    - service_key: 9abcd123456789efabcde362783cdbaf\n    - profile: my-pagerduty-account",
+    "server-warning-message:\n  pagerduty.create_event:\n    - name: 'This is a server warning message'\n    - details: 'This is a much more detailed message'\n    - service_key: 9abcd123456789efabcde362783cdbaf\n    - profile: my-pagerduty-account"
+  ],
+  "pagerduty_escalation_policy": [
+    "ensure test escalation policy:\n    pagerduty_escalation_policy.present:\n        - name: bruce test escalation policy\n        - escalation_rules:\n            - targets:\n                - type: schedule\n                  id: 'bruce test schedule level1'\n                - type: user\n                  id: 'Bruce Sherrod'\n              escalation_delay_in_minutes: 15\n            - targets:\n                - type: schedule\n                  id: 'bruce test schedule level2'\n              escalation_delay_in_minutes: 15\n            - targets:\n                - type: user\n                  id: 'Bruce TestUser1'\n                - type: user\n                  id: 'Bruce TestUser2'\n                - type: user\n                  id: 'Bruce TestUser3'\n                - type: user\n                  id:  'bruce+test4@lyft.com'\n              escalation_delay_in_minutes: 15"
+  ],
+  "pagerduty_schedule": [
+    "ensure test schedule:\n    pagerduty_schedule.present:\n        - name: 'bruce test schedule level1'\n        - schedule:\n            name: 'bruce test schedule level1'\n            time_zone: 'Pacific Time (US & Canada)'\n            schedule_layers:\n                - name: 'Schedule Layer 1'\n                  start: '2015-01-01T00:00:00'\n                  users:\n                    - user:\n                        'id': 'Bruce TestUser1'\n                      member_order: 1\n                    - user:\n                        'id': 'Bruce TestUser2'\n                      member_order: 2\n                    - user:\n                        'id': 'bruce+test3@lyft.com'\n                      member_order: 3\n                    - user:\n                        'id': 'bruce+test4@lyft.com'\n                      member_order: 4\n                  rotation_virtual_start: '2015-01-01T00:00:00'\n                  priority: 1\n                  rotation_turn_length_seconds: 604800"
+  ],
+  "pagerduty_service": [
+    "ensure test service\n    pagerduty_service.present:\n        - name: 'my service'\n        - escalation_policy_id: 'my escalation policy'\n        - type: nagios",
+    "# create a PagerDuty email service at test-email@DOMAIN.pagerduty.com\nensure generic email service exists:\n    pagerduty_service.present:\n        - name: my email service\n        - service:\n            description: \"email service controlled by salt\"\n            escalation_policy_id: \"my escalation policy\"\n            type: \"generic_email\"\n            service_key: \"test-email\""
+  ],
+  "pagerduty_user": [],
+  "splunk": [
+    "ensure example test user 1:\n    splunk.present:\n        - name: 'Example TestUser1'\n        - email: example@domain.com",
+    "ensure example test user 1:\n    splunk.absent:\n        - email: 'example@domain.com'\n        - name: 'exampleuser'"
+  ],
+  "splunk_search": [
+    "server-warning-message:\n  splunk_search.present:\n    - name: This is the splunk search name\n    - search: index=main sourcetype=",
+    "API Error Search:\n  splunk_search.absent"
+  ],
+  "monit": [
+    "monit_enable_service_monitoring:\n  monit.monitor:\n    - name: service\n\nmonit_disable_service_monitoring:\n  monit.unmonitor:\n    - name: service"
+  ],
+  "icinga2": [
+    "command_id:\n  icinga2.generate_ticket:\n    - name: domain.tld\n    - output:  \"/tmp/query_id.txt\""
+  ],
+  "kapacitor": [],
+  "telemetry_alert": [
+    "ensure telemetry alert X is defined on deployment Y:\n    telemetry_alert.present:\n        - deployment_id: \"rs-XXXXXX\"\n        - metric_name: \"testMetric\"\n        - alert_config:\n           max: 1\n           filter:  SERVER_ROLE_MONGOD_PRIMARY\n           escalate_to: \"example@pagerduty.com\"\n        - name: \"**MANAGED BY ORCA DO NOT EDIT BY HAND** manages alarm on testMetric\""
+  ],
+  "victorops": [
+    "webserver-warning-message:\n  victorops.create_event:\n    - message_type: 'CRITICAL'\n    - entity_id: 'webserver/diskspace'\n    - state_message: 'Webserver diskspace is low.'",
+    "webserver-warning-message:\n  victorops.create_event:\n    - message_type: 'CRITICAL'\n    - entity_id: 'webserver/diskspace'\n    - state_message: 'Webserver diskspace is low.'\n\ndatabase-server-warning-message:\n  victorops.create_event:\n    - message_type: 'WARNING'\n    - entity_id: 'db_server/load'\n    - state_message: 'Database Server load is high.'\n    - entity_is_host: True\n    - entity_display_name: 'dbdserver.example.com'"
+  ],
+  "opsgenie": [
+    "used_space:\n  disk.status:\n    - name: /\n    - maximum: 79%\n    - minimum: 20%\n\nopsgenie_create_action_sender:\n  opsgenie.create_alert:\n    - api_key: XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX\n    - reason: 'Disk capacity is out of designated range.'\n    - name: disk.status\n    - onfail:\n      - disk: used_space\n\nopsgenie_close_action_sender:\n  opsgenie.close_alert:\n    - api_key: XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXXXX\n    - name: disk.status\n    - require:\n      - disk: used_space"
+  ],
+  "ifttt": [
+    "ifttt-event:\n  ifttt.trigger_event:\n    - event: TestEvent\n    - value1: 'This state was executed successfully.'\n    - value2: 'Another value we can send.'\n    - value3: 'A third value we can send.'",
+    "ifttt-event:\n  ifttt.trigger_event:\n    - event: TestEvent\n    - value1: 'A value that we want to send.'\n    - value2: 'A second value that we want to send.'\n    - value3: 'A third value that we want to send.'"
+  ],
+  "pushover": [
+    "pushover-message:\n  pushover.post_message:\n    - user: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n    - token: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n    - title: Salt Returner\n    - device: phone\n    - priority: -1\n    - expire: 3600\n    - retry: 5\n    - message: 'This state was executed successfully.'",
+    "pushover-message:\n  pushover.post_message:\n    - user: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n    - token: xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n    - title: Salt Returner\n    - device: phone\n    - priority: -1\n    - expire: 3600\n    - retry: 5"
+  ],
+  "statuspage": [
+    "create-my-component:\n    statuspage.create:\n        - endpoint: components\n        - name: my component\n        - group_id: 993vgplshj12",
+    "delete-my-component:\n    statuspage.delete:\n        - endpoint: components\n        - id: ftgks51sfs2d"
+  ],
+  "slack": [
+    "slack-message:\n  slack.post_message:\n    - channel: '#general'\n    - from_name: SuperAdmin\n    - message: 'This state was executed successfully.'\n    - api_key: peWcBiMOS9HrZG15peWcBiMOS9HrZG15",
+    "slack-message:\n  slack.post_message:\n    - channel: '#general'\n    - from_name: SuperAdmin\n    - message: 'This state was executed successfully.'\n    - api_key: peWcBiMOS9HrZG15peWcBiMOS9HrZG15"
+  ],
+  "msteams": [
+    "teams-message:\n  msteams.post_card:\n    - message: 'This state was executed successfully.'\n    - hook_url:  https://outlook.office.com/webhook/837",
+    "send-msteams-message:\n  msteams.post_card:\n    - message: 'This state was executed successfully.'\n    - hook_url: https://outlook.office.com/webhook/837"
+  ],
+  "xmpp": [
+    "server-warning-message:\n  xmpp.send_msg:\n    - name: 'This is a server warning message'\n    - profile: my-xmpp-account\n    - recipient: admins@xmpp.example.com/salt",
+    "server-warning-message:\n  xmpp.send_msg:\n    - name: 'This is a server warning message'\n    - profile: my-xmpp-account\n    - recipient: admins@xmpp.example.com/salt"
+  ],
+  "smtp": [
+    "server-warning-message:\n  smtp.send_msg:\n    - name: 'This is a server warning message'\n    - profile: my-smtp-account\n    - recipient: admins@example.com",
+    "server-warning-message:\n  smtp.send_msg:\n    - name: 'This is a server warning message'\n    - profile: my-smtp-account\n    - subject: 'Message from Salt'\n    - recipient: admin@example.com\n    - sender: admin@example.com\n    - use_ssl: True\n    - attachments:\n        - /var/log/syslog\n        - /var/log/messages"
+  ],
+  "github": [
+    "ensure user test is present in github:\n    github.present:\n        - name: 'Example TestUser1'\n        - email: example@domain.com\n        - username: 'gitexample'",
+    "ensure user test is absent in github:\n    github.absent:\n        - name: 'Example TestUser1'\n        - email: example@domain.com\n        - username: 'gitexample'"
+  ],
+  "zenoss": [
+    "enable_monitoring:\n  zenoss.monitored:\n    - name: web01.example.com\n    - device_class: /Servers/Linux\n    - collector: localhost\n    - prod_state: 1000",
+    "enable_monitoring:\n  zenoss.monitored:\n    - name: web01.example.com\n    - device_class: /Servers/Linux\n    - collector: localhost\n    - prod_state: 1000"
+  ],
+  "serverdensity_device": [
+    "'server_name':\n  serverdensity_device.monitored",
+    "'server_name':\n  serverdensity_device.monitored"
+  ],
+  "probes": [
+    "rpmprobes:\n    probes.managed:\n        - probes:\n            probe_name1:\n                probe1_test1:\n                    source: 192.168.0.2\n                    target: 192.168.0.1\n                probe1_test2:\n                    target: 172.17.17.1\n                probe1_test3:\n                    target: 8.8.8.8\n                    probe_type: http-ping\n            probe_name2:\n                probe2_test1:\n                    test_interval: 100\n        - defaults:\n            target: 10.10.10.10\n            probe_count: 15\n            test_interval: 3\n            probe_type: icmp-ping"
+  ],
+  "testinframod": [],
+  "net_napalm_yang": [
+    "openconfig_interfaces_cfg:\n  _kwargs:\n    filter: true\n  interfaces:\n    interface:\n      Et1:\n        config:\n          mtu: 9000\n      Et2:\n        config:\n          description: \"description example\"",
+    "openconfig_interfaces_cfg:\n  _kwargs:\n    filter: true\n  interfaces:\n    interface:\n      Et1:\n        config:\n          mtu: 9000\n      Et2:\n        config:\n          description: \"description example\""
+  ],
+  "nxos": [
+    "add snmp group:\n  nxos.config_absent:\n    - names:\n      - snmp-server community randoSNMPstringHERE group network-operator\n      - snmp-server community AnotherRandomSNMPSTring group network-admin",
+    "add snmp group:\n  nxos.config_present:\n    - names:\n      - snmp-server community randoSNMPstringHERE group network-operator\n      - snmp-server community AnotherRandomSNMPSTring group network-admin\n\nadd snmp acl:\n  nxos.config_present:\n    - names:\n      - snmp-server community randoSNMPstringHERE use-acl snmp-acl-ro\n      - snmp-server community AnotherRandomSNMPSTring use-acl snmp-acl-rw"
+  ],
+  "nxos_upgrade": [
+    "upgrade_software_image_n9k:\n  nxos.image_running:\n    - name: Ensure nxos.7.0.3.I7.5a.bin is running\n    - system_image: nxos.7.0.3.I7.5a.bin\n    - issu: True\n\nupgrade_software_image_n7k:\n  nxos.image_running:\n    - name: Ensure n7000-s2-kickstart.8.0.1.bin is running\n    - kickstart_image: n7000-s2-kickstart.8.0.1.bin\n    - system_image: n7000-s2-dk9.8.0.1.bin\n    - issu: False"
+  ],
+  "junos": [
+    "show version:\n  junos.cli:\n    - format: xml\n\nget software version of device:\n  junos.cli:\n    - name: show version\n    - format: text\n    - dest: /home/user/show_version.log",
+    "commit the changes:\n  junos.commit:\n    - confirm: 10"
+  ],
+  "panos": [
+    "panos/takelock:\n    panos.add_config_lock\npanos/service_tcp_22:\n    panos.set_config:\n        - xpath: /config/devices/entry[@name='localhost.localdomain']/vsys/entry[@name='vsys1']/service\n        - value: <entry name='tcp-22'><protocol><tcp><port>22</port></tcp></protocol></entry>\n        - commit: False\npanos/create_rule1:\n    panos.set_config:\n        - xpath: /config/devices/entry[@name='localhost.localdomain']/vsys/entry[@name='vsys1']/rulebase/security/rules\n        - value: '\n          <entry name=\"rule1\">\n            <from><member>trust</member></from>\n            <to><member>untrust</member></to>\n            <source><member>10.0.0.1</member></source>\n            <destination><member>10.0.1.1</member></destination>\n            <service><member>tcp-22</member></service>\n            <application><member>any</member></application>\n            <action>allow</action>\n            <disabled>no</disabled>\n          </entry>'\n        - commit: False\npanos/moveruletop:\n    panos.move_config:\n        - xpath: /config/devices/entry[@name='localhost.localdomain']/vsys/entry[@name='vsys1']/rulebase/security/rules/entry[@name='rule1']\n        - where: top\n        - commit: False\npanos/removelock:\n    panos.remove_config_lock\npanos/commit:\n    panos.commit_config",
+    "panos/takelock:\n    panos.add_config_lock"
+  ],
+  "restconf": [
+    "do_configure_restconf_endpoint:\n  restconf.config_manage:\n    - name: random_name_here\n    - path: restconf/data/Cisco-IOS-XE-native:native/interface/GigabitEthernet=1%2F0%2F3\n    - config:\n        Cisco-IOS-XE-native:GigabitEthernet:\n          description: interfaceDescription\n          name: \"1/0/3\""
+  ],
+  "cisconso": [
+    "enable pap auth:\n  cisconso.config_present:\n    - name: enable_pap_auth\n    - datastore: running\n    - path: devices/device/ex0/config/sys/interfaces/serial/ppp0/authentication\n    - config:\n        authentication:\n            method: pap\n            \"list-name\": foobar"
+  ],
+  "cimc": [
+    "set_name:\n  cimc.hostname:\n    - hostname: foobar",
+    "logging_levels:\n  cimc.logging_levels:\n    - remote: informational\n    - local: notice"
+  ],
+  "openvswitch_bridge": [],
+  "openvswitch_db": [],
+  "openvswitch_port": [],
+  "modjk": [
+    "loadbalancer:\n  modjk.worker_activated:\n    - workers:\n      - app1\n      - app2",
+    "loadbalancer:\n  modjk.worker_disabled:\n    - workers:\n      - app1\n      - app2"
+  ],
+  "modjk_worker": [
+    "disable-before-deploy:\n  modjk_worker.activate:\n    - name: {{ grains['id'] }}\n    - lbn: application\n    - target: 'roles:balancer'\n    - tgt_type: grain",
+    "disable-before-deploy:\n  modjk_worker.disable:\n    - name: {{ grains['id'] }}\n    - lbn: application\n    - target: 'roles:balancer'\n    - tgt_type: grain"
+  ],
+  "lvs_server": [
+    "lvsrs:\n  lvs_server.present:\n    - protocol: tcp\n    - service_address: 1.1.1.1:80\n    - server_address: 192.168.0.11:8080\n    - packet_forward_method: dr\n    - weight: 10"
+  ],
+  "lvs_service": [
+    "lvstest:\n  lvs_service.present:\n    - service_address: 1.1.1.1:80\n    - protocol: tcp\n    - scheduler: rr"
+  ],
+  "ethtool": [
+    "eth0:\n  ethtool.coalesce:\n    - name: eth0\n    - rx_usecs: 24\n    - tx_usecs: 48\n\neth0:\n  ethtool.ring:\n    - name: eth0\n    - rx: 1024\n    - tx: 1024\n\neth0:\n  ethtool.offload:\n    - name: eth0\n    - tcp_segmentation_offload: on",
+    "eth0:\n  ethtool.coalesce:\n    - name: eth0\n    - adaptive_rx: on\n    - adaptive_tx: on\n    - rx_usecs: 24\n    - rx_frame: 0\n    - rx_usecs_irq: 0\n    - rx_frames_irq: 0\n    - tx_usecs: 48\n    - tx_frames: 0\n    - tx_usecs_irq: 0\n    - tx_frames_irq: 0\n    - stats_block_usecs: 0\n    - pkt_rate_low: 0\n    - rx_usecs_low: 0\n    - rx_frames_low: 0\n    - tx_usecs_low: 0\n    - tx_frames_low: 0\n    - pkt_rate_high: 0\n    - rx_usecs_high: 0\n    - rx_frames_high: 0\n    - tx_usecs_high: 0\n    - tx_frames_high: 0\n    - sample_interval: 0"
+  ],
+  "ddns": [
+    "webserver:\n  ddns.present:\n    - zone: example.com\n    - ttl: 60\n    - data: 111.222.333.444\n    - nameserver: 123.234.345.456\n    - keyfile: /srv/salt/dnspy_tsig_key.txt"
+  ],
+  "infoblox_a": [
+    "infoblox_a.absent:\n    - name: example-ha-0.domain.com\n\ninfoblox_a.absent:\n    - name:\n    - ipv4addr: 127.0.23.23",
+    "infoblox_a.present:\n    - name: example-ha-0.domain.com\n    - data:\n        name: example-ha-0.domain.com\n        ipv4addr: 123.0.31.2\n        view: Internal"
+  ],
+  "infoblox_cname": [
+    "infoblox_cname.present:\n    - name: example-ha-0.domain.com\n    - data:\n        name: example-ha-0.domain.com\n        canonical: example.domain.com\n        zone: example.com\n        view: Internal\n        comment: Example comment\n\ninfoblox_cname.present:\n    - name: example-ha-0.domain.com\n    - data:\n        name: example-ha-0.domain.com\n        canonical: example.domain.com\n        zone: example.com\n        view: Internal\n        comment: Example comment\n    - api_url: https://INFOBLOX/wapi/v1.2.1\n    - api_username: username\n    - api_password: passwd"
+  ],
+  "infoblox_host_record": [
+    "infoblox_host_record.absent:\n    - name: hostname.of.record.to.remove\n\ninfoblox_host_record.absent:\n    - name:\n    - ipv4addr: 192.168.0.1\n\ninfoblox_host_record.absent:\n    - name:\n    - mac: 12:02:12:31:23:43",
+    "# this would update `original_hostname.example.ca` to changed `data`.\ninfoblox_host_record.present:\n    - name: original_hostname.example.ca\n    - data: {'namhostname.example.cae': 'hostname.example.ca',\n        'aliases': ['hostname.math.example.ca'],\n        'extattrs': [{'Business Contact': {'value': 'EXAMPLE@example.ca'}}],\n        'ipv4addrs': [{'configure_for_dhcp': True,\n            'ipv4addr': 'func:nextavailableip:129.97.139.0/24',\n            'mac': '00:50:56:84:6e:ae'}],\n        'ipv6addrs': [], }"
+  ],
+  "infoblox_range": [
+    "infoblox_range.absent:\n    - name: 'vlan10'\n\ninfoblox_range.absent:\n    - name:\n    - start_addr: 127.0.1.20"
+  ],
+  "csf": [
+    "Simply allow/deny rules:\n  csf.rule_present:\n    ip: 1.2.3.4\n    method: allow"
+  ],
+  "dellchassis": [
+    "my-dell-chassis:\n  dellchassis.chassis:\n    - chassis_name: my-dell-chassis\n    - datacenter: dc-1-us\n    - location: my-location\n    - mode: 2\n    - idrac_launch: 1\n    - slot_names:\n      - server-1: my-slot-name\n      - server-2: my-other-slot-name\n    - blade_power_states:\n      - server-1: on\n      - server-2: off\n      - server-3: powercycle",
+    "my-dell-chassis:\n  dellchassis.chassis:\n    - chassis_name: my-dell-chassis\n    - location: my-location\n    - datacenter: london\n    - mode: 2\n    - idrac_launch: 1\n    - slot_names:\n      - 1: my-slot-name\n      - 2: my-other-slot-name\n    - blade_power_states:\n      - server-1: on\n      - server-2: off\n      - server-3: powercycle"
+  ],
+  "drac": [
+    "damian:\n  drac.present:\n    - name: damian\n    - password: secret\n    - permission: login,test_alerts,clear_logs",
+    "damian:\n  drac.absent:\n    - name: damian"
+  ],
+  "ipmi": [
+    "ipmi.config:\n    api_host: 127.0.0.1\n    api_user: admin\n    api_pass: apassword\n    api_port: 623\n    api_kg: None",
+    "ensure myipmi system is set to network boot:\n    ipmi.boot_device:\n        - name: network\n        - api_host: myipmi.hostname.com\n        - api_user: root\n        - api_pass: apassword\n        - api_kg: None\n\nensure myipmi system is powered on:\n    ipmi.power:\n        - name: boot\n        - api_host: myipmi.hostname.com\n        - api_user: root\n        - api_pass: apassword"
+  ],
+  "powerpath": [
+    "key:\n  powerpath.license_present: []"
+  ],
+  "ldap": [
+    "ldapi:///:\n  ldap.managed:\n    - connect_spec:\n        bind:\n          method: sasl\n\n    - entries:\n\n      # make sure the entry doesn't exist\n      - cn=foo,ou=users,dc=example,dc=com:\n        - delete_others: True\n\n      # make sure the entry exists with only the specified\n      # attribute values\n      - cn=admin,dc=example,dc=com:\n        - delete_others: True\n        - replace:\n            cn:\n              - admin\n            description:\n              - LDAP administrator\n            objectClass:\n              - simpleSecurityObject\n              - organizationalRole\n            userPassword:\n              - {{pillar.ldap_admin_password}}\n\n      # make sure the entry exists, its olcRootDN attribute\n      # has only the specified value, the olcRootDN attribute\n      # doesn't exist, and all other attributes are ignored\n      - 'olcDatabase={1}hdb,cn=config':\n        - replace:\n            olcRootDN:\n              - cn=admin,dc=example,dc=com\n            # the admin entry has its own password attribute\n            olcRootPW: []\n\n      # note the use of 'default'.  also note how you don't\n      # have to use list syntax if there is only one attribute\n      # value\n      - cn=foo,ou=users,dc=example,dc=com:\n        - delete_others: True\n        - default:\n            userPassword: changeme\n            shadowLastChange: 0\n            # keep sshPublicKey if present, but don't create\n            # the attribute if it is missing\n            sshPublicKey: []\n        - replace:\n            cn: foo\n            uid: foo\n            uidNumber: 1000\n            gidNumber: 1000\n            gecos: Foo Bar\n            givenName: Foo\n            sn: Bar\n            homeDirectory: /home/foo\n            loginShell: /bin/bash\n            objectClass:\n              - inetOrgPerson\n              - posixAccount\n              - top\n              - ldapPublicKey\n              - shadowAccount"
+  ],
+  "vault": [
+    "demo-policy:\n  vault.policy_present:\n    - name: foo/bar\n    - rules: |\n        path \"secret/top-secret/*\" {\n          policy = \"deny\"\n        }\n        path \"secret/not-very-secret/*\" {\n          policy = \"write\"\n        }"
+  ],
+  "pdbedit": [
+    "wash:\n  pdbedit.absent\n\nkaylee:\n  pdbedit.managed:\n    - password: A70C708517B5DD0EDB67714FE25336EB\n    - password_hashed: True\n    - drive: 'X:'\n    - homedir: '\\\\serenity\\mechanic\\profile'"
+  ],
+  "keystore": [
+    "define_keystore:\n  keystore.managed:\n    - name: /path/to/keystore\n    - passphrase: changeit\n    - force_remove: True\n    - entries:\n      - alias: hostname1\n        certificate: /path/to/cert.crt\n      - alias: remotehost\n        certificate: /path/to/cert2.crt\n        private_key: /path/to/key2.key\n      - alias: pillarhost\n        certificate: {{ salt.pillar.get('path:to:cert') }}"
+  ],
+  "rbac_solaris": [
+    "sjorge:\n  rbac.managed:\n    - roles:\n        - netcfg\n    - profiles:\n        - System Power\n    - authorizations:\n        - solaris.audit.*"
+  ],
+  "acme": [
+    "reload-gitlab:\n  cmd.run:\n    - name: gitlab-ctl hup\n\ndev.example.com:\n  acme.cert:\n    - aliases:\n      - gitlab.example.com\n    - email: acmemaster@example.com\n    - webroot: /opt/gitlab/embedded/service/gitlab-rails/public\n    - renew: 14\n    - fire_event: acme/dev.example.com\n    - onchanges_in:\n      - cmd: reload-gitlab"
+  ],
+  "cryptdev": [
+    "mappedname:\n  cryptdev.mapped:\n    - device: /dev/sdb1\n    - keyfile: /etc/keyfile.key\n    - opts:\n      - size=256\n\nswap:\n  crypted.mapped:\n    - device: /dev/sdx4\n    - keyfile: /dev/urandom\n    - opts: swap,cipher=aes-cbc-essiv:sha256,size=256\n\nmappedbyuuid:\n  crypted.mapped:\n    - device: UUID=066e0200-2867-4ebe-b9e6-f30026ca2314\n    - keyfile: /etc/keyfile.key\n    - config: /etc/alternate-crypttab"
+  ],
+  "mysql_database": [
+    "frank:\n  mysql_database.present"
+  ],
+  "mysql_grants": [
+    "frank_exampledb:\n   mysql_grants.present:\n    - grant: select,insert,update\n    - database: exampledb.*\n    - user: frank\n    - host: localhost\n\nfrank_otherdb:\n  mysql_grants.present:\n    - grant: all privileges\n    - database: otherdb.*\n    - user: frank\n\nrestricted_singletable:\n  mysql_grants.present:\n    - grant: select\n    - database: somedb.sometable\n    - user: joe"
+  ],
+  "mysql_query": [
+    "query_id:\n  mysql_query.run\n    - database: my_database\n    - query:    \"SELECT * FROM table;\"\n    - output:   \"/tmp/query_id.txt\""
+  ],
+  "mysql_user": [
+    "frank:\n  mysql_user.present:\n    - host: localhost\n    - password: bobcat",
+    "frank:\n  mysql_user.present:\n    - host: localhost\n    - password: \"bob@cat\"\n    - connection_user: someuser\n    - connection_pass: somepass\n    - connection_charset: utf8\n    - saltenv:\n      - LC_ALL: \"en_US.utf8\""
+  ],
+  "mssql_database": [
+    "yolo:\n  mssql_database.present"
+  ],
+  "mssql_login": [
+    "frank:\n  mssql_login.present\n    - domain: mydomain"
+  ],
+  "mssql_role": [
+    "yolo:\n  mssql_role.present"
+  ],
+  "mssql_user": [
+    "frank:\n  mssql_user.present:\n    - database: yolo"
+  ],
+  "mongodb_database": [],
+  "mongodb_user": [
+    "mongouser-myapp:\n  mongodb_user.present:\n  - name: myapp\n  - passwd: password-of-myapp\n  - database: admin\n  # Connect as admin:sekrit\n  - user: admin\n  - password: sekrit\n  - roles:\n      - readWrite\n      - userAdmin\n      - dbOwner"
+  ],
+  "elasticsearch": [
+    "mytestalias:\n  elasticsearch.alias_present:\n    - index: testindex\n    - definition:\n        filter:\n          term:\n            user: kimchy",
+    "mytestindex2_template:\n  elasticsearch.index_template_present:\n    - definition:\n        template: logstash-*\n        order: 1\n        settings:\n          number_of_shards: 1"
+  ],
+  "elasticsearch_index": [
+    "# Default settings\nmytestindex:\n  elasticsearch_index.present\n\n# Extra settings\nmytestindex2:\n  elasticsearch_index.present:\n    - definition:\n        settings:\n          index:\n            number_of_shards: 10"
+  ],
+  "elasticsearch_index_template": [
+    "mytestindex2_template:\n  elasticsearch_index_template.present:\n    - definition:\n        template: logstash-*\n        order: 1\n        settings:\n          number_of_shards: 1"
+  ],
+  "influxdb_database": [],
+  "influxdb_retention_policy": [],
+  "influxdb_continuous_query": [],
+  "influxdb_user": [
+    "example user present in influxdb:\n  influxdb_user.present:\n    - name: example\n    - passwd: somepassword\n    - admin: False\n    - grants:\n        foo_db: read\n        bar_db: all"
+  ],
+  "influxdb08_database": [],
+  "influxdb08_user": [],
+  "redismod": [
+    "key_in_redis:\n  redis.string:\n    - value: string data",
+    "key_in_redis:\n  redis.string:\n    - value: string data\n    - host: localhost\n    - port: 6379\n    - db: 0\n    - password: somuchkittycat"
+  ],
+  "sqlite3": [
+    "users:\n  sqlite3.table_present:\n    - db: /var/www/data/app.sqlite\n    - schema: CREATE TABLE `users` (`username` TEXT COLLATE NOCASE UNIQUE NOT NULL, `password` BLOB NOT NULL, `salt` BLOB NOT NULL, `last_login` INT)",
+    "users:\n  sqlite3.table_present:\n    - db: /var/www/app.sqlite\n    - schema:\n      - email TEXT COLLATE NOCASE UNIQUE NOT NULL\n      - firstname TEXT NOT NULL\n      - lastname TEXT NOT NULL\n      - company TEXT NOT NULL\n      - password BLOB NOT NULL\n      - salt BLOB NOT NULL"
+  ],
+  "memcached": [
+    "foo:\n  memcached.absent\n\nbar:\n  memcached.absent:\n    - host: 10.0.0.1",
+    "foo:\n  memcached.managed:\n    - value: bar"
+  ],
+  "zookeeper": [
+    "delete znode:\n  zookeeper.absent:\n    - name: /test\n    - recursive: True",
+    "update acls:\n  zookeeper.acls:\n    - name: /test/name\n    - acls:\n      - username: daniel\n        password: test\n        all: True\n      - username: gtmanfred\n        password: test\n        all: True"
+  ],
+  "solrcloud": [],
+  "tomcat": [
+    "jenkins:\n  tomcat.undeployed:\n    - name: /ran\n    - require:\n      - service: application-service",
+    "tomcat-service:\n  service.running:\n    - name: tomcat\n    - enable: True\n\nwait-for-tomcatmanager:\n  tomcat.wait:\n    - timeout: 300\n    - require:\n      - service: tomcat-service\n\njenkins:\n  tomcat.war_deployed:\n    - name: /ran\n    - war: salt://jenkins-1.2.4.war\n    - require:\n      - tomcat: wait-for-tomcatmanager"
+  ],
+  "jboss7": [
+    "application_deployed:\n  jboss7.deployed:\n    - salt_source:\n        target_file: '/tmp/webapp.war'\n    - jboss_config: {{ pillar['jboss'] }}",
+    "jndi_entries_created:\n  jboss7.bindings_exist:\n   - bindings:\n      'java:global/sampleapp/environment': 'DEV'\n      'java:global/sampleapp/configurationFile': '/var/opt/sampleapp/config.properties'\n   - jboss_config: {{ pillar['jboss'] }}"
+  ],
+  "glassfish": [
+    "- server:\n  - ssl: true\n  - url: localhost\n  - port: 4848\n  - user: admin\n  - password: changeit"
+  ],
+  "jenkins": [],
+  "wordpress": [
+    "HyperDB:\n  wordpress.activated:\n    - path: /var/www/html\n    - user: apache",
+    "HyperDB:\n  wordpress.deactivated:\n    - path: /var/www/html\n    - user: apache"
+  ],
+  "supervisord": [
+    "wsgi_server:\n  supervisord.running:\n    - require:\n      - pkg: supervisor\n    - watch:\n      - file: /etc/nginx/sites-enabled/wsgi_server.conf"
+  ],
+  "ceph": [
+    "quorum:\n  sesceph.quorum:\n    - require:\n      - sesceph: mon_running"
+  ],
+  "pbm": [],
+  "aptpkg": [],
+  "alternatives": [
+    "foo:\n  alternatives.set:\n    - path: /usr/bin/foo-2.0"
+  ],
+  "artifactory": [
+    "jboss_module_downloaded:\n  artifactory.downloaded:\n   - artifact:\n       artifactory_url: http://artifactory.intranet.example.com/artifactory\n       repository: 'libs-release-local'\n       artifact_id: 'module'\n       group_id: 'com.company.module'\n       packaging: 'jar'\n       classifier: 'sources'\n       version: '1.0'\n   - target_file: /opt/jboss7/modules/com/company/lib/module.jar",
+    "jboss_module_downloaded:\n  artifactory.downloaded:\n   - artifact:\n        artifactory_url: http://artifactory.intranet.example.com/artifactory\n        repository: 'libs-release-local'\n        artifact_id: 'module'\n        group_id: 'com.company.module'\n        packaging: 'jar'\n        classifier: 'sources'\n        version: '1.0'\n   - target_dir: /opt/jboss7/modules/com/company/lib"
+  ],
+  "nexus": [
+    "jboss_module_downloaded:\n  nexus.downloaded:\n   - artifact:\n       nexus_url: http://nexus.intranet.example.com/repository\n       repository: 'libs-release-local'\n       artifact_id: 'module'\n       group_id: 'com.company.module'\n       packaging: 'jar'\n       classifier: 'sources'\n       version: '1.0'\n   - target_file: /opt/jboss7/modules/com/company/lib/module.jar",
+    "maven_artifact_downloaded:\n  nexus.downloaded:\n   - artifact:\n        nexus_url: http://nexus.intranet.example.com/repository\n        repository: 'maven-releases'\n        artifact_id: 'module'\n        group_id: 'com.company.module'\n        packaging: 'zip'\n        classifier: 'dist'\n        version: '1.0'\n   - target_dir: /opt/maven/modules/com/company/release"
+  ],
+  "ports": [
+    "security/nmap:\n  ports.installed:\n    - options:\n      - IPV6: off"
+  ],
+  "portage_config": [
+    "salt:\n    portage_config.flags:\n        - use:\n            - openssl"
+  ],
+  "layman": [
+    "sunrise:\n    layman.present"
+  ],
+  "npm": [
+    "npm:\n  pkg.installed\n\nyaml:\n  npm.installed:\n    - require:\n      - pkg: npm",
+    "coffee-script:\n  npm.installed:\n    - user: someuser\n\ncoffee-script@1.0.1:\n  npm.installed: []"
+  ],
+  "gem": [
+    "addressable:\n  gem.installed:\n    - user: rvm\n    - ruby: jruby@jgemset"
+  ],
+  "bower": [
+    "npm:\n  pkg.installed\ngit:\n  pkg.installed\nbower:\n  npm.installed\n  require:\n    - pkg: npm\n    - pkg: git\n\nunderscore:\n  bower.installed:\n    - dir: /path/to/project\n    - require:\n      - npm: bower",
+    "underscore:\n  bower.installed:\n    - dir: /path/to/project\n    - user: someuser\n\njquery#2.0:\n  bower.installed:\n    - dir: /path/to/project"
+  ],
+  "cabal": [
+    "ShellCheck-0.3.5:\n  cabal:\n    - installed:"
+  ],
+  "composer": [
+    "get-composer:\n  cmd.run:\n    - name: 'CURL=`which curl`; $CURL -sS https://getcomposer.org/installer | php'\n    - unless: test -f /usr/local/bin/composer\n    - cwd: /root/\n\ninstall-composer:\n  cmd.wait:\n    - name: mv /root/composer.phar /usr/local/bin/composer\n    - cwd: /root/\n    - watch:\n      - cmd: get-composer\n\n/path/to/project:\n  composer.installed:\n    - no_dev: true\n    - require:\n      - cmd: install-composer\n\n\n# Without composer installed in your PATH\n# Note: composer.phar must be executable for state to work properly\n/path/to/project:\n  composer.installed:\n    - composer: /path/to/composer.phar\n    - php: /usr/local/bin/php\n    - no_dev: true"
+  ],
+  "pecl": [
+    "php-pear:\n  pkg.installed\n\nmongo:\n  pecl.installed:\n    - require:\n      - pkg: php-pear"
+  ],
+  "rvm": [
+    "rvm:\n  group.present: []\n  user.present:\n    - gid: rvm\n    - home: /home/rvm\n    - require:\n      - group: rvm\n\nrvm-deps:\n  pkg.installed:\n    - pkgs:\n      - bash\n      - coreutils\n      - gzip\n      - bzip2\n      - gawk\n      - sed\n      - curl\n      - git-core\n      - subversion\n\nmri-deps:\n  pkg.installed:\n    - pkgs:\n      - build-essential\n      - openssl\n      - libreadline6\n      - libreadline6-dev\n      - curl\n      - git-core\n      - zlib1g\n      - zlib1g-dev\n      - libssl-dev\n      - libyaml-dev\n      - libsqlite3-0\n      - libsqlite3-dev\n      - sqlite3\n      - libxml2-dev\n      - libxslt1-dev\n      - autoconf\n      - libc6-dev\n      - libncurses5-dev\n      - automake\n      - libtool\n      - bison\n      - subversion\n      - ruby\n\njruby-deps:\n  pkg.installed:\n    - pkgs:\n      - curl\n      - g++\n      - openjdk-6-jre-headless\n\nruby-1.9.2:\n  rvm.installed:\n    - default: True\n    - user: rvm\n    - require:\n      - pkg: rvm-deps\n      - pkg: mri-deps\n      - user: rvm\n\njruby:\n  rvm.installed:\n    - user: rvm\n    - require:\n      - pkg: rvm-deps\n      - pkg: jruby-deps\n      - user: rvm\n\njgemset:\n  rvm.gemset_present:\n    - ruby: jruby\n    - user: rvm\n    - require:\n      - rvm: jruby\n\nmygemset:\n  rvm.gemset_present:\n    - ruby: ruby-1.9.2\n    - user: rvm\n    - require:\n      - rvm: ruby-1.9.2"
+  ],
+  "rbenv": [
+    "rbenv-deps:\n  pkg.installed:\n    - names:\n      - bash\n      - git\n      - openssl\n      - libssl-dev\n      - make\n      - curl\n      - autoconf\n      - bison\n      - build-essential\n      - libffi-dev\n      - libyaml-dev\n      - libreadline6-dev\n      - zlib1g-dev\n      - libncurses5-dev\n\nruby-1.9.3-p429:\n  rbenv.absent:\n    - require:\n      - pkg: rbenv-deps\n\nruby-2.0.0-p598:\n  rbenv.installed:\n    - default: True\n    - require:\n      - pkg: rbenv-deps"
+  ],
+  "cyg": [
+    "dos2unix:\n  cyg.installed",
+    "rsync:\n  cyg.installed:\n    - mirrors:\n      - http://mirror/without/public/key: \"\"\n      - http://mirror/with/public/key: http://url/of/public/key"
+  ],
+  "zcbuildout": [
+    "installed1\n  buildout.installed:\n    - name: /path/to/buildout\n\ninstalled2\n  buildout.installed:\n    - name: /path/to/buildout\n    - parts:\n      - a\n      - b\n    - python: /path/to/pythonpath/bin/python\n    - unless: /bin/test_something_installed\n    - onlyif: /bin/test_else_installed"
+  ],
+  "virtualenv": [],
+  "kernelpkg": [
+    "install-latest-kernel:\n  kernelpkg.latest_installed: []",
+    "boot-latest-kernel:\n  kernelpkg.latest_active:\n    - at_time: 1"
+  ],
+  "zfs": [
+    "test/shares/yuki:\n  zfs.filesystem_present:\n    - create_parent: true\n    - properties:\n        quota: 16G\n\ntest/iscsi/haruhi:\n  zfs.volume_present:\n    - create_parent: true\n    - volume_size: 16M\n    - sparse: true\n    - properties:\n        readonly: on\n\ntest/shares/yuki@frozen:\n  zfs.snapshot_present\n\nmoka_origin:\n  zfs.hold_present:\n    - snapshot: test/shares/yuki@frozen\n\ntest/shares/moka:\n  zfs.filesystem_present:\n    - cloned_from: test/shares/yuki@frozen\n\ntest/shares/moka@tsukune:\n  zfs.snapshot_absent"
+  ],
+  "zpool": [
+    "oldpool:\n  zpool.absent:\n    - export: true\n\nnewpool:\n  zpool.present:\n    - config:\n        import: false\n        force: true\n    - properties:\n        comment: salty storage pool\n    - layout:\n        - mirror:\n          - /dev/disk0\n          - /dev/disk1\n        - mirror:\n          - /dev/disk2\n          - /dev/disk3\n\npartitionpool:\n  zpool.present:\n    - config:\n        import: false\n        force: true\n    - properties:\n        comment: disk partition salty storage pool\n        ashift: '12'\n        feature@lz4_compress: enabled\n    - filesystem_properties:\n        compression: lz4\n        atime: on\n        relatime: on\n    - layout:\n        - /dev/disk/by-uuid/3e43ce94-77af-4f52-a91b-6cdbb0b0f41b\n\nsimplepool:\n  zpool.present:\n    - config:\n        import: false\n        force: true\n    - properties:\n        comment: another salty storage pool\n    - layout:\n        - /dev/disk0\n        - /dev/disk1"
+  ],
+  "btrfs": [],
+  "glusterfs": [
+    "myvolume:\n  glusterfs.add_volume_bricks:\n    - bricks:\n        - host1:/srv/gluster/drive1\n        - host2:/srv/gluster/drive2\n\nReplicated Volume:\n  glusterfs.add_volume_bricks:\n    - name: volume2\n    - bricks:\n      - host1:/srv/gluster/drive2\n      - host2:/srv/gluster/drive3",
+    "myvolume:\n  glusterfs.max_op_version:\n    - name: volume1\n    - version: 30707"
+  ],
+  "snapper": [
+    "my_baseline:\n  snapper.baseline_snapshot:\n    - number: 20\n    - include_diff: False\n    - ignore:\n      - /var/log\n      - /var/cache",
+    "my_baseline:\n  snapper.baseline_snapshot:\n    - number: 20\n    - ignore:\n      - /var/log\n      - /var/cache\n\nhosts_entry:\n  file.blockreplace:\n    - name: /etc/hosts\n    - content: 'First line of content'\n    - append_if_not_found: True"
+  ],
+  "nfs_export": [
+    "add_simple_export:\n  nfs_export.present:\n    - name:     '/srv/nfs'\n    - hosts:    '10.0.2.0/24'\n    - options:\n      - 'rw'",
+    "add_complex_export:\n  nfs_export.present:\n    - name: '/srv/nfs'\n    - clients:\n      # First export, same as simple one above\n      - hosts: '10.0.2.0/24'\n        options:\n          - 'rw'\n      # Second export\n      - hosts: '*.example.com'\n        options:\n          - 'ro'\n          - 'subtree_check'"
+  ],
+  "xml": [
+    "ensure_value_true:\n  xml.value_present:\n    - name: /tmp/test.xml\n    - xpath: .//playwright[@id='1']\n    - value: William Shakespeare"
+  ],
+  "rsync": [
+    "/opt/user-backups:\n  rsync.synchronized:\n    - source: /home\n    - force: True"
+  ],
+  "svn": [
+    "subversion:\n  pkg.installed\n\nhttp://unladen-swallow.googlecode.com/svn/trunk/:\n  svn.latest:\n    - target: /tmp/swallow"
+  ],
+  "hg": [
+    "https://bitbucket.org/example_user/example_repo:\n    hg.latest:\n      - rev: tip\n      - target: /tmp/example_repo"
+  ],
+  "incron": [
+    "Watch for modifications in /home/user:\n    incron.present:\n        - user: root\n        - path: /home/user\n        - mask:\n            - IN_MODIFY\n        - cmd: 'echo \"$$ $@\"'",
+    "Watch for modifications and access in /home/user:\n    incron.present:\n        - user: root\n        - path: /home/user\n        - mask:\n            - IN_MODIFY\n            - IN_ACCESS\n        - cmd: 'echo \"$$ $@\"'"
+  ],
+  "logadm": [
+    ".. note::\n    TODO"
+  ],
+  "consul": [
+    "acl_present:\n  consul.acl_present:\n    - id: 38AC8470-4A83-4140-8DFD-F924CD32917F\n    - name: acl_name\n    - rules: node \"\" {policy = \"write\"} service \"\" {policy = \"read\"} key \"_rexec\" {policy = \"write\"}\n    - type: client\n    - consul_url: http://localhost:8500\n\nacl_delete:\n   consul.acl_absent:\n     - id: 38AC8470-4A83-4140-8DFD-F924CD32917F"
+  ],
+  "tuned": [],
+  "gnomedesktop": [
+    "localdesktop_wm_prefs:\n    gnomedesktop.wm_preferences:\n        - user: username\n        - audible_bell: false\n        - action_double_click_titlebar: 'toggle-maximize'\n        - visual_bell: true\n        - num_workspaces: 6\nlocaldesktop_lockdown:\n    gnomedesktop.desktop_lockdown:\n        - user: username\n        - disable_user_switching: true\nlocaldesktop_interface:\n    gnomedesktop.desktop_interface:\n        - user: username\n        - clock_show_date: true\n        - clock_format: 12h"
+  ],
+  "sysrc": [
+    "syslogd:\n  sysrc.managed:\n    - name: syslogd_flags\n    - value: -ss"
+  ],
+  "debconfmod": [
+    "nullmailer-debconf:\n  debconf.set:\n    - name: nullmailer\n    - data:\n        'shared/mailname': {'type': 'string', 'value': 'server.domain.tld'}\n        'nullmailer/relayhost': {'type': 'string', 'value': 'mail.domain.tld'}\n\nferm-debconf:\n  debconf.set:\n    - name: ferm\n    - data:\n        'ferm/enable': {'type': 'boolean', 'value': True}",
+    "set-default-shell:\n  debconf.set:\n    - name: dash\n    - data:\n        'dash/sh': {'type': 'boolean', 'value': false}\n\nreconfigure-dash:\n  cmd.run:\n    - name: dpkg-reconfigure -f noninteractive dash\n    - onchanges:\n      - debconf: set-default-shell"
+  ],
+  "augeas": [
+    "redis-conf:\n  augeas.change:\n    - context: /files/etc/redis/redis.conf\n    - changes:\n      - set bind 0.0.0.0\n      - set maxmemory 1G",
+    "redis-conf:\n  augeas.change:\n    - changes:\n      - set /files/etc/redis/redis.conf/bind 0.0.0.0"
+  ],
+  "chef": [
+    "my-chef-run:\n  chef.client:\n    - override-runlist: 'demo1,demo2'\n    - server: 'https://chef.domain.com'\n\ndefault-chef-run:\n  chef.client: []\n\nmy-solo-run:\n  chef.solo:\n    - environment: dev"
+  ],
+  "rdp": [],
+  "pcs": [
+    "mysql_pcs__cib_present_cib_for_galera:\n    pcs.cib_present:\n        - cibname: cib_for_galera\n        - scope: None\n        - extra_args: None",
+    "mysql_pcs__resource_present_galera:\n    pcs.resource_present:\n        - resource_id: galera\n        - resource_type: \"ocf:heartbeat:galera\"\n        - resource_options:\n            - 'wsrep_cluster_address=gcomm://node1.example.org,node2.example.org,node3.example.org'\n            - '--master'\n        - cibname: cib_for_galera"
+  ],
+  "eselect": [
+    "profile:\n  eselect.set:\n    - target: hardened/linux/amd64"
+  ],
+  "smartos": [],
+  "webutil": [
+    "username:\n  webutil.user_exists:\n    - password: secr3t\n    - htpasswd_file: /etc/nginx/htpasswd\n    - options: d\n    - force: true"
+  ],
+  "trafficserver": [
+    "bounce_ats_cluster:\n  trafficserver.bounce_cluster",
+    "bounce_ats_local:\n  trafficserver.bounce_local\n\nbounce_ats_local:\n  trafficserver.bounce_local\n    - drain: True"
+  ],
+  "zone": [
+    "omipkg1_configuration:\n  zone.present:\n    - name: omipkg1\n    - brand: ipkg\n    - zonepath: /zones/omipkg1\n    - properties:\n      - autoboot: true\n      - ip-type: exclusive\n      - cpu-shares: 50\n    - resources:\n      - attr:\n        - name: owner\n        - value: Jorge Schrauwen\n        - type: string\n      - attr:\n        - name: description\n        - value: OmniOS ipkg zone for testing\n        - type: string\n      - capped-memory:\n        - physical: 64M\nomipkg1_installation:\n  zone.installed:\n    - name: omipkg1\n    - require:\n        - zone: omipkg1_configuration\nomipkg1_running:\n  zone.booted:\n    - name: omipkg1\n    - require:\n        - zone: omipkg1_installation",
+    "omipkg1_network:\n  zone.resource_present:\n    - name: omipkg1\n    - resource_type: net\n    - resource_selector_property: mac-addr\n    - resource_selector_value: \"02:08:20:a2:a3:10\"\n    - physical: znic1\n    - require:\n        - zone: omipkg1_configuration"
+  ],
+  "zk_concurrency": [
+    "acquire_lock:\n  zk_concurrency.lock:\n    - name: /trafficeserver\n    - zk_hosts: 'zookeeper:2181'\n    - max_concurrency: 4\n    - prereq:\n        - service: trafficserver\n\ntrafficserver:\n  service.running:\n    - watch:\n      - file: /etc/trafficserver/records.config\n\n/etc/trafficserver/records.config:\n  file.managed:\n    - source: salt://records.config\n\nrelease_lock:\n  zk_concurrency.unlock:\n    - name: /trafficserver\n    - require:\n        - service: trafficserver"
+  ]
+}
