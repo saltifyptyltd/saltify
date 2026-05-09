@@ -1,4 +1,9 @@
 User-agent: *
 Allow: /
 
+# Build artefacts and data files — used by the page JS at runtime, not
+# meant to be indexed as standalone results.
+Disallow: /scripts/
+Disallow: /data/
+
 Sitemap: https://saltify.work/sitemap.xml
