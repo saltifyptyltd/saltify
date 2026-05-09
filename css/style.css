@@ -1719,6 +1719,9 @@ pre code {
         grid-template-columns: 1fr;
         max-width: 760px;
     }
+    .git-paths-grid {
+        grid-template-columns: 1fr !important;
+    }
 }
 
 @media (max-width: 600px) {

@@ -842,6 +842,7 @@ sudo salt '*' test.ping</code></pre>
             <h2>6. After install — make it production</h2>
             <p class="section-intro">A working stack isn't a production stack. Six things to do before you point real fleet at it.</p>
 
+            <!-- License + SSL -->
             <div class="quickstart-grid divider-grid" style="grid-template-columns: repeat(2, 1fr);">
                 <article class="quickstart-step fade-in">
                     <span class="step-number">LICENSE</span>
@@ -863,21 +864,53 @@ tls_crt: /etc/pki/raas/certs/&lt;name&gt;.crt
 tls_key: /etc/pki/raas/certs/&lt;name&gt;.key
 port: 443</code></pre>
                 </article>
+            </div>
 
-                <article class="quickstart-step fade-in">
-                    <span class="step-number">GIT</span>
-                    <h4>Make Git the source of truth</h4>
-                    <p>Replace <code>/srv/salt</code> with a Git checkout on <strong>both masters</strong>. A 10-minute cron pull keeps it fresh.</p>
-                    <pre style="margin-top: auto;"><code>sudo mv /srv/salt ~/install_backup/
+            <!-- GIT — inline if/else branch at the decision point -->
+            <div id="git-step" style="margin-top: 2.5rem;">
+                <div style="display: flex; align-items: baseline; gap: 0.875rem; margin-bottom: 0.5rem;">
+                    <span style="font-family: var(--font-mono); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.16em; color: var(--color-accent);">GIT</span>
+                    <h3 style="font-size: 1.5rem; font-weight: 600; letter-spacing: -0.01em; color: var(--color-text); margin: 0;">Make Git the source of truth</h3>
+                </div>
+                <p style="color: var(--color-text-muted); margin-bottom: 1.5rem;">Replace <code>/srv/salt</code> with a Git checkout on <strong>both masters</strong>. A 10-minute cron pull keeps it fresh. <strong>Two paths from here</strong> — pick the one that matches your situation.</p>
+
+                <!-- The decision: empty repo? -->
+                <div style="display: flex; align-items: center; justify-content: center; gap: 1rem; margin: 0 auto 1.25rem; max-width: 640px; padding: 0.875rem 1.25rem; background: var(--color-bg-featured); border: 1px dashed var(--color-accent-mid); border-radius: var(--radius); font-family: var(--font-mono); font-size: 0.875rem; color: var(--color-text);">
+                    <i class="fas fa-code-branch" style="color: var(--color-accent);"></i>
+                    <span><strong>if</strong> Git repo is empty <strong>→ Path A</strong>&nbsp; <strong>else</strong> <strong>→ Path B</strong></span>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem;" class="git-paths-grid">
+                    <!-- Path A — first deployment -->
+                    <div style="padding: 2.25rem 1.75rem; background: linear-gradient(160deg, var(--color-bg-featured) 0%, var(--color-bg-card) 100%); border: 1px solid var(--color-accent-mid); border-radius: var(--radius); display: flex; flex-direction: column;">
+                        <p style="font-size: 0.7rem; font-weight: 700; letter-spacing: 0.16em; color: var(--color-accent); text-transform: uppercase; font-family: var(--font-mono); margin-bottom: 0.875rem;">Path A · First deployment</p>
+                        <h4 style="font-size: 1.4rem; font-weight: 600; letter-spacing: -0.01em; color: var(--color-text); margin-bottom: 0.875rem;">Empty repo? Build the states first.</h4>
+                        <p style="color: var(--color-text-muted); line-height: 1.6; margin-bottom: 1rem;">You just installed the masters. Your Git repo has nothing in it yet. Before Git can be the source of truth, the source has to exist.</p>
+                        <p style="color: var(--color-text-muted); line-height: 1.6; margin-bottom: 1.5rem;">The Getting Started tutorial walks through your first state files, pillar setup, and the initial <code>git push</code>. Once your repo has content, come back and run <strong>Path B</strong> to clone it onto both masters.</p>
+                        <a href="getting-started.html" class="btn-primary" style="margin-top: auto; align-self: flex-start;">Open Getting Started →</a>
+                    </div>
+
+                    <!-- Path B — existing repo -->
+                    <div style="padding: 2.25rem 1.75rem; background: linear-gradient(160deg, var(--color-bg-featured) 0%, var(--color-bg-card) 100%); border: 1px solid var(--color-accent-mid); border-radius: var(--radius); display: flex; flex-direction: column;">
+                        <p style="font-size: 0.7rem; font-weight: 700; letter-spacing: 0.16em; color: var(--color-accent); text-transform: uppercase; font-family: var(--font-mono); margin-bottom: 0.875rem;">Path B · Existing repo</p>
+                        <h4 style="font-size: 1.4rem; font-weight: 600; letter-spacing: -0.01em; color: var(--color-text); margin-bottom: 0.875rem;">Repo already populated? Clone it.</h4>
+                        <p style="color: var(--color-text-muted); line-height: 1.6; margin-bottom: 1.25rem;">Re-deploying after a rebuild, seeding a new green stack, or running DR? Your repo already has the states. Wipe the SSE-shipped scaffold and clone — on <strong>both masters</strong>.</p>
+                        <pre style="margin-top: auto;"><code><span class="code-comment"># /srv/salt was scaffolded by the SSE installer in step 8 —</span>
+<span class="code-comment"># wipe it so Git can take over.</span>
+sudo rm -rf /srv/salt
 sudo git clone &lt;repo-url&gt; /srv/salt
 cd /srv/salt &amp;&amp; git checkout &lt;branch&gt;
 
-<span class="code-comment"># cron — every 10 min</span>
+<span class="code-comment"># cron — every 10 min on both masters</span>
 */10 * * * * \
   git -C /srv/salt pull \
   &gt; /var/log/salt_git_pull.log 2&gt;&amp;1</code></pre>
-                </article>
+                    </div>
+                </div>
+            </div>
 
+            <!-- GPG + CONFIG + CLOUD -->
+            <div class="quickstart-grid divider-grid" style="grid-template-columns: repeat(2, 1fr); margin-top: 2.5rem;">
                 <article class="quickstart-step fade-in">
                     <span class="step-number">GPG</span>
                     <h4>Encrypt pillar secrets</h4>
@@ -897,7 +930,7 @@ cd /srv/salt &amp;&amp; git checkout &lt;branch&gt;
                     <p style="font-size: 0.85rem; margin-top: auto;"><a href="#config-deep-dive" style="color: var(--color-accent); text-decoration: none; font-weight: 600;">Full configs below ↓</a></p>
                 </article>
 
-                <article class="quickstart-step fade-in">
+                <article class="quickstart-step fade-in" style="grid-column: 1 / -1;">
                     <span class="step-number">CLOUD</span>
                     <h4>Pre-stage minion bundles</h4>
                     <p>So Aria / vRA can deploy minions to new VMs at provision time.</p>
@@ -912,7 +945,7 @@ saltify_provider:
 
             <div class="callout callout-tip">
                 <i class="fas fa-circle-info"></i>
-                <p><strong>Run order matters.</strong> License → SSL → Git → GPG → master configs → minion bundles. The Git step assumes you already have a repo with state files; if not, scaffold from <code>~/install_backup</code> and commit.</p>
+                <p><strong>Run order matters.</strong> License → SSL → Git → GPG → master configs → minion bundles. The deep-dives for GPG and master configs are below — read them in order.</p>
             </div>
 
             <!-- GPG deep dive -->
