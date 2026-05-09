@@ -23,8 +23,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-    <link rel="stylesheet" href="css/style.css?v=33">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css?v=36">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         /* ── Page hero ─────────────────────────────────────────────────── */
@@ -81,7 +81,7 @@
             display: block;
             width: 100%;
             height: auto;
-            background: #ffffff;
+            background: var(--color-screenshot-bg);
         }
         .figure figcaption {
             font-family: var(--font-mono);
@@ -253,13 +253,13 @@
             <h2>VSCode — Windows or macOS.</h2>
             <p class="section-intro">If you don't already have it, this is the editor everything else hooks into. Free, MIT-licensed, weekly auto-updates.</p>
 
-            <div role="tablist" class="os-tabs">
-                <button role="tab" class="os-tab" data-os="win" aria-selected="true"><i class="fab fa-windows" aria-hidden="true"></i>Windows</button>
-                <button role="tab" class="os-tab" data-os="mac" aria-selected="false"><i class="fab fa-apple" aria-hidden="true"></i>macOS</button>
+            <div role="tablist" aria-label="Choose your operating system" class="os-tabs">
+                <button role="tab" id="vscode-tab-win" class="os-tab" data-os="win" aria-selected="true" aria-controls="vscode-pane-win" tabindex="0"><i class="fab fa-windows" aria-hidden="true"></i>Windows</button>
+                <button role="tab" id="vscode-tab-mac" class="os-tab" data-os="mac" aria-selected="false" aria-controls="vscode-pane-mac" tabindex="-1"><i class="fab fa-apple" aria-hidden="true"></i>macOS</button>
             </div>
 
             <!-- Windows pane -->
-            <div role="tabpanel" class="os-pane" data-os="win" data-active="true">
+            <div role="tabpanel" id="vscode-pane-win" aria-labelledby="vscode-tab-win" class="os-pane" data-os="win" data-active="true">
                 <p class="source-cite">Source: <a href="https://code.visualstudio.com/docs/setup/windows" target="_blank" rel="noopener">code.visualstudio.com/docs/setup/windows</a></p>
 
                 <h3>Download</h3>
@@ -294,7 +294,7 @@ https://go.microsoft.com/fwlink/?linkid=852157</code></pre>
             </div>
 
             <!-- macOS pane -->
-            <div role="tabpanel" class="os-pane" data-os="mac">
+            <div role="tabpanel" id="vscode-pane-mac" aria-labelledby="vscode-tab-mac" class="os-pane" data-os="mac">
                 <p class="source-cite">Source: <a href="https://code.visualstudio.com/docs/setup/mac" target="_blank" rel="noopener">code.visualstudio.com/docs/setup/mac</a></p>
 
                 <h3>Download</h3>
@@ -437,7 +437,7 @@ EOF</code></pre>
             </div>
 
             <figure class="figure">
-                <img src="img/academy-501/copilot-inline-chat.png" alt="GitHub Copilot Chat inline-chat prompt example showing a question being asked directly in the editor">
+                <img src="img/academy-501/copilot-inline-chat.png" loading="lazy" alt="GitHub Copilot Chat inline-chat prompt example showing a question being asked directly in the editor">
                 <figcaption>Source: <a href="https://code.visualstudio.com/docs/copilot/copilot-chat" target="_blank" rel="noopener">code.visualstudio.com/docs/copilot/copilot-chat</a></figcaption>
             </figure>
 
@@ -445,7 +445,7 @@ EOF</code></pre>
             <p>The chat panel (sidebar icon, or <code>Ctrl+Alt+I</code> / <code>⌘⌃I</code>) gives you a multi-turn conversation with full repo context. <strong>Agent mode</strong> takes a high-level instruction and edits across multiple files until tests pass.</p>
 
             <figure class="figure">
-                <img src="img/academy-501/copilot-reviewer-mode.png" alt="GitHub Copilot Chat custom reviewer mode interface showing an agent-style review of code changes">
+                <img src="img/academy-501/copilot-reviewer-mode.png" loading="lazy" alt="GitHub Copilot Chat custom reviewer mode interface showing an agent-style review of code changes">
                 <figcaption>Source: <a href="https://code.visualstudio.com/docs/copilot/customization/custom-chat-modes" target="_blank" rel="noopener">code.visualstudio.com/docs/copilot/customization</a></figcaption>
             </figure>
 
@@ -550,13 +550,13 @@ EOF</code></pre>
             </div>
 
             <figure class="figure">
-                <img src="img/academy-501/claude-code-vscode-interface.jpg" alt="VS Code with the Claude Code extension panel open on the right side, showing a conversation with Claude">
+                <img src="img/academy-501/claude-code-vscode-interface.jpg" loading="lazy" alt="VS Code with the Claude Code extension panel open on the right side, showing a conversation with Claude">
                 <figcaption>Source: <a href="https://code.claude.com/docs/en/vs-code" target="_blank" rel="noopener">code.claude.com/docs/en/vs-code</a> — Claude Code in VS Code overview</figcaption>
             </figure>
 
             <h3>Spark icon — where to click</h3>
             <figure class="figure">
-                <img src="img/academy-501/claude-code-vscode-editor-icon.png" alt="VS Code editor toolbar with the Claude Code Spark icon highlighted in the top-right corner">
+                <img src="img/academy-501/claude-code-vscode-editor-icon.png" loading="lazy" alt="VS Code editor toolbar with the Claude Code Spark icon highlighted in the top-right corner">
                 <figcaption>Source: <a href="https://code.claude.com/docs/en/vs-code" target="_blank" rel="noopener">code.claude.com/docs/en/vs-code</a></figcaption>
             </figure>
 
@@ -564,7 +564,7 @@ EOF</code></pre>
             <p>Select some lines in your file. Press <code>Option+K</code> (Mac) / <code>Alt+K</code> (Win/Linux) to insert a typed @-mention reference (like <code>@app.ts#5-10</code>) into your prompt. Or just type your question — Claude sees your selection automatically.</p>
 
             <figure class="figure">
-                <img src="img/academy-501/claude-code-vscode-prompt.png" alt="VS Code with a Python file selection on the left and Claude Code asking a question about those specific lines on the right">
+                <img src="img/academy-501/claude-code-vscode-prompt.png" loading="lazy" alt="VS Code with a Python file selection on the left and Claude Code asking a question about those specific lines on the right">
                 <figcaption>Source: <a href="https://code.claude.com/docs/en/vs-code" target="_blank" rel="noopener">code.claude.com/docs/en/vs-code</a></figcaption>
             </figure>
 
@@ -572,7 +572,7 @@ EOF</code></pre>
             <p>When Claude wants to edit a file, you get a side-by-side diff. Accept, reject, or edit the diff inline before accepting.</p>
 
             <figure class="figure">
-                <img src="img/academy-501/claude-code-vscode-edits.png" alt="VS Code showing a diff of Claude's proposed changes with a permission prompt asking whether to make the edit">
+                <img src="img/academy-501/claude-code-vscode-edits.png" loading="lazy" alt="VS Code showing a diff of Claude's proposed changes with a permission prompt asking whether to make the edit">
                 <figcaption>Source: <a href="https://code.claude.com/docs/en/vs-code" target="_blank" rel="noopener">code.claude.com/docs/en/vs-code</a></figcaption>
             </figure>
 
@@ -718,16 +718,35 @@ claude doctor</code></pre>
         </div>
     </aside>
 
-    <!-- Page-specific JS for the OS tabs -->
+    <!-- Page-specific JS for the OS tabs — full ARIA tab pattern with
+         arrow-key roving tabindex per WAI-ARIA Authoring Practices. -->
     <script>
         document.querySelectorAll('.os-tabs').forEach(tablist => {
-            const tabs = tablist.querySelectorAll('.os-tab');
-            const panes = tablist.parentElement.querySelectorAll('.os-pane');
-            tabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    const target = tab.dataset.os;
-                    tabs.forEach(t => t.setAttribute('aria-selected', t === tab));
-                    panes.forEach(p => p.dataset.active = (p.dataset.os === target));
+            const tabs = [...tablist.querySelectorAll('.os-tab')];
+            const panes = [...tablist.parentElement.querySelectorAll('.os-pane')];
+
+            function activate(tab) {
+                const target = tab.dataset.os;
+                tabs.forEach(t => {
+                    const on = t === tab;
+                    t.setAttribute('aria-selected', on);
+                    t.setAttribute('tabindex', on ? '0' : '-1');
+                });
+                panes.forEach(p => p.dataset.active = (p.dataset.os === target));
+            }
+
+            tabs.forEach((tab, i) => {
+                tab.addEventListener('click', () => activate(tab));
+                tab.addEventListener('keydown', e => {
+                    if (e.key !== 'ArrowRight' && e.key !== 'ArrowLeft' && e.key !== 'Home' && e.key !== 'End') return;
+                    e.preventDefault();
+                    let next = i;
+                    if (e.key === 'ArrowRight') next = (i + 1) % tabs.length;
+                    else if (e.key === 'ArrowLeft') next = (i - 1 + tabs.length) % tabs.length;
+                    else if (e.key === 'Home') next = 0;
+                    else if (e.key === 'End') next = tabs.length - 1;
+                    activate(tabs[next]);
+                    tabs[next].focus();
                 });
             });
         });
