@@ -1978,35 +1978,27 @@ pre code {
 /* ── Five-course path ────────────────────────────────────────────── */
 .academy-path {
     position: relative;
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 1rem;
     list-style: none;
     padding: 1.25rem 0 0;
     margin: 0;
 }
-/* The connector line — runs through the centres of the SALT-code pills. */
-.academy-path::before {
-    content: '';
-    position: absolute;
-    top: calc(1rem + 14px); /* padding-top + half pill height */
-    left: 8%;
-    right: 8%;
-    height: 2px;
-    background: linear-gradient(90deg,
-        var(--color-accent-mid) 0%,
-        var(--color-accent) 50%,
-        var(--color-accent-mid) 100%);
-    transform: scaleX(0);
-    transform-origin: left center;
-    transition: transform 1.4s cubic-bezier(0.65, 0, 0.35, 1) 0.2s;
-    z-index: 0;
-}
-.academy-path.drawn::before { transform: scaleX(1); }
+/* Connector line removed — multi-row wrap meant the line couldn't run cleanly
+   across rows, and the cards stand on their own with the SALT-code pills. */
+.academy-path::before { content: none; }
+.academy-path.drawn::before { content: none; }
 
 .academy-step {
     position: relative;
     z-index: 1;
+    /* Three per row max on desktop; gracefully wraps and centres uneven rows.
+       The min-width keeps the card readable on mid-size screens. */
+    flex: 0 1 calc((100% - 2rem) / 3);
+    min-width: 240px;
+    max-width: 320px;
 }
 .academy-step a {
     display: flex;
@@ -2230,10 +2222,13 @@ pre code {
     .academy-stat:nth-child(2) { border-left: 1px solid var(--color-border); }
     .academy-stat:nth-child(3) { border-left: none; }
     .academy-path {
-        grid-template-columns: 1fr;
         gap: 0.75rem;
     }
-    .academy-path::before { display: none; }
+    .academy-step {
+        flex: 0 1 100%;
+        min-width: 0;
+        max-width: none;
+    }
     .academy-step a { flex-direction: row; align-items: center; text-align: left; flex-wrap: wrap; }
     .academy-step a .step-num { flex-shrink: 0; }
     .step-title { flex: 1; min-width: 200px; }
