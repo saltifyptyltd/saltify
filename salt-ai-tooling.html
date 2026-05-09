@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SALT 501 — AI Tooling for Salt | Saltify Academy</title>
+    <meta name="description" content="The AI-augmented dev toolchain for writing Salt — VSCode, the SaltStack extension, GitHub Copilot Chat, Claude in Chrome, and Claude Code (IDE + terminal). Install steps from the official docs, no fluff.">
+
+    <!-- Open Graph / social -->
+    <meta property="og:type" content="article">
+    <meta property="og:title" content="SALT 501 — AI Tooling for Salt">
+    <meta property="og:description" content="Install the AI-augmented dev toolchain Saltify uses for writing Salt: VSCode, SaltStack extension, GitHub Copilot Chat, Claude in Chrome, and Claude Code. Plain English, official sources.">
+    <meta property="og:url" content="https://saltify.work/salt-ai-tooling.html">
+    <meta property="og:image" content="https://saltify.work/logo/saltify-logo-large-transparent.png">
+    <meta property="og:site_name" content="Saltify">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="SALT 501 — AI Tooling for Salt">
+    <meta name="twitter:description" content="The AI-augmented dev toolchain for writing Salt. VSCode, extensions, Claude Code. From official docs.">
+    <meta name="twitter:image" content="https://saltify.work/logo/saltify-logo-large-transparent.png">
+
+    <link rel="icon" type="image/png" href="logo/saltify-logo-large-transparent.png">
+    <link rel="canonical" href="https://saltify.work/salt-ai-tooling.html">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+    <link rel="stylesheet" href="css/style.css?v=33">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* ── Page hero ─────────────────────────────────────────────────── */
+        .guide-hero { padding: 140px 0 60px; text-align: center; }
+        .guide-hero h1 { font-size: clamp(2rem, 4vw, 3rem); letter-spacing: -0.02em; margin-bottom: 1rem; }
+        .guide-hero .lead { font-size: 1.125rem; color: var(--color-text-muted); max-width: 700px; margin: 0 auto; line-height: 1.6; }
+        .guide-hero .crumb { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--color-accent); margin-bottom: 1.25rem; font-family: var(--font-mono); }
+
+        .tldr { max-width: 760px; margin: 1.75rem auto 0; padding: 1.5rem 1.75rem; background: var(--color-accent-softer); border: 1px solid var(--color-accent-mid); border-radius: var(--radius); text-align: left; }
+        .tldr h2 { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--color-accent); margin-bottom: 0.75rem; }
+        .quick-nav { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+        .quick-nav a { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.4rem 0.875rem; border: 1px solid var(--color-border); border-radius: 999px; font-size: 0.85rem; color: var(--color-text); transition: border-color var(--transition), background var(--transition); }
+        .quick-nav a:hover { border-color: var(--color-accent); background: var(--color-accent-softer); color: var(--color-accent); }
+        .quick-nav a span.num { font-family: var(--font-mono); font-size: 0.7rem; color: var(--color-accent); font-weight: 600; }
+
+        /* ── Sections ──────────────────────────────────────────────────── */
+        .guide-section { padding: 60px 0; scroll-margin-top: 80px; }
+        .guide-section.section-alt { padding: 80px 0; background: var(--color-bg-card); }
+        .guide-section h2 { font-size: 1.75rem; letter-spacing: -0.015em; margin-bottom: 0.5rem; }
+        .guide-section h3 { font-size: 1.15rem; font-weight: 600; margin: 1.75rem 0 0.5rem; color: var(--color-text); }
+        .guide-section .section-intro { color: var(--color-text-muted); margin-bottom: 1.5rem; max-width: 760px; line-height: 1.65; }
+        .section-tag { display: inline-block; font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; color: var(--color-accent); background: var(--color-accent-softer); padding: 0.3rem 0.7rem; border-radius: 4px; margin-bottom: 0.75rem; text-transform: uppercase; }
+        .section-tag .level { color: var(--color-text-muted); margin-right: 0.4em; }
+
+        /* ── Tabs (Windows / macOS) ────────────────────────────────────── */
+        .os-tabs { display: flex; gap: 0; margin: 1.25rem 0 0; border-bottom: 1px solid var(--color-border); }
+        .os-tab { background: none; border: 0; padding: 0.625rem 1.25rem; font-size: 0.875rem; font-weight: 600; color: var(--color-text-muted); cursor: pointer; border-bottom: 2px solid transparent; margin-bottom: -1px; font-family: inherit; transition: color 120ms, border-color 120ms; }
+        .os-tab:hover { color: var(--color-text); }
+        .os-tab[aria-selected="true"] { color: var(--color-accent); border-color: var(--color-accent); }
+        .os-tab i { margin-right: 0.4em; }
+        .os-pane { display: none; padding-top: 1.5rem; }
+        .os-pane[data-active="true"] { display: block; }
+
+        /* ── Source citation block ─────────────────────────────────────── */
+        .source-cite {
+            font-family: var(--font-mono);
+            font-size: 0.7rem;
+            color: var(--color-text-dim);
+            letter-spacing: 0.06em;
+            margin: 0.4rem 0 0.6rem;
+        }
+        .source-cite a { color: var(--color-text-muted); text-decoration: underline; text-decoration-color: var(--color-border); text-underline-offset: 3px; }
+        .source-cite a:hover { color: var(--color-accent); text-decoration-color: var(--color-accent); }
+
+        /* ── Image figures with attribution ────────────────────────────── */
+        .figure {
+            margin: 1.5rem 0;
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+            overflow: hidden;
+            background: var(--color-bg);
+        }
+        .figure img {
+            display: block;
+            width: 100%;
+            height: auto;
+            background: #ffffff;
+        }
+        .figure figcaption {
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            color: var(--color-text-muted);
+            padding: 0.625rem 1rem;
+            background: var(--color-bg-featured);
+            border-top: 1px solid var(--color-border);
+            letter-spacing: 0.04em;
+        }
+        .figure figcaption a { color: var(--color-text-muted); text-decoration: underline; }
+        .figure figcaption a:hover { color: var(--color-accent); }
+
+        /* ── Step boxes (numbered) ─────────────────────────────────────── */
+        .steps { display: grid; gap: 1rem; margin: 1.25rem 0; }
+        .step {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 1rem;
+            padding: 1rem 1.25rem;
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius);
+        }
+        .step-n {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.06em;
+            color: var(--color-accent);
+            background: var(--color-accent-softer);
+            border: 1px solid var(--color-accent-mid);
+            border-radius: 6px;
+            padding: 0.3rem 0.55rem;
+            height: max-content;
+            white-space: nowrap;
+        }
+        .step-body { min-width: 0; }
+        .step-body p { margin: 0 0 0.5rem; line-height: 1.55; }
+        .step-body p:last-child { margin-bottom: 0; }
+        .step-body code { font-size: 0.85em; }
+        .step-body pre { margin: 0.75rem 0 0; }
+
+        /* ── Honest stat row (extension marketplace numbers) ───────────── */
+        .ext-stats {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            margin: 1rem 0 1.25rem;
+        }
+        .ext-stat {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+            padding: 0.35rem 0.7rem;
+            background: var(--color-bg-card);
+            border: 1px solid var(--color-border);
+            border-radius: 999px;
+        }
+        .ext-stat strong { color: var(--color-text); font-weight: 600; }
+        .ext-stat .star { color: var(--color-accent); }
+
+        /* ── Callouts ──────────────────────────────────────────────────── */
+        .callout { display: flex; gap: 1rem; padding: 1.125rem 1.25rem; border-radius: 10px; margin: 1.5rem 0; font-size: 0.925rem; line-height: 1.55; align-items: flex-start; }
+        .callout i { font-size: 1.1rem; margin-top: 0.15rem; flex-shrink: 0; }
+        .callout-tip { background: var(--color-accent-softer); border: 1px solid var(--color-accent-mid); }
+        .callout-tip i { color: var(--color-accent); }
+        .callout-warn { background: var(--color-bg-bad); border: 1px solid rgba(179, 84, 84, 0.4); }
+        .callout-warn i { color: var(--color-danger); }
+        .callout p { margin: 0; }
+        .callout strong { color: var(--color-text); }
+        .callout code { font-size: 0.85em; }
+
+        /* ── Outro ─────────────────────────────────────────────────────── */
+        .outro { padding: 80px 0 100px; text-align: center; background: var(--color-bg); }
+        .outro h2 { font-size: clamp(1.5rem, 2.5vw, 1.875rem); letter-spacing: -0.015em; margin-bottom: 0.625rem; }
+        .outro p { color: var(--color-text-muted); max-width: 560px; margin: 0 auto 1.5rem; line-height: 1.6; }
+        .outro-actions { display: flex; justify-content: center; gap: 0.875rem; flex-wrap: wrap; }
+
+        /* ── Mobile ────────────────────────────────────────────────────── */
+        @media (max-width: 700px) {
+            .step { grid-template-columns: 1fr; }
+            .os-tabs { overflow-x: auto; }
+            .os-tab { white-space: nowrap; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="nav-logo">
+                <span class="logo-primary">Saltify</span>
+                <span class="logo-secondary">Pty Ltd</span>
+            </a>
+            <ul class="nav-menu">
+                <li><a href="index.html" class="nav-link">Home</a></li>
+                <li><a href="index.html#services" class="nav-link">Services</a></li>
+                <li class="nav-dropdown">
+                    <a href="#" class="nav-link nav-dropdown-toggle" aria-haspopup="true" aria-expanded="false" onclick="event.preventDefault();">Learn Salt <span class="nav-caret">▾</span></a>
+                    <ul class="nav-dropdown-menu" aria-label="Learn submenu">
+                        <li><a href="salt-cheat-sheet.html" class="nav-link">Cheat Sheet</a></li>
+                        <li><a href="install-guide.html" class="nav-link">Install Guide</a></li>
+                        <li><a href="getting-started.html" class="nav-link">Getting Started</a></li>
+                        <li><a href="states.html" class="nav-link">Salt States</a></li>
+                        <li><a href="salt-state-modules.html" class="nav-link">State Modules Index</a></li>
+                        <li><a href="windows.html" class="nav-link">Salt on Windows</a></li>
+                        <li><a href="salt-ai.html" class="nav-link">Salt + AI</a></li>
+                        <li><a href="salt-ai-tooling.html" class="nav-link" aria-current="page">AI Tooling</a></li>
+                    </ul>
+                </li>
+                <li><a href="salt-academy.html" class="nav-link nav-academy">Salt Academy</a></li>
+                <li><a href="index.html#about" class="nav-link">About</a></li>
+                <li><a href="index.html#contact" class="nav-link nav-cta">Let's talk →</a></li>
+            </ul>
+            <div class="nav-right">
+                <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme" aria-pressed="false">
+                    <i class="fas fa-sun" id="themeIcon" aria-hidden="true"></i>
+                </button>
+                <button class="hamburger" aria-label="Toggle menu" aria-expanded="false">
+                    <span></span><span></span><span></span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="guide-hero">
+        <div class="container">
+            <p class="crumb">SALT 501 · Advanced · AI Tooling</p>
+            <h1>The AI toolchain. Installed, signed in, working.</h1>
+            <p class="lead">Six tools, one editor. Pick the ones you want, skip the ones you don't. <strong>Install commands lifted from the official docs and cited inline</strong> — so you can verify everything yourself.</p>
+            <p class="doc-version"><strong>v1.0</strong> · 2026-05-09 · Sources cited per section</p>
+
+            <div class="tldr">
+                <h2>Jump to</h2>
+                <div class="quick-nav">
+                    <a href="#vscode"><span class="num">01</span> VSCode</a>
+                    <a href="#saltstack-ext"><span class="num">02</span> SaltStack ext</a>
+                    <a href="#copilot"><span class="num">03</span> Copilot Chat</a>
+                    <a href="#claude-chrome"><span class="num">04</span> Claude in Chrome</a>
+                    <a href="#claude-code-vscode"><span class="num">05</span> Claude Code (IDE)</a>
+                    <a href="#claude-code-cli"><span class="num">06</span> Claude Code (CLI)</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- §0 Why this article -->
+    <section class="guide-section">
+        <div class="container">
+            <p class="section-tag"><span class="level">Why</span>The toolchain, end-to-end</p>
+            <h2>How we work with AI at Saltify.</h2>
+            <p class="section-intro">Writing Salt with AI in 2026 isn't one tool — it's a small toolchain. VSCode is the editor. The SaltStack extension makes YAML+Jinja readable. Copilot Chat handles the in-line "complete this loop" requests. Claude in Chrome reads docs and tickets while you code. Claude Code does the heavy lifting — refactoring across files, running tests, opening pull requests. <strong>You don't need all six. Pick what fits your workflow.</strong></p>
+            <p class="section-intro">Each section below quotes the install command verbatim from the official source and cites it. If a step changes upstream, you'll catch it by clicking through.</p>
+
+            <div class="callout callout-tip">
+                <i class="fas fa-circle-info" aria-hidden="true"></i>
+                <p><strong>This is the install guide, not the opinion piece.</strong> Saltify's actual prompts, custom instructions, and MCP server configs live in a follow-up article (coming soon). For now this page gets the toolchain installed and signed in.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- §1 VSCode -->
+    <section id="vscode" class="guide-section section-alt">
+        <div class="container">
+            <p class="section-tag"><span class="level">01 · Foundation</span>~5 min</p>
+            <h2>VSCode — Windows or macOS.</h2>
+            <p class="section-intro">If you don't already have it, this is the editor everything else hooks into. Free, MIT-licensed, weekly auto-updates.</p>
+
+            <div role="tablist" class="os-tabs">
+                <button role="tab" class="os-tab" data-os="win" aria-selected="true"><i class="fab fa-windows" aria-hidden="true"></i>Windows</button>
+                <button role="tab" class="os-tab" data-os="mac" aria-selected="false"><i class="fab fa-apple" aria-hidden="true"></i>macOS</button>
+            </div>
+
+            <!-- Windows pane -->
+            <div role="tabpanel" class="os-pane" data-os="win" data-active="true">
+                <p class="source-cite">Source: <a href="https://code.visualstudio.com/docs/setup/windows" target="_blank" rel="noopener">code.visualstudio.com/docs/setup/windows</a></p>
+
+                <h3>Download</h3>
+                <p>Two installers. The <strong>User Setup</strong> doesn't need admin rights and updates cleanly in the background — that's the one you want unless your IT department says otherwise.</p>
+                <pre><code><span class="code-comment"># User Setup (recommended)</span>
+https://go.microsoft.com/fwlink/?LinkID=534107
+
+<span class="code-comment"># System Setup (admin required, all users)</span>
+https://go.microsoft.com/fwlink/?linkid=852157</code></pre>
+
+                <h3>Install</h3>
+                <div class="steps">
+                    <div class="step">
+                        <span class="step-n">01</span>
+                        <div class="step-body">
+                            <p>Run <code>VSCodeUserSetup-{version}.exe</code>. Default install path: <code>C:\Users\{Username}\AppData\Local\Programs\Microsoft VS Code</code>.</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <span class="step-n">02</span>
+                        <div class="step-body">
+                            <p><strong>Restart your console.</strong> The installer adds VS Code to <code>%PATH</code>, but open consoles won't see the new value until you start a fresh one.</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <span class="step-n">03</span>
+                        <div class="step-body">
+                            <p>Verify by opening any folder with <code>code .</code> from the new console. If it opens VS Code with that folder loaded, you're done.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- macOS pane -->
+            <div role="tabpanel" class="os-pane" data-os="mac">
+                <p class="source-cite">Source: <a href="https://code.visualstudio.com/docs/setup/mac" target="_blank" rel="noopener">code.visualstudio.com/docs/setup/mac</a></p>
+
+                <h3>Download</h3>
+                <pre><code>https://go.microsoft.com/fwlink/?LinkID=534106</code></pre>
+
+                <h3>Install</h3>
+                <div class="steps">
+                    <div class="step">
+                        <span class="step-n">01</span>
+                        <div class="step-body">
+                            <p>Open the downloaded <code>.dmg</code>, drag <code>Visual Studio Code.app</code> into <strong>Applications</strong>, then launch it from Applications.</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <span class="step-n">02</span>
+                        <div class="step-body">
+                            <p>Add the <code>code</code> command to your shell. Easiest way:</p>
+                            <p>Open the Command Palette (<code>⌘⇧P</code>), type <strong>shell command</strong>, run <strong>Shell Command: Install 'code' command in PATH</strong>.</p>
+                        </div>
+                    </div>
+                    <div class="step">
+                        <span class="step-n">03</span>
+                        <div class="step-body">
+                            <p>Or do it manually for zsh:</p>
+                            <pre><code>cat &lt;&lt; EOF &gt;&gt; ~/.zprofile
+<span class="code-comment"># Add Visual Studio Code (code)</span>
+export PATH="\$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+EOF</code></pre>
+                            <p>Restart the terminal so <code>$PATH</code> picks it up.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="callout callout-tip">
+                <i class="fas fa-circle-info" aria-hidden="true"></i>
+                <p>VS Code ships <strong>weekly</strong> and auto-updates by default. Disable in settings if you want to pin a version, but the AI extensions below assume you're on a recent build.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- §2 SaltStack extension -->
+    <section id="saltstack-ext" class="guide-section">
+        <div class="container">
+            <p class="section-tag"><span class="level">02 · Editor</span>~2 min</p>
+            <h2>SaltStack extension — by korekontrol.</h2>
+            <p class="section-intro">This is the only Salt-aware extension worth installing. YAML + Jinja2 syntax highlighting, autocompletion for state functions, and snippets that scaffold full state stanzas. <code>.tst</code> saltcheck files supported too.</p>
+
+            <div class="ext-stats">
+                <span class="ext-stat"><strong>69k+</strong> installs</span>
+                <span class="ext-stat"><span class="star">★</span> <strong>5.0</strong> · 5 reviews</span>
+                <span class="ext-stat">MIT licensed</span>
+                <span class="ext-stat">Min VS Code <strong>1.19+</strong></span>
+            </div>
+
+            <p class="source-cite">Sources: <a href="https://marketplace.visualstudio.com/items?itemName=korekontrol.saltstack" target="_blank" rel="noopener">marketplace.visualstudio.com</a> · <a href="https://github.com/korekontrol/vscode-saltstack" target="_blank" rel="noopener">github.com/korekontrol/vscode-saltstack</a></p>
+
+            <h3>Install</h3>
+            <p>Two ways. Pick whichever feels faster.</p>
+
+            <div class="steps">
+                <div class="step">
+                    <span class="step-n">A</span>
+                    <div class="step-body">
+                        <p><strong>From the command line</strong> (after VS Code's <code>code</code> command is in your PATH from §1):</p>
+                        <pre><code>code --install-extension korekontrol.saltstack</code></pre>
+                    </div>
+                </div>
+                <div class="step">
+                    <span class="step-n">B</span>
+                    <div class="step-body">
+                        <p><strong>From the editor</strong>: open Quick Open (<code>⌘P</code> on Mac, <code>Ctrl+P</code> on Windows), paste:</p>
+                        <pre><code>ext install korekontrol.saltstack</code></pre>
+                        <p>Or open the Extensions view (<code>⌘⇧X</code> / <code>Ctrl+Shift+X</code>), search "SaltStack", click <strong>Install</strong>.</p>
+                    </div>
+                </div>
+            </div>
+
+            <h3>What you get</h3>
+            <p>Open any <code>.sls</code> file and the YAML/Jinja2 mix gets coloured properly. Type <code>test.</code> and hit <code>Ctrl+Space</code> for state-function completion (<code>test.check_pillar</code>, <code>test.configurable_test_state</code>, <code>test.nop</code>, etc.). Module-level completions scaffold the full state with parameter stubs.</p>
+
+            <figure class="figure">
+                <img src="img/academy-501/salt-extension-example.png" alt="SaltStack VSCode extension showing YAML + Jinja2 syntax highlighting on a Salt state file">
+                <figcaption>Source: <a href="https://github.com/korekontrol/vscode-saltstack" target="_blank" rel="noopener">github.com/korekontrol/vscode-saltstack</a> — extension README</figcaption>
+            </figure>
+
+            <p>Author: <strong>Marek Obuchowicz</strong> at KoreKontrol. <a href="https://github.com/korekontrol/vscode-saltstack" target="_blank" rel="noopener" style="color: var(--color-accent);">Source on GitHub ↗</a></p>
+        </div>
+    </section>
+
+    <!-- §3 GitHub Copilot Chat -->
+    <section id="copilot" class="guide-section section-alt">
+        <div class="container">
+            <p class="section-tag"><span class="level">03 · AI assist</span>~5 min</p>
+            <h2>GitHub Copilot Chat — inline + chat panel.</h2>
+            <p class="section-intro">The other industry default. Inline completions, chat panel for "explain this", agent mode for multi-file work. Works on Salt YAML+Jinja the same way it works on anything else — language-model-shaped, not Salt-aware specifically.</p>
+
+            <div class="ext-stats">
+                <span class="ext-stat"><strong>73M+</strong> installs</span>
+                <span class="ext-stat"><span class="star">★</span> <strong>3.0</strong> · 306 reviews</span>
+                <span class="ext-stat">v0.45.1 · Apr 2026</span>
+                <span class="ext-stat">Subscription required</span>
+            </div>
+
+            <p class="source-cite">Source: <a href="https://marketplace.visualstudio.com/items?itemName=GitHub.copilot-chat" target="_blank" rel="noopener">marketplace.visualstudio.com — GitHub.copilot-chat</a></p>
+
+            <div class="callout callout-warn">
+                <i class="fas fa-comment" aria-hidden="true"></i>
+                <p><strong>About that 3-star rating:</strong> Copilot Chat ships frequently and the marketplace reviews swing with it. Worth reading the recent reviews before committing to a paid plan. The <em>free tier</em> is enough to try it on a real Salt repo and decide.</p>
+            </div>
+
+            <h3>Prerequisites</h3>
+            <ul>
+                <li>A GitHub account</li>
+                <li>An active Copilot subscription (or use <strong>Copilot Free</strong> — no card, lower limits)</li>
+            </ul>
+
+            <h3>Install</h3>
+            <div class="steps">
+                <div class="step">
+                    <span class="step-n">01</span>
+                    <div class="step-body">
+                        <p>From the command line:</p>
+                        <pre><code>code --install-extension GitHub.copilot-chat</code></pre>
+                        <p>Or in VS Code: Extensions view → search "GitHub Copilot Chat" → <strong>Install</strong>.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <span class="step-n">02</span>
+                    <div class="step-body">
+                        <p>Sign in with GitHub when prompted. The extension opens a browser tab; authorise, return to VS Code.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <span class="step-n">03</span>
+                    <div class="step-body">
+                        <p>First chat: press <code>Ctrl+I</code> (Windows / Linux) or <code>⌘I</code> (Mac) inside any file to open inline chat. Ask a question. The reply appears as a diff you can accept or reject.</p>
+                    </div>
+                </div>
+            </div>
+
+            <figure class="figure">
+                <img src="img/academy-501/copilot-inline-chat.png" alt="GitHub Copilot Chat inline-chat prompt example showing a question being asked directly in the editor">
+                <figcaption>Source: <a href="https://code.visualstudio.com/docs/copilot/copilot-chat" target="_blank" rel="noopener">code.visualstudio.com/docs/copilot/copilot-chat</a></figcaption>
+            </figure>
+
+            <h3>Beyond inline chat</h3>
+            <p>The chat panel (sidebar icon, or <code>Ctrl+Alt+I</code> / <code>⌘⌃I</code>) gives you a multi-turn conversation with full repo context. <strong>Agent mode</strong> takes a high-level instruction and edits across multiple files until tests pass.</p>
+
+            <figure class="figure">
+                <img src="img/academy-501/copilot-reviewer-mode.png" alt="GitHub Copilot Chat custom reviewer mode interface showing an agent-style review of code changes">
+                <figcaption>Source: <a href="https://code.visualstudio.com/docs/copilot/customization/custom-chat-modes" target="_blank" rel="noopener">code.visualstudio.com/docs/copilot/customization</a></figcaption>
+            </figure>
+
+            <p>Full quickstart in the <a href="https://code.visualstudio.com/docs/copilot/getting-started-chat" target="_blank" rel="noopener" style="color: var(--color-accent);">official docs ↗</a>.</p>
+        </div>
+    </section>
+
+    <!-- §4 Claude in Chrome -->
+    <section id="claude-chrome" class="guide-section">
+        <div class="container">
+            <p class="section-tag"><span class="level">04 · AI assist</span>~3 min</p>
+            <h2>Claude in Chrome — the gentlest AI on-ramp.</h2>
+            <p class="section-intro">Side-panel Claude that lives in your browser. Reads the page you're on, answers questions about it, can click and navigate when you ask. Not a coding tool per se — but invaluable for triaging Jira tickets, reading SaltStack release notes, summarising long Slack threads while you work.</p>
+
+            <div class="ext-stats">
+                <span class="ext-stat">Beta</span>
+                <span class="ext-stat">Chrome only</span>
+                <span class="ext-stat">Paid plans (Pro / Max / Team / Enterprise)</span>
+            </div>
+
+            <p class="source-cite">Source: <a href="https://support.claude.com/en/articles/12012173-get-started-with-claude-in-chrome" target="_blank" rel="noopener">support.claude.com</a> · <a href="https://claude.com/claude-for-chrome" target="_blank" rel="noopener">claude.com/claude-for-chrome</a></p>
+
+            <div class="callout callout-warn">
+                <i class="fas fa-circle-exclamation" aria-hidden="true"></i>
+                <p><strong>Free Claude.ai accounts don't qualify.</strong> Claude in Chrome is currently in beta on paid plans only. And it's <em>Chrome-only</em> — Edge, Brave, Opera and other Chromium forks aren't supported.</p>
+            </div>
+
+            <h3>Install</h3>
+            <div class="steps">
+                <div class="step">
+                    <span class="step-n">01</span>
+                    <div class="step-body">
+                        <p>Open Chrome and go to the Web Store listing:</p>
+                        <pre><code>https://chromewebstore.google.com/detail/claude/fcoeoabgfenejglbffodgkkbkcdhcgfn</code></pre>
+                        <p>Click <strong>Add to Chrome</strong> → <strong>Add extension</strong>.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <span class="step-n">02</span>
+                    <div class="step-body">
+                        <p>Sign in with your Claude account when prompted.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <span class="step-n">03</span>
+                    <div class="step-body">
+                        <p><strong>Pin to toolbar</strong>: click the puzzle-piece icon in Chrome's toolbar, find Claude, click the thumbtack. The Claude icon now stays visible.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <span class="step-n">04</span>
+                    <div class="step-body">
+                        <p>Click the Claude icon. A side panel slides out alongside whatever page you're on. Ask "summarise this" while looking at any docs page; ask "what's wrong with this YAML" while looking at a state file in GitHub.</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="callout callout-tip">
+                <i class="fas fa-handshake" aria-hidden="true"></i>
+                <p><strong>It pairs with Claude Code.</strong> Once both are installed (Claude Code below), you get a build-test-verify loop: build with Claude Code in the terminal, ask Claude in Chrome to verify the result in the browser, debug from console output. See the <a href="https://code.claude.com/docs/en/chrome" target="_blank" rel="noopener" style="color: var(--color-accent);">Claude Code + Chrome integration docs ↗</a>.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- §5 Claude Code in VSCode -->
+    <section id="claude-code-vscode" class="guide-section section-alt">
+        <div class="container">
+            <p class="section-tag"><span class="level">05 · AI assist</span>~7 min</p>
+            <h2>Claude Code — inside VSCode.</h2>
+            <p class="section-intro">The graphical version. Side panel, inline diffs, @-mentions, plan-review-then-execute mode. The recommended way to use Claude Code if you live in VS Code.</p>
+
+            <p class="source-cite">Source: <a href="https://code.claude.com/docs/en/vs-code" target="_blank" rel="noopener">code.claude.com/docs/en/vs-code</a></p>
+
+            <h3>Prerequisites</h3>
+            <ul>
+                <li>VS Code <strong>1.98.0</strong> or higher</li>
+                <li>An Anthropic account (Pro / Max / Team / Enterprise / Console — free Claude.ai doesn't include Claude Code)</li>
+            </ul>
+
+            <h3>Install the extension</h3>
+            <div class="steps">
+                <div class="step">
+                    <span class="step-n">01</span>
+                    <div class="step-body">
+                        <p>From VS Code: open Extensions (<code>⌘⇧X</code> / <code>Ctrl+Shift+X</code>), search <strong>Claude Code</strong>, click <strong>Install</strong>. The extension ID is <code>anthropic.claude-code</code>.</p>
+                        <p>Or from the command line:</p>
+                        <pre><code>code --install-extension anthropic.claude-code</code></pre>
+                    </div>
+                </div>
+                <div class="step">
+                    <span class="step-n">02</span>
+                    <div class="step-body">
+                        <p>Open the Claude Code panel. Easiest: click the <strong>Spark icon</strong> ✱ in the top-right of the editor toolbar (only appears when a file is open). Other ways: Activity Bar Spark icon (sidebar), Command Palette → "Claude Code: Open in New Tab", or click <strong>✱ Claude Code</strong> in the bottom-right status bar.</p>
+                    </div>
+                </div>
+                <div class="step">
+                    <span class="step-n">03</span>
+                    <div class="step-body">
+                        <p>Sign in. The extension opens a browser tab; authorise, return to VS Code. Credentials are stored locally — you sign in once.</p>
+                    </div>
+                </div>
+            </div>
+
+            <figure class="figure">
+                <img src="img/academy-501/claude-code-vscode-interface.jpg" alt="VS Code with the Claude Code extension panel open on the right side, showing a conversation with Claude">
+                <figcaption>Source: <a href="https://code.claude.com/docs/en/vs-code" target="_blank" rel="noopener">code.claude.com/docs/en/vs-code</a> — Claude Code in VS Code overview</figcaption>
+            </figure>
+
+            <h3>Spark icon — where to click</h3>
+            <figure class="figure">
+                <img src="img/academy-501/claude-code-vscode-editor-icon.png" alt="VS Code editor toolbar with the Claude Code Spark icon highlighted in the top-right corner">
+                <figcaption>Source: <a href="https://code.claude.com/docs/en/vs-code" target="_blank" rel="noopener">code.claude.com/docs/en/vs-code</a></figcaption>
+            </figure>
+
+            <h3>Send a prompt</h3>
+            <p>Select some lines in your file. Press <code>Option+K</code> (Mac) / <code>Alt+K</code> (Win/Linux) to insert a typed @-mention reference (like <code>@app.ts#5-10</code>) into your prompt. Or just type your question — Claude sees your selection automatically.</p>
+
+            <figure class="figure">
+                <img src="img/academy-501/claude-code-vscode-prompt.png" alt="VS Code with a Python file selection on the left and Claude Code asking a question about those specific lines on the right">
+                <figcaption>Source: <a href="https://code.claude.com/docs/en/vs-code" target="_blank" rel="noopener">code.claude.com/docs/en/vs-code</a></figcaption>
+            </figure>
+
+            <h3>Review changes before they land</h3>
+            <p>When Claude wants to edit a file, you get a side-by-side diff. Accept, reject, or edit the diff inline before accepting.</p>
+
+            <figure class="figure">
+                <img src="img/academy-501/claude-code-vscode-edits.png" alt="VS Code showing a diff of Claude's proposed changes with a permission prompt asking whether to make the edit">
+                <figcaption>Source: <a href="https://code.claude.com/docs/en/vs-code" target="_blank" rel="noopener">code.claude.com/docs/en/vs-code</a></figcaption>
+            </figure>
+
+            <div class="callout callout-tip">
+                <i class="fas fa-keyboard" aria-hidden="true"></i>
+                <p><strong>Useful shortcuts.</strong> <code>⌘Esc</code> / <code>Ctrl+Esc</code> toggles focus between the editor and the Claude prompt box. <code>⌘⇧Esc</code> opens a new conversation as a tab. <code>⌘N</code> starts a new conversation when Claude is focused (enable <code>enableNewConversationShortcut</code> in settings first).</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- §6 Claude Code in terminal -->
+    <section id="claude-code-cli" class="guide-section">
+        <div class="container">
+            <p class="section-tag"><span class="level">06 · Advanced</span>~10 min</p>
+            <h2>Claude Code — in the terminal.</h2>
+            <p class="section-intro">The CLI is what powers everything. The VS Code extension wraps it; this section installs it standalone — or alongside the extension if you already did §5. Use the CLI when you want speed, scripting, agent mode without a UI, or to run Claude Code in CI.</p>
+
+            <p class="source-cite">Source: <a href="https://code.claude.com/docs/en/setup" target="_blank" rel="noopener">code.claude.com/docs/en/setup</a> — Advanced setup</p>
+
+            <h3>System requirements</h3>
+            <ul>
+                <li><strong>macOS</strong> 13.0+</li>
+                <li><strong>Windows</strong> 10 (1809+) or Server 2019+</li>
+                <li><strong>Linux</strong>: Ubuntu 20.04+ / Debian 10+ / Alpine 3.19+</li>
+                <li>4 GB RAM, x64 or ARM64</li>
+                <li>Internet connection</li>
+                <li>Bash, Zsh, PowerShell, or CMD. On native Windows, <a href="https://git-scm.com/downloads/win" target="_blank" rel="noopener" style="color: var(--color-accent);">Git for Windows</a> is recommended (gives Claude Code a real bash to run shell tools in).</li>
+            </ul>
+
+            <h3>Install — pick a method</h3>
+
+            <h4 style="margin-top: 1.5rem; font-size: 1rem; color: var(--color-text);">Native installer (recommended — auto-updates)</h4>
+            <p><strong>macOS / Linux / WSL:</strong></p>
+            <pre><code>curl -fsSL https://claude.ai/install.sh | bash</code></pre>
+
+            <p><strong>Windows PowerShell:</strong></p>
+            <pre><code>irm https://claude.ai/install.ps1 | iex</code></pre>
+
+            <p><strong>Windows CMD:</strong></p>
+            <pre><code>curl -fsSL https://claude.ai/install.cmd -o install.cmd &amp;&amp; install.cmd &amp;&amp; del install.cmd</code></pre>
+
+            <p style="font-size: 0.875rem; color: var(--color-text-muted);">If <code>'irm' is not recognized</code>, you're in CMD not PowerShell. If <code>The token '&amp;&amp;' is not a valid statement separator</code>, you're in PowerShell not CMD. Your prompt shows <code>PS C:\</code> for PowerShell.</p>
+
+            <h4 style="margin-top: 1.5rem; font-size: 1rem; color: var(--color-text);">Homebrew (macOS / Linux)</h4>
+            <pre><code><span class="code-comment"># stable channel</span>
+brew install --cask claude-code
+
+<span class="code-comment"># or latest channel</span>
+brew install --cask claude-code@latest</code></pre>
+            <p style="font-size: 0.875rem; color: var(--color-text-muted);">Homebrew installs don't auto-update. Run <code>brew upgrade claude-code</code> manually.</p>
+
+            <h4 style="margin-top: 1.5rem; font-size: 1rem; color: var(--color-text);">WinGet (Windows)</h4>
+            <pre><code>winget install Anthropic.ClaudeCode</code></pre>
+
+            <h4 style="margin-top: 1.5rem; font-size: 1rem; color: var(--color-text);">npm (any platform with Node 18+)</h4>
+            <pre><code>npm install -g @anthropic-ai/claude-code</code></pre>
+            <div class="callout callout-warn">
+                <i class="fas fa-triangle-exclamation" aria-hidden="true"></i>
+                <p><strong>Don't <code>sudo npm install -g</code></strong> — that path leads to permission errors and security risks. If you hit npm permission errors, fix your global-prefix instead. The official docs link to <a href="https://code.claude.com/docs/en/troubleshoot-install#permission-errors-during-installation" target="_blank" rel="noopener" style="color: var(--color-accent);">a fix guide ↗</a>.</p>
+            </div>
+
+            <h3>Verify the install</h3>
+            <pre><code>claude --version
+claude doctor</code></pre>
+            <p><code>claude doctor</code> walks the install and reports any issues — missing ripgrep, PATH problems, login state.</p>
+
+            <h3>Sign in</h3>
+            <pre><code>claude</code></pre>
+            <p>First run launches a browser-based sign-in. Use a Pro / Max / Team / Enterprise account, or a Console account with prepaid credits. Free Claude.ai doesn't qualify.</p>
+
+            <h3>First session</h3>
+            <p><code>cd</code> into a project directory, run <code>claude</code>, then ask:</p>
+            <pre><code>what does this project do?</code></pre>
+            <p>Claude reads files as needed — you don't have to add context manually. From there: <code>add a hello world function</code>, <code>commit my changes with a descriptive message</code>, <code>review my changes and suggest improvements</code>. Plain English.</p>
+
+            <h3>Useful flags</h3>
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; margin-top: 1rem;">
+                <thead>
+                    <tr style="border-bottom: 1px solid var(--color-border);">
+                        <th style="text-align: left; padding: 0.5rem 0.75rem; font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-accent); letter-spacing: 0.06em;">Flag</th>
+                        <th style="text-align: left; padding: 0.5rem 0.75rem; font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-accent); letter-spacing: 0.06em;">What it does</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr style="border-bottom: 1px solid var(--color-border);"><td style="padding: 0.6rem 0.75rem;"><code>claude</code></td><td style="padding: 0.6rem 0.75rem; color: var(--color-text-muted);">Interactive session</td></tr>
+                    <tr style="border-bottom: 1px solid var(--color-border);"><td style="padding: 0.6rem 0.75rem;"><code>claude "task"</code></td><td style="padding: 0.6rem 0.75rem; color: var(--color-text-muted);">Run a one-off task and stay in interactive</td></tr>
+                    <tr style="border-bottom: 1px solid var(--color-border);"><td style="padding: 0.6rem 0.75rem;"><code>claude -p "query"</code></td><td style="padding: 0.6rem 0.75rem; color: var(--color-text-muted);">One-shot query, exits when done — useful for scripts</td></tr>
+                    <tr style="border-bottom: 1px solid var(--color-border);"><td style="padding: 0.6rem 0.75rem;"><code>claude -c</code></td><td style="padding: 0.6rem 0.75rem; color: var(--color-text-muted);">Continue the most recent conversation in this directory</td></tr>
+                    <tr style="border-bottom: 1px solid var(--color-border);"><td style="padding: 0.6rem 0.75rem;"><code>claude -r</code></td><td style="padding: 0.6rem 0.75rem; color: var(--color-text-muted);">Resume a specific previous conversation (interactive picker)</td></tr>
+                    <tr><td style="padding: 0.6rem 0.75rem;"><code>claude --worktree feat-x</code></td><td style="padding: 0.6rem 0.75rem; color: var(--color-text-muted);">Start in an isolated git worktree (parallel sessions)</td></tr>
+                </tbody>
+            </table>
+
+            <div class="callout callout-tip">
+                <i class="fas fa-link" aria-hidden="true"></i>
+                <p><strong>Run the CLI from inside VS Code.</strong> Open the integrated terminal (<code>⌘`</code> / <code>Ctrl+`</code>), run <code>claude</code>. The CLI auto-detects VS Code and integrates: diffs open in VS Code's diff viewer, the editor selection becomes context. From an external terminal, run <code>/ide</code> inside Claude Code to manually connect.</p>
+            </div>
+
+            <p>Full reference: <a href="https://code.claude.com/docs/en/cli-reference" target="_blank" rel="noopener" style="color: var(--color-accent);">CLI reference ↗</a> · <a href="https://code.claude.com/docs/en/best-practices" target="_blank" rel="noopener" style="color: var(--color-accent);">Best practices ↗</a></p>
+        </div>
+    </section>
+
+    <!-- Outro -->
+    <section class="outro">
+        <div class="container">
+            <h2>Toolchain installed. Now what?</h2>
+            <p>The next article in this series will cover Saltify's actual practices — custom Copilot instructions for Salt repos, MCP servers we use day-to-day, prompts that work, the <code>CLAUDE.md</code> template we drop into client projects. Coming soon.</p>
+            <div class="outro-actions">
+                <a href="salt-academy.html" class="btn-primary">Back to the Academy →</a>
+                <a href="index.html#contact" class="btn-ghost">Want this set up for you?</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-inner">
+                <p class="footer-logo">
+                    <span class="logo-primary">Saltify</span>
+                    <span class="logo-secondary">Pty Ltd</span>
+                </p>
+                <p class="footer-tagline">Enterprise Salt for teams that can't afford fragile infrastructure. Based in Australia.</p>
+                <p class="footer-copy">© 2026 Saltify Pty Ltd</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Saltify Academy launch toast -->
+    <aside class="academy-toast" id="academyToast" role="dialog" aria-label="Saltify Academy launch announcement">
+        <button class="academy-toast-close" id="academyToastClose" aria-label="Dismiss">×</button>
+        <div class="academy-toast-body">
+            <span class="academy-toast-seal" aria-hidden="true">
+                <span class="seal-hex">⬡</span>
+                <span class="toast-seal-check"><i class="fas fa-check"></i></span>
+            </span>
+            <div class="academy-toast-text">
+                <p class="academy-toast-eyebrow">NEW · NOW LIVE</p>
+                <h3 class="academy-toast-title"><em>Saltify</em> Academy is live</h3>
+                <p class="academy-toast-sub">5 courses · 1 advanced · 2 references · No sign-up</p>
+                <a href="salt-academy.html" class="academy-toast-cta">Open the Academy <span aria-hidden="true">→</span></a>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Page-specific JS for the OS tabs -->
+    <script>
+        document.querySelectorAll('.os-tabs').forEach(tablist => {
+            const tabs = tablist.querySelectorAll('.os-tab');
+            const panes = tablist.parentElement.querySelectorAll('.os-pane');
+            tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    const target = tab.dataset.os;
+                    tabs.forEach(t => t.setAttribute('aria-selected', t === tab));
+                    panes.forEach(p => p.dataset.active = (p.dataset.os === target));
+                });
+            });
+        });
+    </script>
+
+    <script src="js/script.js?v=31"></script>
+</body>
+</html>
