@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initSaltFeed();
     initInstallToast();
     initStateMap();
+    initAcademy();
 });
 
 function initInstallToast() {
@@ -412,4 +413,62 @@ function wireStateMapInteractions() {
             applyFilters();
         });
     });
+}
+
+/* ================================
+   Saltify Academy — landing-page section
+   - Draws the connector line across the 5 path cards on scroll-into-view.
+   - Counts up the stat numbers from 0 to their data-count target.
+   No-ops on pages without .academy.
+   ================================ */
+function initAcademy() {
+    const section = document.querySelector('.academy');
+    if (!section) return;
+
+    /* Connector line draw */
+    const path = section.querySelector('.academy-path');
+    if (path) {
+        const pathObs = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    path.classList.add('drawn');
+                    pathObs.unobserve(path);
+                }
+            });
+        }, { threshold: 0.25 });
+        pathObs.observe(path);
+    }
+
+    /* Stat count-up */
+    const stats = section.querySelectorAll('.academy-stat-num[data-count]');
+    if (stats.length) {
+        const statObs = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+                animateCount(entry.target);
+                statObs.unobserve(entry.target);
+            });
+        }, { threshold: 0.5 });
+        stats.forEach(el => statObs.observe(el));
+    }
+}
+
+function animateCount(el) {
+    const target = parseInt(el.dataset.count, 10);
+    if (isNaN(target)) return;
+    /* Skip animation if user prefers reduced motion */
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        el.textContent = target;
+        return;
+    }
+    const duration = 1100;
+    const start = performance.now();
+    function tick(now) {
+        const t = Math.min(1, (now - start) / duration);
+        const eased = 1 - Math.pow(1 - t, 3); // ease-out cubic
+        el.textContent = Math.floor(eased * target);
+        if (t < 1) requestAnimationFrame(tick);
+        else el.textContent = target;
+    }
+    requestAnimationFrame(tick);
 }

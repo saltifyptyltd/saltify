@@ -1984,3 +1984,356 @@ pre code {
         width: auto;
     }
 }
+
+/* ================================
+   Saltify Academy
+   Top-of-page hook before "What is Salt?". Branded "course" feel —
+   subtle radial glow, mono-font stats with count-up, 5-step learning
+   path with a draw-on-scroll connector, two reference cards below.
+   ================================ */
+.academy {
+    position: relative;
+    padding: 90px 0 100px;
+    background: var(--color-bg);
+    overflow: hidden;
+}
+.academy-glow {
+    position: absolute;
+    top: -200px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1200px;
+    height: 600px;
+    pointer-events: none;
+    background: radial-gradient(ellipse at center, var(--color-accent-softer) 0%, transparent 60%);
+    opacity: 0.6;
+    animation: academy-glow-pulse 9s ease-in-out infinite;
+}
+@keyframes academy-glow-pulse {
+    0%, 100% { opacity: 0.45; transform: translateX(-50%) scale(1); }
+    50%      { opacity: 0.75; transform: translateX(-50%) scale(1.06); }
+}
+
+.academy .container { position: relative; z-index: 1; }
+
+.academy-intro {
+    text-align: center;
+    max-width: 760px;
+    margin: 0 auto 4rem;
+}
+.academy-eyebrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.625rem;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    background: var(--color-accent-softer);
+    border: 1px solid var(--color-accent-mid);
+    padding: 0.45rem 0.9rem;
+    border-radius: 999px;
+    margin-bottom: 1.5rem;
+}
+.academy-mark {
+    font-size: 0.95rem;
+    line-height: 1;
+    transform: translateY(-1px);
+}
+.academy-eyebrow-dot {
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    opacity: 0.6;
+}
+.academy-eyebrow-tail {
+    color: var(--color-text-muted);
+    font-weight: 500;
+    letter-spacing: 0.1em;
+}
+.academy h2 {
+    font-size: clamp(2rem, 4vw, 2.875rem);
+    letter-spacing: -0.02em;
+    margin-bottom: 1rem;
+    color: var(--color-text);
+}
+.academy-sub {
+    font-size: 1.0625rem;
+    color: var(--color-text-muted);
+    line-height: 1.65;
+    max-width: 640px;
+    margin: 0 auto;
+}
+.academy-sub code {
+    font-family: var(--font-mono);
+    font-size: 0.95em;
+    background: var(--color-bg-card);
+    color: var(--color-accent);
+    padding: 0.1em 0.4em;
+    border-radius: 4px;
+}
+
+.academy-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-top: 2.5rem;
+    padding: 1.75rem 1.5rem;
+    background: linear-gradient(180deg, var(--color-bg-featured) 0%, var(--color-bg-card) 100%);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+}
+.academy-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.45rem;
+}
+.academy-stat + .academy-stat {
+    border-left: 1px solid var(--color-border);
+}
+.academy-stat-num {
+    font-family: var(--font-mono);
+    font-size: clamp(1.875rem, 3.4vw, 2.625rem);
+    font-weight: 600;
+    color: var(--color-accent);
+    line-height: 1;
+    letter-spacing: -0.01em;
+}
+.academy-stat-unit {
+    font-size: 0.55em;
+    font-weight: 500;
+    margin-left: 0.1em;
+    opacity: 0.85;
+}
+.academy-stat-label {
+    font-size: 0.72rem;
+    color: var(--color-text-muted);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    line-height: 1.4;
+}
+
+/* ── Track headings ──────────────────────────────────────────────── */
+.academy-track-head {
+    display: flex;
+    align-items: baseline;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.75rem;
+}
+.academy-track-head-second { margin-top: 4rem; }
+.academy-track-tag {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    background: var(--color-accent-softer);
+    border: 1px solid var(--color-accent-mid);
+    padding: 0.35rem 0.7rem;
+    border-radius: 4px;
+}
+.academy-track-tag-ref {
+    color: var(--color-text-muted);
+    background: var(--color-bg-card);
+    border-color: var(--color-border);
+}
+.academy-track-head h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    color: var(--color-text);
+    margin: 0;
+}
+
+/* ── Five-course path ────────────────────────────────────────────── */
+.academy-path {
+    position: relative;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1rem;
+    list-style: none;
+    padding: 1.25rem 0 0;
+    margin: 0;
+}
+/* The connector line — runs through the centres of the .step-num circles. */
+.academy-path::before {
+    content: '';
+    position: absolute;
+    top: calc(1.25rem + 22px); /* padding-top + half number-circle height */
+    left: calc(10% + 22px);
+    right: calc(10% + 22px);
+    height: 2px;
+    background: linear-gradient(90deg,
+        var(--color-accent-mid) 0%,
+        var(--color-accent) 50%,
+        var(--color-accent-mid) 100%);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 1.4s cubic-bezier(0.65, 0, 0.35, 1) 0.2s;
+    z-index: 0;
+}
+.academy-path.drawn::before { transform: scaleX(1); }
+
+.academy-step {
+    position: relative;
+    z-index: 1;
+}
+.academy-step a {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.6rem;
+    padding: 1rem 1rem 1.25rem;
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    color: var(--color-text);
+    height: 100%;
+    transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 160ms,
+                box-shadow 160ms;
+    text-decoration: none;
+}
+.academy-step a:hover {
+    transform: translateY(-3px);
+    border-color: var(--color-accent-mid);
+    box-shadow: 0 12px 28px -16px rgba(6, 182, 212, 0.35);
+}
+.step-num {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--color-bg);
+    border: 2px solid var(--color-accent);
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--color-accent);
+    box-shadow: 0 0 0 4px var(--color-bg-card);
+}
+.academy-step a:hover .step-num {
+    background: var(--color-accent);
+    color: var(--color-bg);
+}
+.step-title {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--color-text);
+    letter-spacing: -0.005em;
+}
+.step-blurb {
+    font-size: 0.825rem;
+    color: var(--color-text-muted);
+    line-height: 1.5;
+    flex: 1;
+}
+.step-meta {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    color: var(--color-text-dim);
+    letter-spacing: 0.04em;
+    margin-top: auto;
+    padding-top: 0.4rem;
+    border-top: 1px dashed var(--color-border);
+    width: 100%;
+}
+.step-meta i { margin-right: 0.3em; opacity: 0.7; }
+
+/* Stagger fade-up entry on path nodes */
+.academy-path .academy-step.fade-in { transition-delay: 0ms; }
+.academy-path .academy-step:nth-child(2).fade-in { transition-delay: 80ms; }
+.academy-path .academy-step:nth-child(3).fade-in { transition-delay: 160ms; }
+.academy-path .academy-step:nth-child(4).fade-in { transition-delay: 240ms; }
+.academy-path .academy-step:nth-child(5).fade-in { transition-delay: 320ms; }
+
+/* ── Reference cards ─────────────────────────────────────────────── */
+.academy-reference {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+.academy-ref-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    padding: 1.5rem 1.625rem;
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    text-decoration: none;
+    transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1),
+                border-color 160ms,
+                box-shadow 160ms;
+}
+.academy-ref-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--color-accent-mid);
+    box-shadow: 0 12px 28px -16px rgba(6, 182, 212, 0.35);
+}
+.ref-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    background: var(--color-accent-softer);
+    border: 1px solid var(--color-accent-mid);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-accent);
+    font-size: 1rem;
+}
+.academy-ref-card h4 {
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: var(--color-text);
+    margin: 0;
+    letter-spacing: -0.005em;
+}
+.academy-ref-card p {
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+    line-height: 1.55;
+    margin: 0;
+    flex: 1;
+}
+.ref-link {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--color-accent);
+    margin-top: 0.25rem;
+}
+
+/* ── Mobile ──────────────────────────────────────────────────────── */
+@media (max-width: 900px) {
+    .academy { padding: 70px 0 80px; }
+    .academy-stats { grid-template-columns: repeat(2, 1fr); gap: 1.25rem 1rem; padding: 1.5rem 1.25rem; }
+    .academy-stat:nth-child(2) { border-left: 1px solid var(--color-border); }
+    .academy-stat:nth-child(3) { border-left: none; }
+    .academy-path {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+    }
+    .academy-path::before { display: none; }
+    .academy-step a { flex-direction: row; align-items: center; text-align: left; }
+    .academy-step a .step-num { flex-shrink: 0; }
+    .step-blurb { flex: 1; }
+    .step-meta { width: auto; border-top: 0; padding-top: 0; margin-left: auto; }
+    .academy-reference { grid-template-columns: 1fr; }
+}
+@media (max-width: 600px) {
+    .academy-stat-num { font-size: 1.75rem; }
+    .academy-stat-label { font-size: 0.65rem; }
+    .academy-step a { flex-direction: column; align-items: center; text-align: center; }
+    .step-meta { width: 100%; border-top: 1px dashed var(--color-border); padding-top: 0.4rem; margin-left: 0; }
+}
