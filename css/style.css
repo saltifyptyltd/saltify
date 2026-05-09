@@ -1994,11 +1994,11 @@ pre code {
 .academy-step {
     position: relative;
     z-index: 1;
-    /* Three per row max on desktop; gracefully wraps and centres uneven rows.
-       The min-width keeps the card readable on mid-size screens. */
-    flex: 0 1 calc((100% - 2rem) / 3);
-    min-width: 240px;
-    max-width: 320px;
+    /* Hard 3-per-row max — flex-shrink: 0 prevents 4+ cards squeezing into a
+       row on wide screens. flex-basis is one third of the row minus its share
+       of the two gaps. flex-grow: 0 stops a single trailing card from
+       stretching to full width. */
+    flex: 0 0 calc(33.333% - 0.667rem);
 }
 .academy-step a {
     display: flex;
@@ -2225,9 +2225,7 @@ pre code {
         gap: 0.75rem;
     }
     .academy-step {
-        flex: 0 1 100%;
-        min-width: 0;
-        max-width: none;
+        flex: 0 0 100%;
     }
     .academy-step a { flex-direction: row; align-items: center; text-align: left; flex-wrap: wrap; }
     .academy-step a .step-num { flex-shrink: 0; }
