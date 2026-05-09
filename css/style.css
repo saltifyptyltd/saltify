@@ -1633,14 +1633,17 @@ pre code {
 
 .install-promo-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
-    max-width: 1080px;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+    max-width: 1280px;
     margin: 0 auto;
 }
 
+/* Cards are ~30% smaller than the previous 2-column promo so the grid fits
+   nine articles as 3 rows of 3. Padding, type sizes, and stat-row spacing
+   all scale together. */
 .install-promo-card {
-    padding: 2.5rem 2rem;
+    padding: 1.75rem 1.4rem;
     background: linear-gradient(160deg, var(--color-bg-featured) 0%, var(--color-bg-card) 100%);
     border: 1px solid var(--color-accent-mid);
     border-radius: var(--radius);
@@ -1650,12 +1653,12 @@ pre code {
 }
 
 .install-promo-card-tag {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     font-weight: 700;
-    letter-spacing: 0.16em;
+    letter-spacing: 0.14em;
     color: var(--color-accent);
     text-transform: uppercase;
-    margin-bottom: 0.875rem;
+    margin-bottom: 0.625rem;
     font-family: var(--font-mono);
 }
 
@@ -1669,25 +1672,26 @@ pre code {
 }
 
 .install-promo-card h2 {
-    font-size: clamp(1.75rem, 3.2vw, 2.25rem);
-    letter-spacing: -0.015em;
+    font-size: clamp(1.15rem, 2vw, 1.45rem);
+    letter-spacing: -0.01em;
     color: var(--color-text);
-    margin-bottom: 0.875rem;
+    margin-bottom: 0.625rem;
+    line-height: 1.25;
 }
 
 .install-promo-lead {
-    font-size: 1.0625rem;
+    font-size: 0.875rem;
     color: var(--color-text-muted);
-    line-height: 1.6;
-    margin: 0 auto 2rem;
-    max-width: 580px;
+    line-height: 1.55;
+    margin: 0 auto 1.25rem;
+    max-width: 560px;
 }
 
 .install-promo-stats {
     display: flex;
     justify-content: center;
-    gap: 3rem;
-    margin: 2rem 0 2.25rem;
+    gap: 1.5rem;
+    margin: 1.25rem 0 1.5rem;
     flex-wrap: wrap;
 }
 
@@ -1695,12 +1699,12 @@ pre code {
     display: flex;
     flex-direction: column;
     align-items: center;
-    min-width: 80px;
+    min-width: 60px;
 }
 
 .install-promo-stat-num {
     font-family: var(--font-mono);
-    font-size: 2.5rem;
+    font-size: 1.625rem;
     font-weight: 600;
     color: var(--color-accent);
     line-height: 1;
@@ -1714,11 +1718,17 @@ pre code {
 }
 
 .install-promo-stat-label {
-    font-size: 0.75rem;
+    font-size: 0.65rem;
     color: var(--color-text-muted);
-    margin-top: 0.5rem;
+    margin-top: 0.35rem;
     letter-spacing: 0.08em;
     text-transform: uppercase;
+}
+
+.install-promo-card .btn-primary {
+    font-size: 0.85rem;
+    padding: 0.55rem 1rem;
+    margin-top: auto;
 }
 
 .install-promo-note {
@@ -1728,21 +1738,29 @@ pre code {
     font-style: italic;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 1100px) {
     .install-promo-grid {
-        grid-template-columns: 1fr;
-        max-width: 760px;
+        grid-template-columns: repeat(2, 1fr);
+        max-width: 880px;
     }
+}
+@media (max-width: 900px) {
     .git-paths-grid {
         grid-template-columns: 1fr !important;
+    }
+}
+@media (max-width: 700px) {
+    .install-promo-grid {
+        grid-template-columns: 1fr;
+        max-width: 480px;
     }
 }
 
 @media (max-width: 600px) {
     .install-promo { padding: 60px 0; }
-    .install-promo-card { padding: 2rem 1.5rem; }
-    .install-promo-stats { gap: 2rem; }
-    .install-promo-stat-num { font-size: 2rem; }
+    .install-promo-card { padding: 1.5rem 1.25rem; }
+    .install-promo-stats { gap: 1.25rem; }
+    .install-promo-stat-num { font-size: 1.4rem; }
 }
 
 /* ================================
