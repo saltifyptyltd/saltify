@@ -255,6 +255,20 @@ p code, li code, h4 code {
     display: none;
 }
 
+/* New Salt Academy top-level nav item — small hex prefix marks it as the
+   flagship Learn Salt destination. */
+.nav-link.nav-academy {
+    color: var(--color-accent);
+    font-weight: 500;
+}
+.nav-link.nav-academy::before {
+    content: '⬡';
+    margin-right: 0.4em;
+    color: var(--color-accent);
+    opacity: 0.85;
+    font-size: 0.95em;
+}
+
 /* ================================
    Nav dropdown ("Learn" menu)
    ================================ */
@@ -1941,6 +1955,17 @@ pre code {
     color: var(--color-text-muted);
     background: var(--color-bg-card);
     border-color: var(--color-border);
+}
+.academy-track-tag-link {
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 140ms, color 140ms, border-color 140ms, transform 140ms;
+}
+.academy-track-tag-link:hover {
+    background: var(--color-accent);
+    color: var(--color-bg);
+    border-color: var(--color-accent);
+    transform: translateY(-1px);
 }
 .academy-track-head h3 {
     font-size: 1.25rem;
