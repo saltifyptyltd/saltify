@@ -158,11 +158,11 @@
                         </div>
                         <div class="featured-header-text">
                             <h3>Blue/Green Salt, Git-Driven</h3>
-                            <p class="service-tech">Zero-downtime · GitOps · Two-master pattern</p>
+                            <p class="service-tech">Zero-downtime · GitOps · Stack-level blue/green</p>
                         </div>
                     </div>
                     <p class="featured-desc">
-                        Most Salt deployments are one master, one branch, one prayer. We build it the enterprise way: two Salt masters running side by side, your git repo as the only source of truth, and a CI pipeline that promotes change from develop → staging → production with a green/blue cutover. If a state breaks, the other master is still serving. You roll forward, not back.
+                        Most Salt deployments are one master, one branch, one prayer. We architect the whole stack to fail over: two 3-server stacks (blue and green), both pulling from the same Git, with a CI pipeline that promotes change from develop → staging → production. Cut over by flipping a DNS CNAME — minions don't notice. If something breaks, rebuild from Git, don't restore. You roll forward, not back.
                     </p>
                     <div class="featured-items">
                         <div class="featured-item">
@@ -179,8 +179,8 @@
                                 <i class="fas fa-server" aria-hidden="true"></i>
                             </div>
                             <div>
-                                <strong>Two-master HA</strong>
-                                <span>Active/active masters with synchronized state. Promote a release on one, validate, then flip. Minions never miss a beat.</span>
+                                <strong>Stack-level failover</strong>
+                                <span>Two whole 3-server stacks running the same Git source. Promote on green, validate, flip the CNAME. Minions don't notice the swap. (Each stack has two masters internally for in-stack HA — single-server failure doesn't even register.)</span>
                             </div>
                         </div>
                         <div class="featured-item">
@@ -224,13 +224,40 @@
 
                 <article class="service-card hover-card fade-in">
                     <div class="service-icon">
-                        <i class="fas fa-bolt" aria-hidden="true"></i>
+                        <i class="fas fa-arrow-trend-up" aria-hidden="true"></i>
                     </div>
-                    <h3>Reactor & Orchestration</h3>
-                    <p class="service-tech">Event-Driven · Real-Time</p>
-                    <p>Salt's event bus tied into reactor SLS so highstate, key acceptance, post-deploy validation, and incident response happen automatically. The event-driven layer most teams skip — and the reason your fleet runs itself.</p>
+                    <h3>Team uplift</h3>
+                    <p class="service-tech">Training · Modern workflows · AI tooling</p>
+                    <p>We don't just build the platform — we leave your team running it. Claude Code, Copilot, and Cursor wired into VSCode, plus the Git flow and review patterns that compound. By the time we walk out, your engineers ship faster than they did the day we arrived.</p>
                 </article>
 
+            </div>
+        </div>
+    </section>
+
+    <!-- Process -->
+    <section class="process">
+        <div class="container">
+            <header class="section-header">
+                <h2>How we work</h2>
+                <p>Three phases. No surprises.</p>
+            </header>
+            <div class="process-steps divider-grid">
+                <div class="process-step fade-in">
+                    <span class="step-number">01</span>
+                    <h3>Assess</h3>
+                    <p>Your existing Salt (or no Salt). Master topology, git hygiene, pillar layout, the things people are scared to touch. We map it before we change it.</p>
+                </div>
+                <div class="process-step fade-in">
+                    <span class="step-number">02</span>
+                    <h3>Deploy</h3>
+                    <p>Blue/green stacks, git-driven gitpull, reactor + orchestration wired in. Open source or VCF Salt — same pattern, same discipline.</p>
+                </div>
+                <div class="process-step fade-in">
+                    <span class="step-number">03</span>
+                    <h3>Uplift</h3>
+                    <p>We hand it back with the team trained, AI in the pipeline writing states alongside them, and runbooks for the change patterns that matter.</p>
+                </div>
             </div>
         </div>
     </section>
@@ -239,7 +266,7 @@
     <section id="uplift" class="uplift">
         <div class="container">
             <header class="section-header">
-                <h2>Build it. Train them. Leave.</h2>
+                <h2>We build. We train. You run.</h2>
                 <p>Modern AI has changed how engineering teams ship. We make sure yours catches up — and stays ahead.</p>
             </header>
             <div class="uplift-grid">
@@ -299,6 +326,19 @@
         </div>
     </section>
 
+    <!-- Philosophy / The Saltify thesis -->
+    <section id="about" class="philosophy">
+        <div class="container">
+            <div class="philosophy-content fade-in">
+                <p class="philosophy-eyebrow">The Saltify thesis</p>
+                <blockquote>
+                    The hard part isn't building a complex system. <strong>The hard part is making it simple.</strong><br><br>
+                    Anyone can solve a complex problem with a complex solution. What's rare — and what we build — is a simple solution to a hard one.
+                </blockquote>
+            </div>
+        </div>
+    </section>
+
     <!-- Approach: Stop upgrading in place -->
     <section id="approach" class="approach section-alt">
         <div class="container">
@@ -322,15 +362,14 @@
                     <p class="compare-eyebrow">The Saltify pattern</p>
                     <h3>Blue/green cutover</h3>
                     <ul>
-                        <li>Stand up a new master alongside the old</li>
-                        <li>Copy the certs — minions don't notice the switch</li>
+                        <li>Stand up a new stack alongside the old</li>
+                        <li>Mirror the master keys (and GPG) — green presents the same identity, minions don't notice the switch</li>
                         <li>Test the new stack under real load before cutover</li>
-                        <li>Flip DNS or load balancer when you're happy</li>
+                        <li>Flip the CNAME (or LB target) when you're happy</li>
                         <li>If something breaks: <strong>rebuild, don't restore</strong></li>
                     </ul>
                 </article>
             </div>
-            <p class="approach-footnote">Anyone can build a complex solution for a complex problem. The hard part is making it simple. That's what we do.</p>
         </div>
     </section>
 
@@ -505,47 +544,6 @@
                         </div>
                     </div>
                     <a href="salt-state-modules.html" class="btn-primary">Browse all 127 →</a>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Philosophy -->
-    <section id="about" class="philosophy">
-        <div class="container">
-            <div class="philosophy-content fade-in">
-                <p class="philosophy-eyebrow">The Saltify thesis</p>
-                <blockquote>
-                    The hard part isn't building a complex system. <strong>The hard part is making it simple.</strong><br><br>
-                    Anyone can solve a complex problem with a complex solution. What's rare — and what we build — is a simple solution to a hard one.<br><br>
-                    Stand up a new stack. Test it. Flip the switch. If it breaks, rebuild. No drama. No 2am all-hands. No rollback procedure that nobody trusts.
-                </blockquote>
-            </div>
-        </div>
-    </section>
-
-    <!-- Process -->
-    <section class="process">
-        <div class="container">
-            <header class="section-header">
-                <h2>How we work</h2>
-                <p>Three phases. No surprises.</p>
-            </header>
-            <div class="process-steps divider-grid">
-                <div class="process-step fade-in">
-                    <span class="step-number">01</span>
-                    <h3>Assess</h3>
-                    <p>Your existing Salt (or no Salt). Master topology, git hygiene, pillar layout, the things people are scared to touch. We map it before we change it.</p>
-                </div>
-                <div class="process-step fade-in">
-                    <span class="step-number">02</span>
-                    <h3>Deploy</h3>
-                    <p>Blue/green masters, git-driven gitpull, reactor + orchestration wired in. Free edition or VCF Salt — same pattern, same discipline.</p>
-                </div>
-                <div class="process-step fade-in">
-                    <span class="step-number">03</span>
-                    <h3>Uplift</h3>
-                    <p>We hand it back with the team trained, AI in the pipeline writing states alongside them, and runbooks for the change patterns that matter.</p>
                 </div>
             </div>
         </div>
