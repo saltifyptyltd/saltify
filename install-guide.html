@@ -622,8 +622,8 @@ sudo salt '*' test.ping</code></pre>
 
                 <article class="quickstart-step fade-in" style="grid-column: 1 / -1; background: var(--color-bg-featured); border-left: 3px solid var(--color-accent); padding: 2rem 2.25rem;">
                     <span class="step-number"><i class="fas fa-wand-magic-sparkles" style="margin-right: 0.4rem; color: var(--color-accent);"></i>08 — THE PIVOT</span>
-                    <h4>Set up the pillar — the recipe Salt will read</h4>
-                    <p><strong>This is the moment Salt starts configuring itself.</strong> Pillar is the data Salt reads to know what to build. Once you write these files, master 1 has the recipe — the highstate in step 10 reads them and uses them to install PostgreSQL, Valkey, and RaaS on the data node, and the master plugin on both masters. Steps 1–7 were hand-install. From here on, you write config and Salt does the rest.</p>
+                    <h4>Set up the pillar — values for the highstate</h4>
+                    <p><strong>From this step on, Salt configures itself.</strong> Pillar is where you put the values Salt needs (passwords, hostnames, paths, install flags). The highstate in step 10 reads the state files, pulls values from pillar where it needs them, and installs PostgreSQL, Valkey, and RaaS on the data node, plus the master plugin on both masters. Steps 1–7 were hand-install; from here Salt does the rest.</p>
 
                     <h5 style="font-size: 0.95rem; font-weight: 600; margin: 1.75rem 0 0.5rem; color: var(--color-text);">8.1 — Stage the installer files</h5>
                     <p>On <strong>master 1 only</strong>:</p>
