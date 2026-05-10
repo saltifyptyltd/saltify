@@ -258,6 +258,13 @@ salt '*' saltutil.sync_all           <span class="code-comment"># nuclear</span>
                 </article>
 
                 <article class="cmd-card hover-card fade-in">
+                    <div class="cmd-label"><i class="fas fa-tower-broadcast"></i> Events</div>
+                    <pre><code>salt-call event.fire '{"key": "val"}' 'my/tag'    <span class="code-comment"># local bus only</span>
+salt-call event.send 'my/tag' '{"key": "val"}'    <span class="code-comment"># send to master</span></code></pre>
+                    <p>Push events onto the Salt event bus. Reactors on the master watch for matching tags and fire states or orchestrations in response. <code>event.fire</code> stays on the minion's local bus; <code>event.send</code> forwards to the master.</p>
+                </article>
+
+                <article class="cmd-card hover-card fade-in">
                     <div class="cmd-label"><i class="fas fa-book"></i> Discover</div>
                     <pre><code>salt '*' sys.doc                     <span class="code-comment"># EVERYTHING</span>
 salt '*' sys.doc pkg                 <span class="code-comment"># one module</span>
