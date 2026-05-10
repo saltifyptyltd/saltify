@@ -1174,7 +1174,11 @@ p code, li code, h4 code {
     min-width: 0;
 }
 
-.quickstart-grid > .quickstart-step:nth-child(5) {
+/* Stretch the orphaned 5th card full-width in 5-card grids (e.g. blue/green
+   cutover in install-guide). Excludes .install-steps, which manages its own
+   orphan via :last-child:nth-child(odd) and would otherwise stretch the wrong
+   card whenever the step count changes. */
+.quickstart-grid:not(.install-steps) > .quickstart-step:nth-child(5) {
     grid-column: 1 / -1;
 }
 
@@ -1508,7 +1512,7 @@ pre code {
         grid-template-columns: 1fr;
     }
 
-    .quickstart-grid > .quickstart-step:nth-child(5) {
+    .quickstart-grid:not(.install-steps) > .quickstart-step:nth-child(5) {
         grid-column: auto;
     }
 
