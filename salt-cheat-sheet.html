@@ -201,6 +201,14 @@ salt '*' saltutil.sync_grains</code></pre>
                 </article>
 
                 <article class="cmd-card hover-card fade-in">
+                    <div class="cmd-label"><i class="fas fa-share-nodes"></i> Mine</div>
+                    <pre><code>salt '*' mine.update                          <span class="code-comment"># publish my data</span>
+salt '*' mine.get '*' network.get_hostname    <span class="code-comment"># all hostnames</span>
+salt '*' mine.get 'web*' network.ip_addrs     <span class="code-comment"># web fleet IPs</span></code></pre>
+                    <p>Cross-minion data sharing. Minions publish via <code>mine.update</code>; anyone reads via <code>mine.get</code>. Useful when one minion needs another minion's grain or function output (e.g. all webserver IPs without a network scan).</p>
+                </article>
+
+                <article class="cmd-card hover-card fade-in">
                     <div class="cmd-label"><i class="fas fa-box"></i> Packages</div>
                     <pre><code>salt '*' pkg.install nginx
 salt '*' pkg.upgrade
