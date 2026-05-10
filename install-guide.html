@@ -740,18 +740,19 @@ ids:
                     <span class="step-number">09</span>
                     <h4>Install the pip wheels <span style="display: inline-block; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.14em; color: var(--color-accent); background: var(--color-accent-softer); border: 1px solid var(--color-accent-mid); padding: 0.2rem 0.55rem; border-radius: 4px; vertical-align: middle; margin-left: 0.5rem; text-transform: uppercase;">Air-gap only</span></h4>
                     <p style="padding: 0.625rem 0.875rem; background: var(--color-accent-softer); border-left: 2px solid var(--color-accent); border-radius: 0 6px 6px 0; font-size: 0.875rem; margin-bottom: 1rem;"><i class="fas fa-circle-info" style="color: var(--color-accent); margin-right: 0.4rem;"></i><strong>Skip this step if your nodes have internet.</strong> The SSEAPE master plugin still needs to be installed (see the <em>master plugin</em> block below) — but the dependency wheels can come from PyPI directly.</p>
-                    <p>Run on <strong>every node</strong>. The bundle ships these wheels in the <code>pip/</code> folder. The SSEAPE master plugin is in <code>sse-installer/</code>.</p>
-                    <pre><code>cd ~/Config-*/pip
+                    <p>Run on <strong>every node</strong>. The wheels don't ship in the installer bundle, so grab them first on a box with internet (<code>pip download PyJWT pika pyspnego smbprotocol pypsexec -d ./pip/</code>) and copy the <code>pip/</code> directory across to each air-gap node. The SSEAPE master plugin <em>does</em> ship in the bundle, under <code>sse-installer/</code>.</p>
+                    <pre><code><span class="code-comment"># wheels you staged from your internet box</span>
+cd ~/pip
 sudo salt-pip install PyJWT-*.whl
 sudo salt-pip install pika-*.whl
 sudo salt-pip install pyspnego-*.whl
 sudo salt-pip install smbprotocol-*.whl
 sudo salt-pip install pypsexec-*.whl
 
-<span class="code-comment"># master plugin — both masters only</span>
+<span class="code-comment"># master plugin — ships in the bundle, both masters only</span>
 cd ~/Config-*/sse-installer/salt/sse/eapi_plugin/files
 sudo salt-pip install SSEAPE-*-py3-none-any.whl</code></pre>
-                    <p style="font-size: 0.85rem;"><strong>With internet:</strong> <code>sudo salt-pip install PyJWT pika pyspnego smbprotocol pypsexec</code> pulls the same wheels from PyPI. The SSEAPE plugin still has to come from the bundle (it's not on PyPI).</p>
+                    <p style="font-size: 0.85rem;"><strong>With internet:</strong> <code>sudo salt-pip install PyJWT pika pyspnego smbprotocol pypsexec</code> pulls the same wheels from PyPI directly, no staging needed. The SSEAPE plugin still has to come from the bundle (it's not on PyPI).</p>
                 </article>
 
                 <article class="quickstart-step fade-in">
