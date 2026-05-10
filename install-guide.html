@@ -349,7 +349,7 @@
     <section class="guide-section section-alt" id="blue-green">
         <div class="container">
             <h2>2. Blue/green — the whole point</h2>
-            <p class="section-intro">This is the architecture's whole reason for existing. <strong>Blue/green isn't between the two masters in one stack. It's between two whole stacks.</strong> The 3-server stack from section 1 is the unit you swap.</p>
+            <p class="section-intro">Blue/green here means swapping whole stacks, not failing over between the masters inside one. <strong>The unit you swap is the 3-server stack from section 1</strong>: stand up a second copy, run both in parallel, cut over when you're ready.</p>
 
             <div class="diagram-wrap">
                 <svg viewBox="0 -50 760 370" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="bg-title bg-desc">
