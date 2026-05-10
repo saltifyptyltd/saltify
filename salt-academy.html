@@ -70,6 +70,33 @@
             padding: 0.1em 0.35em;
             border-radius: 4px;
         }
+        .academy-hero-diffs {
+            text-align: left;
+            max-width: 720px;
+            margin: 0 auto 2.5rem;
+            color: var(--color-text-muted);
+            line-height: 1.65;
+            font-size: 0.95rem;
+        }
+        .academy-hero-diffs-tag {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            text-transform: uppercase;
+            color: var(--color-accent);
+            margin-bottom: 0.875rem;
+        }
+        .academy-hero-diffs ul {
+            padding-left: 1.25rem;
+            margin: 0;
+        }
+        .academy-hero-diffs li {
+            margin-bottom: 0.625rem;
+        }
+        .academy-hero-diffs li strong {
+            color: var(--color-text);
+            font-weight: 600;
+        }
         .academy-hero-stats {
             display: flex;
             justify-content: center;
@@ -264,7 +291,16 @@
         <div class="container">
             <p class="academy-hero-tag"><span class="academy-hero-mark" aria-hidden="true">⬡</span> The curriculum</p>
             <h1 id="academy-heading">Salt Academy.</h1>
-            <p class="academy-hero-lead">Eight guides covering everything from your first <code>salt-call</code> to the AI-augmented workflow we use day to day. Written in plain English by people who deploy Salt for a living.</p>
+            <div class="academy-hero-diffs">
+                <p class="academy-hero-diffs-tag">Key differences include:</p>
+                <ul>
+                    <li><strong>Practical Focus:</strong> Rather than just theory, the guides focus on production patterns, such as a 3-server architecture and a rebuild-from-Git pattern applied to daily workflows.</li>
+                    <li><strong>Plain English Approach:</strong> The curriculum is written in "plain English" by practitioners who deploy Salt professionally, aiming for clarity over dense technical jargon.</li>
+                    <li><strong>Curated Content:</strong> It condenses Salt's vast ecosystem into 8 guides, 127 modules, and 5 courses, specifically highlighting "anti-patterns" and quirks to avoid in production.</li>
+                    <li><strong>AI Integration:</strong> Unlike traditional docs, it includes specific guidance on using AI as a productivity multiplier, including setup for MCP and identifying AI failure modes.</li>
+                    <li><strong>Searchable References:</strong> It provides reorganized resources, such as 127 state modules grouped into 9 functional categories with usage examples, making it easier to find solutions based on specific tasks.</li>
+                </ul>
+            </div>
             <div class="academy-hero-stats" role="list">
                 <div class="academy-hero-stat" role="listitem">
                     <span class="academy-hero-stat-num">8</span>
