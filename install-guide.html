@@ -335,7 +335,7 @@
 
             <div class="callout callout-warn">
                 <i class="fas fa-circle-info"></i>
-                <p><strong>What this guide is NOT.</strong> RaaS gets installed — it's part of the stack and can be used for some tasks — but we don't <em>use</em> the RaaS web UI to author states or pillar. Git is the source of truth. State files live in a Git repo; pillar lives in Git; secrets live in Git (encrypted with GPG). If you came looking for a tutorial on building states through the RaaS UI, this isn't it. The trade-off (no UI workflow, no database-as-source-of-truth) is what makes the blue/green pattern possible — we never restore a RaaS database, we just flip a CNAME and rebuild from Git. <strong>Small price to pay for not firefighting at 2am.</strong></p>
+                <p><strong>Disclaimer.</strong> This architecture deliberately limits how you use RaaS. RaaS is the proprietary API and web UI bundled with VCF Salt; it provides RBAC, a job-history database, scheduling, and dashboards. We install it because the rest of VCF Salt depends on it. In practice we use it for read-only inspection and the occasional one-off task. We don't author states or pillar through the RaaS web UI. Those live in a Git repo, with secrets encrypted via GPG. If you wanted a UI-driven workflow for everything, this isn't the setup for you. The constraint is intentional: we never restore the RaaS database. When something breaks we flip a CNAME or rebuild the stack from Git.</p>
             </div>
 
             <div class="callout callout-tip">
