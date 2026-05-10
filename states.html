@@ -128,8 +128,8 @@
     <section class="guide-hero">
         <div class="container">
             <p class="crumb"><i class="fas fa-cube"></i> Salt States</p>
-            <h1>Salt states. Without the spec sheet.</h1>
-            <p class="lead">The state modules you'll use 90% of the time, the requisite system that ties them together, and four real-world patterns from production. <strong>One scrollable page.</strong></p>
+            <h1>Salt states, the parts you'll actually use.</h1>
+            <p class="lead">The state modules you reach for 90% of the time, how requisites tie them together, and four patterns lifted from production deployments.</p>
             <p class="doc-version"><strong>v1.0</strong> · Updated 2026-05-09</p>
 
             <div class="tldr">
@@ -151,7 +151,7 @@
         <div class="container">
             <p class="section-tag">01 · Foundation · ~3 min</p>
             <h2>Anatomy of a state.</h2>
-            <p class="section-intro">A Salt state is YAML describing a <em>desired condition</em>, not a sequence of actions. Salt looks at the current state of the box, compares to what you wrote, and changes only what's not yet correct. <strong>Run it ten times, the box ends up in the same place every time.</strong> That's idempotency, and it's the whole game.</p>
+            <p class="section-intro">A Salt state is YAML describing a <em>desired condition</em>, not a sequence of actions. Salt looks at the current state of the box, compares to what you wrote, and changes only what's not yet correct. Run it ten times and the box usually lands in the same place — that property is called idempotency.</p>
 
             <h3>The shape</h3>
             <pre><code><span class="code-comment"># every state has three parts:</span>
@@ -168,7 +168,7 @@
 
             <div class="callout callout-tip">
                 <i class="fas fa-circle-info"></i>
-                <p><strong>Always dry-run before you commit.</strong> Append <code>test=True</code> to any apply command and Salt prints what it <em>would</em> change. <code>salt 'web*' state.apply nginx test=True</code>. Catches typos and unintended diffs before the fleet sees them.</p>
+                <p><strong>Always dry-run before you commit.</strong> Append <code>test=True</code> to any apply command and Salt prints what it <em>would</em> change. <code>salt 'web*' state.apply nginx test=True</code>. Spot typos and unintended diffs before the fleet sees them.</p>
             </div>
         </div>
     </section>
@@ -281,14 +281,14 @@
         <div class="container">
             <p class="section-tag">03 · The dependency system · ~5 min</p>
             <h2>Requisites — making states cooperate.</h2>
-            <p class="section-intro">Salt doesn't run states in file order. It runs them in <strong>dependency order</strong>. You declare dependencies with requisites. Get this right and complex setups become bulletproof. Get it wrong and you'll wonder why your service tried to start before its package existed.</p>
+            <p class="section-intro">Salt runs states in <strong>dependency order</strong>, not file order. Declare those dependencies with requisites. Skip them and you'll watch a service try to start before its package exists.</p>
 
             <h3>The four you need</h3>
             <div class="req-grid">
                 <div class="req-key">require:</div>
                 <div class="req-val">Run <em>after</em> the listed states succeed. The bread-and-butter "do A before B" requisite. <code>service: nginx_pkg</code> means "wait until <code>nginx_pkg</code> is done."</div>
                 <div class="req-key">watch:</div>
-                <div class="req-val">Like <code>require</code>, plus <em>react if anything changed</em>. Service restarts automatically when its config file changes. <strong>This is the killer feature.</strong></div>
+                <div class="req-val">Like <code>require</code>, plus <em>react if anything changed</em>. Service restarts automatically when its config file changes.</div>
                 <div class="req-key">onchanges:</div>
                 <div class="req-val">Run <em>only if</em> a watched state actually made a change. Useful for "run this audit script when config gets modified" — won't run on no-op highstates.</div>
                 <div class="req-key">listen:</div>
@@ -316,7 +316,7 @@ nginx_conf:
 
             <div class="callout callout-tip">
                 <i class="fas fa-circle-info"></i>
-                <p><strong>The 30-second rule.</strong> If you can't tell from looking at a state file what runs in what order, your requisites are wrong. Fix the chain, not the symptom.</p>
+                <p>If you can't tell from looking at a state file what runs in what order, the requisites are usually wrong. Fix the chain rather than the symptom.</p>
             </div>
 
             <h3>The canonical chain — package + config + service</h3>
@@ -390,7 +390,7 @@ base:                              <span class="code-comment"># environment (als
         <div class="container">
             <p class="section-tag">05 · Production · ~10 min</p>
             <h2>Real-world patterns.</h2>
-            <p class="section-intro">Four sanitized patterns from production deployments. Each one is something you'd actually run, distilled to the parts that teach. <strong>Steal these.</strong></p>
+            <p class="section-intro">Four sanitized patterns from production deployments. Each one is real code, trimmed to the load-bearing bits.</p>
 
             <!-- Pattern 1 -->
             <div class="pattern-block">
@@ -498,14 +498,14 @@ publish_apps:
       - powershell -File C:\scripts\publish_apps.ps1
     - require:
       - salt: deploy_session_hosts        <span class="code-comment"># hosts ready first</span></code></pre>
-                <p><strong>Why this is the killer pattern:</strong> Salt is doing what would normally take a Bash-and-Ansible kludge with sleeps and pings — and doing it idempotently. <code>salt.state</code> applies states to grain-targeted groups; <code>salt.function</code> runs ad-hoc functions; <code>require:</code> chains them. Re-run anytime, only the parts that haven't converged actually do work.</p>
+                <p><strong>Why this works:</strong> it replaces the usual Bash-plus-Ansible kludge with sleeps and pings. <code>salt.state</code> applies states to grain-targeted groups; <code>salt.function</code> runs ad-hoc functions; <code>require:</code> chains them. Re-run any time; only unconverged parts do work.</p>
             </div>
 
             <!-- Pattern 4 -->
             <div class="pattern-block">
                 <p class="pattern-tag"><i class="fas fa-bolt"></i> Pattern 04</p>
                 <h3>Reactor — event-driven Salt</h3>
-                <p>Salt has an event bus. Anything happening on the master or minions fires an event. Reactors map event tags to state files. <strong>This turns Salt from "I tell it to do things" into "it does things when stuff happens."</strong></p>
+                <p>Salt has an event bus. Anything happening on the master or minions fires an event. Reactors map those event tags to state files, so the fleet reacts to events automatically rather than waiting for someone to invoke a state.</p>
                 <pre><code><span class="code-comment"># /etc/salt/master.d/reactor.conf</span>
 reactor:
   - 'orchestrate/rds/start':                    <span class="code-comment"># custom event tag</span>

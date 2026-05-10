@@ -253,7 +253,7 @@
         <div class="container">
             <div class="callout callout-tip" style="max-width: 760px; margin: 0 auto;">
                 <i class="fas fa-brain"></i>
-                <p><strong>One mental shift before you start.</strong> Stop thinking <em>"install nginx on the minion."</em> Start thinking <em>"nginx should be installed on the minion."</em> Salt is declarative — you describe the desired state, Salt makes it true and keeps it that way. <strong>From here on, manage minions from the master. Stop SSHing into them.</strong></p>
+                <p><strong>One mental shift before you start.</strong> Salt is declarative. You don't tell it <em>"install nginx on the minion"</em>; you describe what the minion should look like (<em>"nginx is installed"</em>), and Salt makes that true and keeps it true. From here on, manage minions from the master. No more SSHing into them.</p>
             </div>
         </div>
     </section>
@@ -520,7 +520,7 @@ nginx_service:
 
             <div class="callout callout-tip" style="margin-top: 1.75rem;">
                 <i class="fas fa-circle-info"></i>
-                <p><strong>About <code>require</code>.</strong> Salt doesn't run states in file order — it runs them in dependency order. If you don't say <code>require</code>, Salt is free to run them in parallel. For most things that's fine. For "package must exist before service starts," it's not. <code>require</code> is how you tell Salt the order matters.</p>
+                <p><strong>About <code>require</code>.</strong> Salt runs states in dependency order, not file order. Without a <code>require:</code> it's free to run them in parallel, which is usually fine. The exception is anything where one state genuinely has to finish before another starts — package install before service start, for example. That's what <code>require</code> is for.</p>
             </div>
         </div>
     </section>
@@ -575,7 +575,7 @@ sudo salt '*' state.apply</code></pre>
     <section class="guide-section">
         <div class="container">
             <h2>Pillar — config in one place.</h2>
-            <p class="section-intro">Pillar moves credentials, paths, and per-environment values <em>out</em> of state files. State files describe <strong>what</strong> should be done. Pillar describes <strong>what to do it with</strong>. Edit pillar, redeploy — no state file changes needed.</p>
+            <p class="section-intro">Pillar moves credentials, paths, and per-environment values out of state files. The state file says what to do; pillar holds the values it does it with. When the values change you edit pillar and redeploy — the state files don't move.</p>
 
             <div class="quickstart-grid divider-grid gs-steps">
 
@@ -640,7 +640,7 @@ add_to_{{ group | replace(' ', '_') }}:
 
             <div class="callout callout-tip" style="margin-top: 1.75rem;">
                 <i class="fas fa-circle-info"></i>
-                <p><strong>Why this matters.</strong> Per-environment values (dev vs staging vs prod) live in pillar. Secrets live in pillar (<a href="install-guide.html#gpg-deep-dive" style="color: var(--color-accent);">encrypted with GPG</a>). The same state file ships everywhere — pillar makes it behave correctly in each environment. That's the separation of <strong>logic</strong> (states) from <strong>data</strong> (pillar).</p>
+                <p><strong>Why this matters.</strong> Per-environment values (dev / staging / prod) and secrets (<a href="install-guide.html#gpg-deep-dive" style="color: var(--color-accent);">encrypted with GPG</a>) all sit in pillar. The same state file ships to every environment; pillar is what makes it behave correctly in each one. Logic in states, data in pillar.</p>
             </div>
         </div>
     </section>
@@ -766,7 +766,7 @@ git -C /srv/salt rev-parse HEAD</code></pre>
             <div class="coming-next">
                 <div class="coming-next-item">
                     <h4>Talk to minions directly — remote execution</h4>
-                    <p>When you don't need a state, you don't need a state. <code>salt '*' test.ping</code>, <code>salt '*' cmd.run 'uptime'</code>, <code>salt 'web*' pkg.install nginx</code>. Useful for quick fleet-wide queries and one-off tasks.</p>
+                    <p>For one-off queries and tasks you don't need to keep around as a state. <code>salt '*' test.ping</code>, <code>salt '*' cmd.run 'uptime'</code>, <code>salt 'web*' pkg.install nginx</code>. Useful for quick fleet-wide checks.</p>
                 </div>
                 <div class="coming-next-item">
                     <h4>Multi-environment — dev, staging, prod</h4>

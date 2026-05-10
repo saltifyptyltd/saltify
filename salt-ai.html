@@ -144,7 +144,7 @@
         <div class="container">
             <p class="crumb">Salt × AI · differential edge</p>
             <h1>Salt + AI — patterns that <span class="hero-highlight">actually work</span>.</h1>
-            <p class="lead">AI writes plausible Salt YAML. Sometimes it runs. Here's how to make AI a real productivity multiplier on your Salt fleet — and how to spot when it's lying to you.</p>
+            <p class="lead">AI writes plausible Salt YAML; sometimes it runs. This page is the patterns we use, plus the failure modes worth knowing.</p>
             <p class="doc-version"><strong>v1.0</strong> · Updated 2026-05-09</p>
 
             <div class="tldr">
@@ -167,7 +167,7 @@
         <div class="container">
             <span class="section-tag">01 · The honest split</span>
             <h2>Where AI shines, where it lies.</h2>
-            <p class="section-intro">Most "AI for Salt" content reads like a sales deck. It isn't. AI is excellent at four very specific things and terrible at four others. Knowing which is which is the whole game.</p>
+            <p class="section-intro">Most "AI for Salt" content reads like a sales deck. In practice it's good at four specific things and unreliable at four others.</p>
 
             <div class="verdict-grid">
                 <div class="verdict-card good">
@@ -194,7 +194,7 @@
 
             <div class="callout callout-tip">
                 <i class="fas fa-lightbulb"></i>
-                <p><strong>The pattern:</strong> AI drafts → you read every line → run on one test minion → iterate. Never apply AI-generated states to production without reading them. AI is a smart junior, not a senior. Treat it that way.</p>
+                <p><strong>The pattern:</strong> AI drafts, you read every line, then you run on a test minion before production. Treat it like a junior who needs review.</p>
             </div>
         </div>
     </section>
@@ -221,7 +221,7 @@ Generate a Salt state file (.sls) using these modules only:
 
 Include explicit `require:` chains so order is unambiguous.
 No comments. YAML only.</code></pre>
-                <p class="prompt-why"><strong>Why it works:</strong> Version pinned (no 2019-era patterns), OS specified (right package names), goal is concrete, module list constrains the search space, explicit require: removes ordering guesswork.</p>
+                <p class="prompt-why"><strong>Why it works:</strong> it pins the version (no 2019-era patterns), names the OS (right package names), constrains the modules, and makes ordering explicit. Less guesswork.</p>
             </div>
 
             <h3>The format that wastes your time</h3>
@@ -247,7 +247,7 @@ No comments. YAML only.</code></pre>
         <div class="container">
             <span class="section-tag">03 · The fastest debug loop</span>
             <h2>Paste-the-error troubleshooting.</h2>
-            <p class="section-intro">When a state fails, AI is faster than <code>-l debug</code> output for the first read. Not for the fix — for the diagnosis. This is the workflow.</p>
+            <p class="section-intro">When a state fails, AI is faster than <code>-l debug</code> for the first read. For the actual fix, less so. This is the workflow.</p>
 
             <div class="workflow">
                 <div class="workflow-step">
@@ -299,13 +299,11 @@ No comments. YAML only.</code></pre>
             </div>
 
             <h3>Why this matters</h3>
-            <p style="color: var(--color-text-muted); line-height: 1.6;">Without MCP, Claude generates Salt blindly. It guesses what's installed, guesses what your states look like, guesses what your grains return. With MCP and read-only tools wired up, Claude can <em>ask</em> — "what version is minion-foo running?", "what's in your existing nginx state?" — and write states that actually fit your environment.</p>
-
-            <p style="color: var(--color-text-muted); line-height: 1.6;">It's the difference between a contractor who shows up, asks questions, and writes code that fits — and one who shows up, doesn't ask, and writes code that breaks.</p>
+            <p style="color: var(--color-text-muted); line-height: 1.6;">Without MCP, Claude generates Salt blindly. It can't see installed packages, your existing states, or grain values. With read-only MCP wired up, Claude can <em>ask</em> ("what version is minion-foo running?", "what's in your existing nginx state?") and write states that actually fit your environment.</p>
 
             <div class="callout callout-warn">
                 <i class="fas fa-triangle-exclamation"></i>
-                <p><strong>Never expose <code>cmd.run</code> as an unconstrained tool.</strong> An LLM with arbitrary shell access is a vulnerability waiting to happen. Always: read-only by default, mutating tools require explicit per-call approval, every action logged. If you wouldn't give the tool to a junior on day one, don't give it to Claude either.</p>
+                <p><strong>Never expose <code>cmd.run</code> as an unconstrained tool.</strong> An LLM with arbitrary shell access is a vulnerability waiting to happen. Default everything to read-only, gate mutating calls behind explicit approval, and log every call.</p>
             </div>
         </div>
     </section>
@@ -344,7 +342,7 @@ No comments. YAML only.</code></pre>
         <div class="container">
             <span class="section-tag">06 · The honest part</span>
             <h2>The "looks fine, doesn't run" problem.</h2>
-            <p class="section-intro">AI-generated Salt that looks plausible but isn't is the single biggest time-sink. Real examples we've seen, and how to catch them in 30 seconds instead of 30 minutes.</p>
+            <p class="section-intro">AI-generated Salt that compiles plausibly but doesn't actually run is the biggest time-sink. Real examples below, with the quick checks that catch them.</p>
 
             <div class="antipatterns">
                 <div class="antipattern">
@@ -398,7 +396,7 @@ salt 'minion-test' state.apply your.state</code></pre>
         <div class="container">
             <span class="section-tag">07 · The Saltify pattern</span>
             <h2>AI uplift — what we leave behind when we exit.</h2>
-            <p class="section-intro">Most consultancies leave you with a working stack and a phone number. We leave you with a stack, a phone number, <em>and a colleague who doesn't bill</em>. This is what that means in practice.</p>
+            <p class="section-intro">Saltify engagements include the AI tooling your team needs to keep using Salt without us in the room. Here's what that looks like in practice.</p>
 
             <h3>The handover kit</h3>
             <ul style="color: var(--color-text-muted); line-height: 1.7; padding-left: 1.5rem;">
@@ -409,9 +407,7 @@ salt 'minion-test' state.apply your.state</code></pre>
             </ul>
 
             <h3>Why this changes the math</h3>
-            <p style="color: var(--color-text-muted); line-height: 1.6;">AI replaces nobody. But it makes a senior engineer faster, and it makes a junior engineer competent. When we leave a client, the senior on their team stops needing us for routine state work — they handle it with AI uplift. They call us back for the architectural decisions, the blue/green cutovers, the things that need real judgment.</p>
-
-            <p style="color: var(--color-text-muted); line-height: 1.6;">That's not "make yourself indispensable" consulting. That's the opposite. We're confident enough in our work to make ourselves <em>less</em> needed. Repeat business comes from solving the hard problems, not gatekeeping the easy ones.</p>
+            <p style="color: var(--color-text-muted); line-height: 1.6;">AI doesn't replace anyone, but it usually makes seniors faster and juniors functional. Routine state work moves in-house; we get called back for the architectural decisions, the blue/green cutovers, and the things that need real judgment.</p>
 
             <div class="callout callout-tip">
                 <i class="fas fa-handshake"></i>

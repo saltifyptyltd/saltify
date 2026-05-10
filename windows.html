@@ -144,8 +144,8 @@
     <section class="guide-hero">
         <div class="container">
             <p class="crumb"><i class="fab fa-windows"></i> Salt on Windows</p>
-            <h1>Salt on Windows. Production patterns, not theory.</h1>
-            <p class="lead">Practical guidance for the people actually managing Windows fleets with Salt. Install the minion, navigate the quirks, manage software fleet-wide with winrepo. <strong>One page. Distilled from production.</strong></p>
+            <h1>Salt on Windows. The practical bits.</h1>
+            <p class="lead">Practical guidance for people running Windows fleets with Salt: minion install, the quirks that bite, and winrepo for fleet-wide software.</p>
             <p class="doc-version"><strong>v1.1</strong> · Updated 2026-05-09</p>
 
             <div class="tldr">
@@ -300,11 +300,11 @@ win-server-2022:
         <div class="container">
             <p class="section-tag">02 · Reference · ~5 min</p>
             <h2>Windows quirks.</h2>
-            <p class="section-intro">Salt was written for Unix first. Windows came later. <strong>These are the corners where that history shows.</strong> Read this once, save yourself a debugging session.</p>
+            <p class="section-intro">Salt was written for Unix first; Windows came later. These are the corners where that shows.</p>
 
             <div class="callout callout-tip">
                 <i class="fas fa-circle-info"></i>
-                <p><strong>The mental model.</strong> When Salt has to choose between Unix idioms and Windows reality, it usually picks Unix and ignores the rest. Most "weird Windows behavior" is Salt doing nothing where you expected it to do something.</p>
+                <p><strong>The mental model.</strong> Where Unix idioms and Windows reality diverge, Salt typically follows Unix. Most "weird Windows behavior" is Salt no-opping where you expected action.</p>
             </div>
 
             <div class="quirks-grid">
@@ -324,7 +324,7 @@ win-server-2022:
                     <div class="quirk-body">
                         <h4>Casing — Windows preserves it, Salt expects it</h4>
                         <p>Windows is case-insensitive but case-preserving — <code>Administrator</code> and <code>administrator</code> work for login, but the system always returns the case it was created with. Salt assumes case-sensitive everywhere, so a state with <code>user: administrator</code> can fail in bizarre ways when the actual account is <code>Administrator</code>.</p>
-                        <div class="quirk-fix"><i class="fas fa-wrench"></i> <span>Pretend Windows is case-sensitive. Match the case of the real account name. Always.</span></div>
+                        <div class="quirk-fix"><i class="fas fa-wrench"></i> <span>Treat Windows as case-sensitive in practice; match the real account name's casing.</span></div>
                     </div>
                 </div>
 
@@ -370,7 +370,7 @@ win-server-2022:
 
             <div class="callout callout-tip" style="margin-top: 2rem;">
                 <i class="fas fa-lightbulb"></i>
-                <p><strong>The compounding rule.</strong> If a state behaves weirdly on Windows and you're sure the YAML is right, the issue is probably one of these six. Cross-reference before you blame the module.</p>
+                <p>If a Windows state misbehaves and the YAML looks right, one of the six above is usually the culprit. Cross-reference before you blame the module.</p>
             </div>
         </div>
     </section>
@@ -380,7 +380,7 @@ win-server-2022:
         <div class="container">
             <p class="section-tag">03 · Deep dive · ~15 min</p>
             <h2>winrepo — the Windows package manager.</h2>
-            <p class="section-intro">Like <code>apt</code> on Linux. Like <code>yum</code> on RHEL. <strong>Salt for Windows software, fleet-wide.</strong> Install, upgrade, remove with one command — no logging into individual boxes.</p>
+            <p class="section-intro">winrepo is Salt's package manager for Windows. Install, upgrade, and remove software fleet-wide from one command, no logging into individual boxes.</p>
 
             <h3 style="margin-top: 1rem;">The mental model</h3>
             <p style="color: var(--color-text-muted); line-height: 1.6;">winrepo isn't magic. It's a Git repo of YAML files. Each file describes how to install a piece of Windows software silently. Salt reads the files, builds a database, and uses that database when you say <code>pkg.install firefox</code>.</p>
@@ -508,7 +508,7 @@ firefox_x64:                   <span class="code-comment"># short name — used 
             <div class="field-callout">
                 <p class="field-callout-tag"><i class="fas fa-bolt"></i> From production</p>
                 <h3>Host the installers yourself</h3>
-                <p>Pointing <code>installer</code> at vendor URLs (download.mozilla.org, etc.) works for testing. In production it's fragile — vendors move URLs, change naming conventions, and rate-limit. <strong>Mirror installers to your own SMB share or <code>salt://</code> file root.</strong> Cuts download time, removes a third-party dependency, gives you version control.</p>
+                <p>Pointing <code>installer</code> at vendor URLs (download.mozilla.org, etc.) works for testing. In production it's fragile; vendor URLs change, get rate-limited, or disappear. Mirror installers to your own SMB share or <code>salt://</code> file root. Cuts download time, removes a third-party dependency, gives you version control.</p>
                 <pre><code>installer: 'salt://win/installers/firefox/Firefox Setup 74.0.exe'
 cache_file: 'salt://win/installers/firefox/Firefox Setup 74.0.exe'
 source_hash: 'sha256=&lt;your hash&gt;'</code></pre>
@@ -523,7 +523,7 @@ source_hash: 'sha256=&lt;your hash&gt;'</code></pre>
             <div class="field-callout">
                 <p class="field-callout-tag"><i class="fas fa-bolt"></i> From production</p>
                 <h3>Version pinning isn't optional</h3>
-                <p>"Latest" sounds great until a vendor pushes a breaking release on a Tuesday morning. <strong>Always pin versions in production.</strong> Pin via state files (<code>pkg.installed: name: firefox_x64, version: 74.0</code>). Bump in pillar when you've tested. Roll back by changing pillar.</p>
+                <p>Pin versions in production. "Latest" eventually ships a breaking change on a workday morning. Pin via state files (<code>pkg.installed: name: firefox_x64, version: 74.0</code>), bump the pinned version in pillar after you've tested it, and roll back by changing pillar.</p>
             </div>
         </div>
     </section>

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Saltify — Blue/Green Salt for Australian Government & Enterprise</title>
-    <meta name="description" content="Saltify is a Canberra-based Salt consultancy. We don't do in-place upgrades — we stand up a new master, test, flip DNS. Architecture adopted as enterprise standard at Australian government departments. Free edition or VCF Salt.">
+    <meta name="description" content="Saltify is a Canberra-based Salt consultancy. Instead of in-place upgrades, we stand up a new master, test it under load, then flip DNS. Architecture adopted as enterprise standard at Australian government departments. Free edition or VCF Salt.">
     <link rel="icon" type="image/png" href="logo/saltify-logo-large-transparent.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -61,7 +61,7 @@
             <div class="hero-content">
                 <p class="hero-eyebrow">Event-driven Salt · AI uplift · Government & Enterprise</p>
                 <h1 class="hero-title">Hard problems deserve <span class="hero-highlight">simple solutions.</span></h1>
-                <p class="hero-sub">We do event-driven Salt our way — complexity is easy; simple is the craft. We build it, hand it back, and turn your team into AI geniuses on the way out.</p>
+                <p class="hero-sub">We build event-driven Salt the way it's meant to work. Complexity is easy; simple takes effort. We deliver the platform, hand it back, and leave your team able to ship faster than they did before we arrived.</p>
                 <div class="hero-actions">
                     <a href="#contact" class="btn-primary">Let's talk →</a>
                     <a href="#approach" class="btn-ghost">Our approach ↓</a>
@@ -127,7 +127,7 @@
                         <i class="fas fa-bolt" aria-hidden="true"></i>
                     </div>
                     <h3>Event-driven by design</h3>
-                    <p>Every minion publishes to a real-time event bus. Reactors fire orchestration on those events — no polling, no cron, no five-minute lag. This is what people miss about Salt: it's reactive infrastructure, not just config push.</p>
+                    <p>Every minion publishes to a real-time event bus. Reactors fire orchestration on those events without polling or cron loops. Most people treat Salt as a config-push tool and miss the reactive layer underneath; that's usually where the leverage is.</p>
                     <a href="https://docs.saltproject.io/en/latest/topics/event/" target="_blank" rel="noopener" class="what-link">Event bus docs ↗</a>
                 </article>
                 <article class="what-card hover-card fade-in">
@@ -162,7 +162,7 @@
                         </div>
                     </div>
                     <p class="featured-desc">
-                        Most Salt deployments are one master, one branch, one prayer. We architect the whole stack to fail over: two 3-server stacks (blue and green), both pulling from the same Git, with a CI pipeline that promotes changes from develop → staging → production. Cut over by flipping a DNS CNAME — minions don't notice. If something breaks, rebuild from Git, don't restore. You roll forward, not back.
+                        Most Salt deployments run a single master with no fallback. We build the stack to fail over: two 3-server stacks (blue and green) pulling from the same Git, promoted through develop, staging, and production by a CI pipeline. Cut over by flipping a DNS CNAME; minions usually don't notice. If something breaks, we rebuild the stack from Git rather than restoring a backup.
                     </p>
                     <div class="featured-items">
                         <div class="featured-item">
@@ -171,7 +171,7 @@
                             </div>
                             <div>
                                 <strong>Git as source of truth</strong>
-                                <span>States, pillar, reactor, orchestration — all version controlled. Every change is a PR. Every deploy is a merge. Audit trail comes for free.</span>
+                                <span>States, pillar, reactor, orchestration — all version controlled. Changes go through PRs, deploys land via merge, and the audit trail comes for free.</span>
                             </div>
                         </div>
                         <div class="featured-item">
@@ -228,7 +228,7 @@
                     </div>
                     <h3>Team uplift</h3>
                     <p class="service-tech">Training · Modern workflows · AI tooling</p>
-                    <p>We don't just build the platform — we leave your team running it. Claude Code, Copilot, and Cursor wired into VSCode, plus the Git flow and review patterns that compound. By the time we walk out, your engineers ship faster than they did the day we arrived.</p>
+                    <p>We hand the platform back with the team trained to run it. Claude Code, Copilot, and Cursor wired into VSCode, plus the Git flow and review patterns that compound. By handover, your engineers usually ship faster than they did before we arrived.</p>
                 </article>
 
             </div>
@@ -267,7 +267,7 @@
         <div class="container">
             <header class="section-header">
                 <h2>We build. We train. You run.</h2>
-                <p>Modern AI has changed how engineering teams ship. We make sure yours catches up — and stays ahead.</p>
+                <p>Modern AI has changed how engineering teams ship. We make sure yours doesn't fall behind.</p>
             </header>
             <div class="uplift-grid">
                 <article class="service-card service-card--featured uplift-card fade-in">
@@ -281,7 +281,7 @@
                         </div>
                     </div>
                     <p class="featured-desc">
-                        When we come in, we don't just deploy infrastructure — we rewire how your team works. Git flow becomes muscle memory. AI becomes the pair programmer your engineers don't want to work without. By the time we leave, you have a high-performance team that can automate anything, keep it simple, and rebuild from git in minutes if it breaks. No vendor lock-in. No Saltify-shaped hole.
+                        We don't stop at the infrastructure. The same engagement reshapes how the team works day to day: a Git flow they actually use, AI tooling wired into their editors, and review patterns that hold up over time. By the end of the engagement, the team can automate new work in days and rebuild from Git when something breaks. They don't need us back.
                     </p>
                     <div class="featured-items">
                         <div class="featured-item">
@@ -317,7 +317,7 @@
                             </div>
                             <div>
                                 <strong>High-performance handover</strong>
-                                <span>By the time we walk out, your team can automate anything new in days, not quarters. Simple by default. Restorable in minutes. No vendor dependence — just a team that's measurably better than the day we arrived.</span>
+                                <span>Your team automates new work in days, not quarters. Simple by default, restorable in minutes, with no ongoing dependence on us.</span>
                             </div>
                         </div>
                     </div>
@@ -333,7 +333,7 @@
                 <p class="philosophy-eyebrow">The Saltify thesis</p>
                 <blockquote>
                     The hard part isn't building a complex system. <strong>The hard part is making it simple.</strong><br><br>
-                    Anyone can solve a complex problem with a complex solution. What's rare — and what we build — is a simple solution to a hard problem.
+                    Anyone can solve a complex problem with a complex solution. The rare and harder thing, and what we build, is a simple solution to a hard problem.
                 </blockquote>
             </div>
         </div>

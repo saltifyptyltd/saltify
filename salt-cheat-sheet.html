@@ -69,42 +69,6 @@
             opacity: 0.9;
         }
 
-        /* Pro tips */
-        .pro-tips {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 1rem;
-            margin-top: 1.5rem;
-        }
-        .pro-tip {
-            padding: 1.125rem 1.25rem;
-            background: var(--color-bg-card);
-            border: 1px solid var(--color-border);
-            border-left: 3px solid var(--color-accent);
-            border-radius: 8px;
-        }
-        .pro-tip-label {
-            font-size: 0.7rem;
-            font-weight: 700;
-            letter-spacing: 0.12em;
-            color: var(--color-accent);
-            text-transform: uppercase;
-            margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.4rem;
-        }
-        .pro-tip p {
-            font-size: 0.875rem;
-            color: var(--color-text-muted);
-            line-height: 1.55;
-            margin: 0;
-        }
-
-        @media (max-width: 768px) {
-            .pro-tips { grid-template-columns: 1fr; }
-        }
-
         /* Credit footer */
         .source-credit {
             text-align: center;
@@ -168,7 +132,7 @@
             <p class="crumb">Learn Salt</p>
             <h1>Salt Cheat Sheet.</h1>
             <p class="lead">Every Salt command worth knowing, organized by category. The 60-ish you'll actually run.</p>
-            <p class="bookmark-hint"><i class="fas fa-bookmark"></i> <strong>Cmd+D / Ctrl+D this page.</strong> You'll be back.</p>
+            <p class="bookmark-hint"><i class="fas fa-bookmark"></i> <strong>Cmd+D / Ctrl+D this page.</strong> Bookmark it now, save the search later.</p>
             <p class="doc-version"><strong>v1.0</strong> · Updated 2026-05-09</p>
         </div>
     </section>
@@ -183,7 +147,7 @@
                     <pre><code>salt '*' test.ping
 salt '*' test.version
 salt --versions-report</code></pre>
-                    <p>The "is anyone home?" set. First thing you run, every session.</p>
+                    <p>Run these first, every session. They tell you which minions are responding.</p>
                 </article>
 
                 <article class="cmd-card hover-card fade-in">
@@ -192,7 +156,7 @@ salt --versions-report</code></pre>
 salt-key -A              <span class="code-comment"># accept all pending</span>
 salt-key -a my-minion    <span class="code-comment"># accept just one</span>
 salt-key -d old-minion   <span class="code-comment"># delete</span></code></pre>
-                    <p>Key lifecycle, no drama.</p>
+                    <p>Key lifecycle. Accept, list, delete.</p>
                 </article>
 
                 <article class="cmd-card hover-card fade-in">
@@ -202,7 +166,7 @@ salt 'web*' …                    <span class="code-comment"># glob</span>
 salt -G 'os:Windows' …           <span class="code-comment"># grain</span>
 salt -L 'web1,web2' …            <span class="code-comment"># list</span>
 salt -C 'web* and G@env:prod' …  <span class="code-comment"># compound</span></code></pre>
-                    <p>Five ways to pick a target. Compound (<code>-C</code>) is overkill until it isn't.</p>
+                    <p>Five ways to pick a target. Reach for compound (<code>-C</code>) when glob plus grain isn't enough.</p>
                 </article>
 
                 <article class="cmd-card hover-card fade-in">
@@ -210,7 +174,7 @@ salt -C 'web* and G@env:prod' …  <span class="code-comment"># compound</span><
                     <pre><code>salt '*' cmd.run 'uptime'
 salt 'web*' cmd.run 'systemctl status nginx'
 salt '*' test.version --async</code></pre>
-                    <p>Fleet-wide shell. Use sparingly — states are better.</p>
+                    <p>Fleet-wide shell. Useful for ad-hoc checks; prefer states for anything you'll run twice.</p>
                 </article>
 
                 <article class="cmd-card hover-card fade-in">
@@ -239,7 +203,7 @@ salt '*' pkg.upgrade
 salt '*' pkg.list_upgrades
 salt '*' pkg.remove nginx
 salt '*' pkg.purge nginx           <span class="code-comment"># pkg + config</span></code></pre>
-                    <p>Same command on RHEL, Debian, Windows. Cross-OS magic.</p>
+                    <p>Same command on RHEL, Debian, and Windows. The pkg module dispatches to the right backend.</p>
                 </article>
 
                 <article class="cmd-card hover-card fade-in">
@@ -249,7 +213,7 @@ salt '*' service.start nginx
 salt '*' service.restart nginx
 salt '*' service.stop nginx
 salt '*' service.available nginx</code></pre>
-                    <p><code>systemctl</code>, but for the whole fleet.</p>
+                    <p>Fleet-wide service control.</p>
                 </article>
 
                 <article class="cmd-card hover-card fade-in">
@@ -259,7 +223,7 @@ salt '*' network.connect google.com port=53
 salt '*' network.dig saltify.work
 salt '*' network.default_route
 salt '*' network.interface eth0</code></pre>
-                    <p>Quick fleet-wide network sanity. Saved me hours when DNS was lying.</p>
+                    <p>Quick fleet-wide network sanity. Useful when a host says it can reach a service but the app says it can't.</p>
                 </article>
 
                 <article class="cmd-card hover-card fade-in">
@@ -268,7 +232,7 @@ salt '*' network.interface eth0</code></pre>
 salt-run jobs.list_jobs              <span class="code-comment"># history</span>
 salt-run jobs.lookup_jid 20260101...
 salt 'minion' saltutil.kill_job &lt;jid&gt;</code></pre>
-                    <p>Async ran sideways? Find it. Kill it.</p>
+                    <p>If an async job hangs, list it with <code>jobs.active</code>, look up its return with <code>lookup_jid</code>, and kill it with <code>saltutil.kill_job</code>.</p>
                 </article>
 
                 <article class="cmd-card hover-card fade-in">
@@ -278,7 +242,7 @@ salt-minion -l debug
 salt-run state.event pretty=True     <span class="code-comment"># tail event bus</span>
 salt '*' saltutil.clear_cache
 salt '*' saltutil.sync_all           <span class="code-comment"># nuclear</span></code></pre>
-                    <p>When stuff is weird. <code>state.event pretty=True</code> on the master is the first window you open.</p>
+                    <p>When something's misbehaving, tail <code>state.event pretty=True</code> on the master first; it's the bus everything writes to.</p>
                 </article>
 
                 <article class="cmd-card hover-card fade-in">
@@ -288,7 +252,7 @@ salt '*' sys.doc pkg                 <span class="code-comment"># one module</sp
 salt '*' sys.list_modules
 salt '*' sys.list_functions
 salt-call sys.list_state_modules</code></pre>
-                    <p>Built-in docs. Lazier than Googling.</p>
+                    <p>Built-in docs. Faster than a tab switch.</p>
                 </article>
 
                 <article class="cmd-card hover-card fade-in">
@@ -296,7 +260,7 @@ salt-call sys.list_state_modules</code></pre>
                     <pre><code>salt '*' status.uptime
 salt '*' system.reboot               <span class="code-comment"># the big red button</span>
 salt 'web*' system.shutdown 5</code></pre>
-                    <p>Reboot the fleet. Test on one box first. Always.</p>
+                    <p>Reboot the fleet. Test on one box first.</p>
                 </article>
 
                 <article class="cmd-card hover-card fade-in">
@@ -323,42 +287,9 @@ salt '*' http.query http://example.com/ \
                     <pre><code>salt-call --local state.apply test=True
 salt-call --local grains.items
 salt-call --local pkg.install nginx</code></pre>
-                    <p>Run from the minion alone, no master. Master's down? You're not stuck.</p>
+                    <p>Run from the minion without contacting the master. Useful when the master is down. State files must already be on the minion (typically <code>/srv/salt</code>).</p>
                 </article>
 
-            </div>
-        </div>
-    </section>
-
-    <!-- Pro tips -->
-    <section class="cheat-section section-alt" style="padding: 60px 0;">
-        <div class="container">
-            <header class="section-header">
-                <h2>Pro tips</h2>
-                <p>The non-obvious stuff that saves hours.</p>
-            </header>
-
-            <div class="pro-tips">
-                <div class="pro-tip">
-                    <p class="pro-tip-label"><i class="fas fa-lightbulb"></i> Tip 01</p>
-                    <p><code>test.ping</code> returns nothing? Check <code>salt-key -L</code> first. New minion = unaccepted key = silent treatment. Salt won't yell at you.</p>
-                </div>
-                <div class="pro-tip">
-                    <p class="pro-tip-label"><i class="fas fa-lightbulb"></i> Tip 02</p>
-                    <p>Always run states with <code>test=True</code> in prod. Salt prints what it <em>would</em> change. Catch typos before they hit your fleet.</p>
-                </div>
-                <div class="pro-tip">
-                    <p class="pro-tip-label"><i class="fas fa-lightbulb"></i> Tip 03</p>
-                    <p>Edit pillar, run <code>salt '*' saltutil.refresh_pillar</code>. Without it, minions cache the old data and you'll wonder why your change didn't land.</p>
-                </div>
-                <div class="pro-tip">
-                    <p class="pro-tip-label"><i class="fas fa-lightbulb"></i> Tip 04</p>
-                    <p>Forget a module's options? <code>salt '*' sys.doc &lt;module&gt;</code> dumps every function and arg. Faster than Googling, no tab switch.</p>
-                </div>
-                <div class="pro-tip">
-                    <p class="pro-tip-label"><i class="fas fa-lightbulb"></i> Tip 05</p>
-                    <p>Two terminals open: one running your command, the other tailing <code>salt-run state.event pretty=True</code>. You see what Salt is actually doing in real time.</p>
-                </div>
             </div>
         </div>
     </section>
@@ -372,12 +303,12 @@ salt-call --local pkg.install nginx</code></pre>
             </header>
 
             <ul class="links-row">
+                <li><a href="getting-started.html">Getting Started</a></li>
+                <li><a href="install-guide.html">Install Guide</a></li>
                 <li><a href="https://saltproject.io/" target="_blank" rel="noopener">Salt Project ↗</a></li>
                 <li><a href="https://docs.saltproject.io/" target="_blank" rel="noopener">Official docs ↗</a></li>
                 <li><a href="https://docs.saltproject.io/en/3007/ref/states/all/index.html" target="_blank" rel="noopener">Every state module ↗</a></li>
                 <li><a href="https://github.com/saltstack/salt" target="_blank" rel="noopener">Salt on GitHub ↗</a></li>
-                <li><a href="install-guide.html">Install Guide</a></li>
-                <li><a href="getting-started.html">Getting Started</a></li>
             </ul>
 
             <p class="source-credit">Inspired by <a href="https://github.com/eon01/SaltStackCheatSheet" target="_blank" rel="noopener">eon01's SaltStack Cheat Sheet</a>, with our additions and field notes.</p>

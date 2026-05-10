@@ -214,7 +214,7 @@
         <div class="container">
             <p class="crumb">SALT 501 · Advanced · AI Tooling</p>
             <h1>The AI toolchain. Installed, signed in, working.</h1>
-            <p class="lead">Six tools, one editor. Pick the ones you want, skip the ones you don't. <strong>Install commands lifted from the official docs and cited inline</strong> — so you can verify everything yourself.</p>
+            <p class="lead">Six tools, one editor. Pick what you want. Install commands are lifted verbatim from the official docs and linked, so you can check anything that looks off.</p>
             <p class="doc-version"><strong>v1.0</strong> · 2026-05-09 · Sources cited per section</p>
 
             <div class="tldr">
@@ -236,8 +236,8 @@
         <div class="container">
             <p class="section-tag"><span class="level">Why</span>The toolchain, end-to-end</p>
             <h2>How we work with AI at Saltify.</h2>
-            <p class="section-intro">Writing Salt with AI in 2026 isn't one tool — it's a small toolchain. VSCode is the editor. The SaltStack extension makes YAML+Jinja readable. Copilot Chat handles the in-line "complete this loop" requests. Claude in Chrome reads docs and tickets while you code. Claude Code does the heavy lifting — refactoring across files, running tests, opening pull requests. <strong>You don't need all six. Pick what fits your workflow.</strong></p>
-            <p class="section-intro">Each section below quotes the install command verbatim from the official source and cites it. If a step changes upstream, you'll catch it by clicking through.</p>
+            <p class="section-intro">Writing Salt with AI in 2026 usually means a few tools, not one. VSCode is the editor. The SaltStack extension makes YAML+Jinja readable. Copilot Chat handles in-line completions. Claude in Chrome reads docs and tickets in the browser. Claude Code does cross-file refactors, runs tests, and opens PRs. Most teams only use three or four of these.</p>
+            <p class="section-intro">Each section quotes the install command from the official source and links it. If upstream changes, the link will tell you.</p>
 
             <div class="callout callout-tip">
                 <i class="fas fa-circle-info" aria-hidden="true"></i>
@@ -263,7 +263,7 @@
                 <p class="source-cite">Source: <a href="https://code.visualstudio.com/docs/setup/windows" target="_blank" rel="noopener">code.visualstudio.com/docs/setup/windows</a></p>
 
                 <h3>Download</h3>
-                <p>Two installers. The <strong>User Setup</strong> doesn't need admin rights and updates cleanly in the background — that's the one you want unless your IT department says otherwise.</p>
+                <p>Two installers. The <strong>User Setup</strong> doesn't need admin rights and updates in the background. Use it unless IT requires the System installer.</p>
                 <pre><code><span class="code-comment"># User Setup (recommended)</span>
 https://go.microsoft.com/fwlink/?LinkID=534107
 
@@ -390,7 +390,7 @@ EOF</code></pre>
         <div class="container">
             <p class="section-tag"><span class="level">03 · AI assist</span>~5 min</p>
             <h2>GitHub Copilot Chat — inline + chat panel.</h2>
-            <p class="section-intro">The other industry default. Inline completions, chat panel for "explain this", agent mode for multi-file work. Works on Salt YAML+Jinja the same way it works on anything else — language-model-shaped, not Salt-aware specifically.</p>
+            <p class="section-intro">The other industry default. Inline completions, chat panel for "explain this", agent mode for multi-file work. Works on Salt YAML+Jinja the same way it works on anything else. It's general-purpose, not Salt-aware.</p>
 
             <div class="ext-stats">
                 <span class="ext-stat"><strong>73M+</strong> installs</span>
@@ -458,7 +458,7 @@ EOF</code></pre>
         <div class="container">
             <p class="section-tag"><span class="level">04 · AI assist</span>~3 min</p>
             <h2>Claude in Chrome — the gentlest AI on-ramp.</h2>
-            <p class="section-intro">Side-panel Claude that lives in your browser. Reads the page you're on, answers questions about it, can click and navigate when you ask. Not a coding tool per se — but invaluable for triaging Jira tickets, reading SaltStack release notes, summarising long Slack threads while you work.</p>
+            <p class="section-intro">Side-panel Claude that lives in your browser. Reads the page you're on, answers questions about it, can click and navigate when you ask. Not really a coding tool. In practice we use it for triaging Jira tickets, reading SaltStack release notes, and digesting long Slack threads alongside the editor.</p>
 
             <div class="ext-stats">
                 <span class="ext-stat">Beta</span>
@@ -588,7 +588,7 @@ EOF</code></pre>
         <div class="container">
             <p class="section-tag"><span class="level">06 · Advanced</span>~10 min</p>
             <h2>Claude Code — in the terminal.</h2>
-            <p class="section-intro">The CLI is what powers everything. The VS Code extension wraps it; this section installs it standalone — or alongside the extension if you already did section 5. Use the CLI when you want speed, scripting, agent mode without a UI, or to run Claude Code in CI.</p>
+            <p class="section-intro">The CLI is what powers everything; the VS Code extension wraps it. This section installs it standalone, or alongside the extension. The CLI is what you want for scripting, agent mode without a UI, or running Claude Code in CI.</p>
 
             <p class="source-cite">Source: <a href="https://code.claude.com/docs/en/setup" target="_blank" rel="noopener">code.claude.com/docs/en/setup</a> — Advanced setup</p>
 
@@ -614,7 +614,7 @@ EOF</code></pre>
             <p><strong>Windows CMD:</strong></p>
             <pre><code>curl -fsSL https://claude.ai/install.cmd -o install.cmd &amp;&amp; install.cmd &amp;&amp; del install.cmd</code></pre>
 
-            <p style="font-size: 0.875rem; color: var(--color-text-muted);">If <code>'irm' is not recognized</code>, you're in CMD not PowerShell. If <code>The token '&amp;&amp;' is not a valid statement separator</code>, you're in PowerShell not CMD. Your prompt shows <code>PS C:\</code> for PowerShell.</p>
+            <p style="font-size: 0.875rem; color: var(--color-text-muted);">If <code>'irm' is not recognized</code>, you're in CMD. If <code>The token '&amp;&amp;'</code> errors, you're in PowerShell. PowerShell prompts start with <code>PS C:\</code>.</p>
 
             <h4 style="margin-top: 1.5rem; font-size: 1rem; color: var(--color-text);">Homebrew (macOS / Linux)</h4>
             <pre><code><span class="code-comment"># stable channel</span>
@@ -637,7 +637,7 @@ brew install --cask claude-code@latest</code></pre>
             <h3>Verify the install</h3>
             <pre><code>claude --version
 claude doctor</code></pre>
-            <p><code>claude doctor</code> walks the install and reports any issues — missing ripgrep, PATH problems, login state.</p>
+            <p><code>claude doctor</code> checks the install for missing ripgrep, PATH issues, and login state.</p>
 
             <h3>Sign in</h3>
             <pre><code>claude</code></pre>
@@ -678,7 +678,7 @@ claude doctor</code></pre>
     <!-- Outro -->
     <section class="outro">
         <div class="container">
-            <h2>Toolchain installed. Now what?</h2>
+            <h2>Toolchain installed.</h2>
             <p>The next article in this series will cover Saltify's actual practices — custom Copilot instructions for Salt repos, MCP servers we use day-to-day, prompts that work, the <code>CLAUDE.md</code> template we drop into client projects. Coming soon.</p>
             <div class="outro-actions">
                 <a href="salt-academy.html" class="btn-primary">Back to the Academy →</a>

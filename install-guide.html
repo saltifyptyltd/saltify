@@ -157,32 +157,6 @@
             line-height: 1.6;
         }
 
-        /* Gotchas list */
-        .gotchas {
-            display: grid;
-            gap: 0.875rem;
-            margin-top: 1.5rem;
-        }
-        .gotcha {
-            padding: 1.125rem 1.25rem;
-            background: var(--color-bg-card);
-            border: 1px solid var(--color-border);
-            border-left: 3px solid var(--color-accent);
-            border-radius: 8px;
-        }
-        .gotcha h4 {
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--color-text);
-            margin-bottom: 0.35rem;
-        }
-        .gotcha p {
-            font-size: 0.875rem;
-            color: var(--color-text-muted);
-            line-height: 1.55;
-            margin: 0;
-        }
-
         /* Mobile */
         @media (max-width: 768px) {
             .install-steps { grid-template-columns: 1fr; }
@@ -340,7 +314,7 @@
 
             <div class="callout callout-tip">
                 <i class="fas fa-lightbulb"></i>
-                <p><strong>Why three, not two or four?</strong> Two servers (the official Basic Enterprise model) means one master — fragile. Four servers (Distributed Enterprise) is overkill below ~10,000 minions. Three is the sweet spot: HA where you need it, simple where you don't.</p>
+                <p><strong>Why three, not two or four?</strong> Two servers (the official Basic Enterprise model) means one master, which is fragile. Four servers (Distributed Enterprise) is more than you need below about 10,000 minions. Three is what we land on for most clients.</p>
             </div>
         </div>
     </section>
@@ -545,7 +519,7 @@ VMware_Salt_Raas-&lt;ver&gt;-&lt;build&gt;.el9_Installer.tar.gz</code></pre>
     <section class="guide-section section-alt">
         <div class="container">
             <h2>5. The install — eleven steps</h2>
-            <p class="section-intro">Run on the boxes from section 3. The first 3 steps are on every server. After that, each step says where to run. <strong>Steps 1–7 install Salt by hand. Step 8 is the pivot — from there, Salt configures itself.</strong></p>
+            <p class="section-intro">Run on the boxes from section 3. The first 3 steps are on every server; after that each step says where to run. <strong>Steps 1–7 install Salt by hand. From step 8, Salt configures itself.</strong></p>
 
             <div class="quickstart-grid divider-grid install-steps">
                 <article class="quickstart-step fade-in">
@@ -849,7 +823,7 @@ sudo salt '*' test.ping</code></pre>
     <section class="guide-section">
         <div class="container">
             <h2>6. After install — make it production</h2>
-            <p class="section-intro">A working stack isn't a production stack. Six things to do before you point real fleet at it.</p>
+            <p class="section-intro">Six things to handle before you put a fresh stack into production. None are blockers; skipping them just costs time later.</p>
 
             <!-- License + SSL -->
             <div class="quickstart-grid divider-grid" style="grid-template-columns: repeat(2, 1fr);">
@@ -1131,80 +1105,24 @@ sudo systemctl restart salt-master</code></pre>
                 </article>
                 <article class="quickstart-step fade-in">
                     <span class="step-number">02</span>
-                    <h4>Seed the keys</h4>
-                    <p>Copy <code>master.pem</code>, <code>master.pub</code>, and <code>/etc/salt/gpgkeys/</code> from blue to both green masters. Confirm <code>auto_accept: True</code>.</p>
+                    <h4>Test green</h4>
+                    <p>Use a canary minion (hostfile override) to point at green. Run <code>test.ping</code>, a highstate, pillar decrypt. Everything must pass. (Master keys, GPG keys, and <code>auto_accept</code> were mirrored as part of the green build in section 5; no extra step needed here.)</p>
                 </article>
                 <article class="quickstart-step fade-in">
                     <span class="step-number">03</span>
-                    <h4>Test green</h4>
-                    <p>Use a canary minion (hostfile override) to point at green. Run <code>test.ping</code>, a highstate, pillar decrypt. Everything must pass.</p>
-                </article>
-                <article class="quickstart-step fade-in">
-                    <span class="step-number">04</span>
                     <h4>Lower the TTL</h4>
                     <p>Day before cutover: drop the CNAME's TTL to 60s. Lets the swap propagate fast.</p>
                 </article>
                 <article class="quickstart-step fade-in">
-                    <span class="step-number">05</span>
+                    <span class="step-number">04</span>
                     <h4>Flip the CNAME</h4>
                     <p>Repoint <code>salt-master.example.com</code> at green's masters. Same for <code>raas.example.com</code>. Or swap the LB pool if you have one.</p>
                 </article>
                 <article class="quickstart-step fade-in">
-                    <span class="step-number">06</span>
+                    <span class="step-number">05</span>
                     <h4>Soak, then retire blue</h4>
                     <p>Watch the RaaS UI. Minion connect rates, job success rates. Hold blue for 24–72 hours in case of rollback. Then decommission.</p>
                 </article>
-            </div>
-        </div>
-    </section>
-
-    <!-- 8. Common gotchas -->
-    <section class="guide-section">
-        <div class="container">
-            <h2>8. Common gotchas</h2>
-            <p class="section-intro">Things we've hit. Saves you a few late nights.</p>
-
-            <div class="gotchas">
-                <div class="gotcha">
-                    <h4>Forgetting to remove <code>master_autoaccept: true</code></h4>
-                    <p>It's required during install. It's a security hole afterwards. Always remove and restart RaaS once both masters are registered.</p>
-                </div>
-                <div class="gotcha">
-                    <h4><code>master.pem</code> is read-only by default</h4>
-                    <p>Mode 0400. Run <code>chmod 600</code> to edit, then <code>chmod 400</code> back. The file doesn't exist on a brand-new master until you start the service once.</p>
-                </div>
-                <div class="gotcha">
-                    <h4>The variable is named <code>redis_*</code> but the database is Valkey</h4>
-                    <p>Broadcom replaced Redis with Valkey but kept the old variable names for backward compat. Don't rename them. The installer will break.</p>
-                </div>
-                <div class="gotcha">
-                    <h4>Highstate hangs on first boot</h4>
-                    <p>If it sits for more than 30 minutes on the RaaS node, reboot the node and try again. Common when kernel/security baselines are still settling.</p>
-                </div>
-                <div class="gotcha">
-                    <h4>Master 2 fails the highstate</h4>
-                    <p>Bounce <code>salt-minion</code> on master 2, then re-run the highstate from master 1. Sometimes needs two passes.</p>
-                </div>
-                <div class="gotcha">
-                    <h4>Blue/green cutover stalls</h4>
-                    <p>Means at least one of: master keys drifted between stacks, GPG keys drifted, or auto-accept is off somewhere. All three must be in lockstep.</p>
-                </div>
-                <div class="gotcha">
-                    <h4>Windows minions take longer to deploy</h4>
-                    <p>Set <code>sseapi_windows_minion_deploy_delay: 3600</code> in the master config. Default is too short for Windows 2022.</p>
-                </div>
-                <div class="gotcha">
-                    <h4>Reusing VM names or IPs?</h4>
-                    <p>Clear the old SSH host fingerprint first: <code>ssh-keygen -R &lt;old-fqdn-or-ip&gt;</code>. Otherwise SCP and Ansible-style tooling will fail with host-key warnings.</p>
-                </div>
-                <div class="gotcha">
-                    <h4>Disable <code>cloud-init</code> on long-lived servers</h4>
-                    <p>If your RHEL template runs cloud-init, it can rewrite networking on reboot. <code>sudo touch /etc/cloud/cloud-init.disabled</code> on every Salt node.</p>
-                </div>
-                <div class="gotcha">
-                    <h4><code>pinentry</code> not installed → GPG key generation hangs</h4>
-                    <p><code>sudo yum install -y pinentry</code> first. The interactive prompt for the passphrase needs it.</p>
-                </div>
             </div>
         </div>
     </section>
@@ -1214,7 +1132,7 @@ sudo systemctl restart salt-master</code></pre>
         <div class="container">
             <div class="contact-content fade-in">
                 <h2>Want this done by people who've done it before?</h2>
-                <p class="contact-sub">We build it, hand it back, and turn your team into the experts on the way out.</p>
+                <p class="contact-sub">We build it, hand it over, and bring your team up to speed while we're at it.</p>
                 <a href="mailto:sales@saltify.work" class="contact-email">sales@saltify.work</a>
             </div>
         </div>
