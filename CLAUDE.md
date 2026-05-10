@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-Marketing site for **Saltify Pty Ltd**, a Canberra-based SaltStack / VMware Aria Automation Config consultancy. Single-page static site, no build step, deployed via **GitHub Pages** (Jekyll `minimal` theme per `_config.yml`) on the custom domain `saltify.work` (see `CNAME`).
+Marketing site for **Saltify Pty Ltd**, a Canberra-based SaltStack / VCF Salt consultancy. Single-page static site, no build step, deployed via **GitHub Pages** (Jekyll `minimal` theme per `_config.yml`) on the custom domain `saltify.work` (see `CNAME`).
 
 The positioning of the copy is load-bearing — it's not boilerplate. The site sells a specific architectural pattern (blue/green Salt masters, git-as-source-of-truth, "rebuild, don't restore"). Edits to copy should preserve that thesis; don't soften it into generic consultancy language.
 
