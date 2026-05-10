@@ -163,10 +163,14 @@ salt-key -d old-minion   <span class="code-comment"># delete</span></code></pre>
                     <div class="cmd-label"><i class="fas fa-crosshairs"></i> Targeting</div>
                     <pre><code>salt 'web1' …                    <span class="code-comment"># exact</span>
 salt 'web*' …                    <span class="code-comment"># glob</span>
+salt -E 'web\d+' …               <span class="code-comment"># regex on minion ID</span>
 salt -G 'os:Windows' …           <span class="code-comment"># grain</span>
+salt -P 'os:RedHat|CentOS' …     <span class="code-comment"># PCRE on grain</span>
 salt -L 'web1,web2' …            <span class="code-comment"># list</span>
+salt -I 'role:webserver' …       <span class="code-comment"># pillar</span>
+salt -S '10.0.0.0/24' …          <span class="code-comment"># subnet</span>
 salt -C 'web* and G@env:prod' …  <span class="code-comment"># compound</span></code></pre>
-                    <p>Five ways to pick a target. Reach for compound (<code>-C</code>) when glob plus grain isn't enough.</p>
+                    <p>Nine ways to pick a target. Reach for compound (<code>-C</code>) when you need to combine flavors.</p>
                 </article>
 
                 <article class="cmd-card hover-card fade-in">
