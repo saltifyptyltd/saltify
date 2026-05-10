@@ -691,6 +691,36 @@ p code, li code, h4 code {
     padding: 100px 0;
 }
 
+.salt-wild-subhead {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-accent);
+    margin: 0 0 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+.salt-wild-subhead i {
+    font-size: 0.85rem;
+    opacity: 0.9;
+}
+.salt-wild-subhead span {
+    color: var(--color-text-muted);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: none;
+}
+.salt-wild-subhead span code {
+    font-family: var(--font-mono);
+    color: var(--color-text);
+}
+.salt-wild .release-grid + .salt-wild-subhead {
+    margin-top: 2.75rem;
+}
+
 .release-grid {
     grid-template-columns: repeat(3, 1fr);
     min-height: 220px;
@@ -1642,6 +1672,11 @@ pre code {
     margin: 0 auto;
 }
 
+.install-promo-grid--solo {
+    grid-template-columns: 1fr;
+    max-width: 480px;
+}
+
 /* Cards are ~30% smaller than the previous 2-column promo so the grid fits
    nine articles as 3 rows of 3. Padding, type sizes, and stat-row spacing
    all scale together. */
@@ -1769,517 +1804,8 @@ pre code {
 }
 
 /* ================================
-   Saltify Academy
-   Top-of-page hook before "What is Salt?". Branded "course" feel —
-   subtle radial glow, mono-font stats with count-up, 5-step learning
-   path with a draw-on-scroll connector, two reference cards below.
-   ================================ */
-.academy {
-    position: relative;
-    padding: 90px 0 100px;
-    background: var(--color-bg);
-    overflow: hidden;
-}
-.academy-glow {
-    position: absolute;
-    top: -200px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 1200px;
-    height: 600px;
-    pointer-events: none;
-    background: radial-gradient(ellipse at center, var(--color-accent-softer) 0%, transparent 60%);
-    opacity: 0.6;
-    animation: academy-glow-pulse 9s ease-in-out infinite;
-}
-@keyframes academy-glow-pulse {
-    0%, 100% { opacity: 0.45; transform: translateX(-50%) scale(1); }
-    50%      { opacity: 0.75; transform: translateX(-50%) scale(1.06); }
-}
-
-.academy .container { position: relative; z-index: 1; }
-
-/* ── Diploma frame: wraps the whole Academy section ──────────────── */
-.academy-diploma-frame {
-    position: relative;
-    /* Capped width gives the diploma the contained, certificate-shape feel —
-       no longer stretching to full container width on wide screens. */
-    max-width: 920px;
-    margin: 0 auto;
-    padding: 2.5rem 2.25rem;
-    background:
-        linear-gradient(180deg, var(--color-bg-featured) 0%, var(--color-bg-card) 100%);
-    border: 1px solid var(--color-accent-mid);
-    border-radius: var(--radius);
-    /* Faux double-border via box-shadow inset */
-    box-shadow:
-        inset 0 0 0 1px var(--color-bg),
-        inset 0 0 0 2px var(--color-accent-mid),
-        0 30px 60px -30px rgba(6, 182, 212, 0.18);
-}
-.diploma-corner {
-    position: absolute;
-    width: 22px;
-    height: 22px;
-    border: 0 solid var(--color-accent);
-    opacity: 0.7;
-    pointer-events: none;
-}
-.diploma-corner-tl { top: 12px; left: 12px;  border-top-width: 2px; border-left-width: 2px; }
-.diploma-corner-tr { top: 12px; right: 12px; border-top-width: 2px; border-right-width: 2px; }
-.diploma-corner-bl { bottom: 12px; left: 12px; border-bottom-width: 2px; border-left-width: 2px; }
-.diploma-corner-br { bottom: 12px; right: 12px; border-bottom-width: 2px; border-right-width: 2px; }
-
-.academy-intro {
-    text-align: center;
-    max-width: 620px;
-    margin: 0 auto 2.5rem;
-}
-.diploma-overline {
-    font-family: var(--font-mono);
-    font-size: 0.65rem;
-    font-weight: 700;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--color-text-muted);
-    margin-bottom: 0.875rem;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.45rem;
-}
-.diploma-overline .academy-mark {
-    color: var(--color-accent);
-    font-size: 0.85rem;
-    line-height: 1;
-}
-.academy-mark {
-    font-size: 0.85rem;
-    line-height: 1;
-}
-/* Big serif title — the "diploma name" */
-.diploma-name {
-    font-family: 'Playfair Display', 'Times New Roman', serif;
-    font-weight: 700;
-    font-size: clamp(1.95rem, 4.5vw, 3.15rem);
-    letter-spacing: -0.005em;
-    color: var(--color-text);
-    margin: 0 0 0.7rem;
-    line-height: 1.05;
-}
-.diploma-name-script {
-    font-style: italic;
-    font-weight: 600;
-    color: var(--color-accent);
-}
-/* Decorative rule under the institution name */
-.diploma-rule {
-    width: 70px;
-    height: 1px;
-    margin: 0 auto 0.875rem;
-    background: var(--color-accent-mid);
-    position: relative;
-}
-.diploma-rule::before,
-.diploma-rule::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    width: 5px;
-    height: 5px;
-    background: var(--color-accent);
-    border-radius: 50%;
-    transform: translateY(-50%);
-}
-.diploma-rule::before { left: -10px; }
-.diploma-rule::after  { right: -10px; }
-.diploma-tagline {
-    font-size: clamp(0.95rem, 1.6vw, 1.15rem);
-    font-weight: 500;
-    letter-spacing: -0.005em;
-    color: var(--color-text);
-    margin: 0 0 0.7rem;
-}
-.academy-sub {
-    font-size: 0.9rem;
-    color: var(--color-text-muted);
-    line-height: 1.6;
-    max-width: 540px;
-    margin: 0 auto;
-}
-.academy-sub code {
-    font-family: var(--font-mono);
-    font-size: 0.95em;
-    background: var(--color-bg-card);
-    color: var(--color-accent);
-    padding: 0.1em 0.4em;
-    border-radius: 4px;
-}
-
-.academy-stats {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 0.75rem;
-    margin-top: 1.75rem;
-    padding: 1.25rem 1.25rem;
-    background: linear-gradient(180deg, var(--color-bg-featured) 0%, var(--color-bg-card) 100%);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius);
-}
-.academy-stat {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 0.35rem;
-}
-.academy-stat + .academy-stat {
-    border-left: 1px solid var(--color-border);
-}
-.academy-stat-num {
-    font-family: var(--font-mono);
-    font-size: clamp(1.4rem, 2.5vw, 1.85rem);
-    font-weight: 600;
-    color: var(--color-accent);
-    line-height: 1;
-    letter-spacing: -0.01em;
-}
-.academy-stat-unit {
-    font-size: 0.55em;
-    font-weight: 500;
-    margin-left: 0.1em;
-    opacity: 0.85;
-}
-.academy-stat-label {
-    font-size: 0.65rem;
-    color: var(--color-text-muted);
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    line-height: 1.4;
-}
-
-/* ── Track headings ──────────────────────────────────────────────── */
-.academy-track-head {
-    display: flex;
-    align-items: baseline;
-    gap: 0.75rem;
-    flex-wrap: wrap;
-    margin-bottom: 1.25rem;
-}
-.academy-track-head-second { margin-top: 2.5rem; }
-.academy-track-tag {
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--color-accent);
-    background: var(--color-accent-softer);
-    border: 1px solid var(--color-accent-mid);
-    padding: 0.35rem 0.7rem;
-    border-radius: 4px;
-}
-.academy-track-tag-ref {
-    color: var(--color-text-muted);
-    background: var(--color-bg-card);
-    border-color: var(--color-border);
-}
-/* Anchor variant: when the tag is a link, add hover affordance.
-   The span variant inherits no hover/cursor — clean separation by element. */
-a.academy-track-tag {
-    text-decoration: none;
-    cursor: pointer;
-    transition: background 140ms, color 140ms, border-color 140ms, transform 140ms;
-}
-a.academy-track-tag:hover {
-    background: var(--color-accent);
-    color: var(--color-bg);
-    border-color: var(--color-accent);
-    transform: translateY(-1px);
-}
-.academy-track-head h3 {
-    font-size: 1.05rem;
-    font-weight: 600;
-    letter-spacing: -0.01em;
-    color: var(--color-text);
-    margin: 0;
-}
-
-/* ── Five-course path ────────────────────────────────────────────── */
-.academy-path {
-    position: relative;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 1rem;
-    list-style: none;
-    padding: 1.25rem 0 0;
-    margin: 0;
-}
-/* Connector line removed — multi-row wrap meant the line couldn't run cleanly
-   across rows, and the cards stand on their own with the SALT-code pills. */
-.academy-path::before { content: none; }
-.academy-path.drawn::before { content: none; }
-
-.academy-step {
-    position: relative;
-    z-index: 1;
-    /* Hard 3-per-row max — flex-shrink: 0 prevents 4+ cards squeezing into a
-       row on wide screens. flex-basis is one third of the row minus its share
-       of the two gaps. flex-grow: 0 stops a single trailing card from
-       stretching to full width. */
-    flex: 0 0 calc(33.333% - 0.667rem);
-}
-.academy-step a {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 0.5rem;
-    padding: 0.8rem 0.85rem 1rem;
-    background: var(--color-bg-card);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius);
-    color: var(--color-text);
-    height: 100%;
-    transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1),
-                border-color 160ms,
-                box-shadow 160ms;
-    text-decoration: none;
-}
-.academy-step a:hover {
-    transform: translateY(-3px);
-    border-color: var(--color-accent-mid);
-    box-shadow: 0 12px 28px -16px rgba(6, 182, 212, 0.35);
-}
-.step-num {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.3rem 0.7rem;
-    border-radius: 999px;
-    background: var(--color-bg);
-    border: 1.5px solid var(--color-accent);
-    font-family: var(--font-mono);
-    font-size: 0.65rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    color: var(--color-accent);
-    box-shadow: 0 0 0 4px var(--color-bg-card);
-    white-space: nowrap;
-}
-.academy-step a:hover .step-num {
-    background: var(--color-accent);
-    color: var(--color-bg);
-}
-.step-title {
-    font-size: 0.925rem;
-    font-weight: 600;
-    color: var(--color-text);
-    letter-spacing: -0.005em;
-}
-.step-blurb {
-    font-size: 0.78rem;
-    color: var(--color-text-muted);
-    line-height: 1.45;
-    flex: 1;
-}
-.step-meta {
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    color: var(--color-text-dim);
-    letter-spacing: 0.04em;
-    margin-top: auto;
-    padding-top: 0.4rem;
-    border-top: 1px dashed var(--color-border);
-    width: 100%;
-}
-.step-meta i { margin-right: 0.3em; opacity: 0.7; }
-
-/* Stagger fade-up entry on path nodes */
-.academy-path .academy-step.fade-in { transition-delay: 0ms; }
-.academy-path .academy-step:nth-child(2).fade-in { transition-delay: 80ms; }
-.academy-path .academy-step:nth-child(3).fade-in { transition-delay: 160ms; }
-.academy-path .academy-step:nth-child(4).fade-in { transition-delay: 240ms; }
-.academy-path .academy-step:nth-child(5).fade-in { transition-delay: 320ms; }
-
-/* ── Reference cards ─────────────────────────────────────────────── */
-.academy-reference {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-}
-.academy-ref-card {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-    padding: 1.05rem 1.15rem;
-    background: var(--color-bg-card);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius);
-    text-decoration: none;
-    transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1),
-                border-color 160ms,
-                box-shadow 160ms;
-}
-.ref-code {
-    font-family: var(--font-mono);
-    font-size: 0.65rem;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    color: var(--color-text-dim);
-    text-transform: uppercase;
-    margin-bottom: 0.2rem;
-}
-.academy-ref-card:hover {
-    transform: translateY(-3px);
-    border-color: var(--color-accent-mid);
-    box-shadow: 0 12px 28px -16px rgba(6, 182, 212, 0.35);
-}
-.ref-icon {
-    width: 30px;
-    height: 30px;
-    border-radius: 6px;
-    background: var(--color-accent-softer);
-    border: 1px solid var(--color-accent-mid);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--color-accent);
-    font-size: 0.85rem;
-}
-.academy-ref-card h4 {
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: var(--color-text);
-    margin: 0;
-    letter-spacing: -0.005em;
-}
-.academy-ref-card p {
-    font-size: 0.78rem;
-    color: var(--color-text-muted);
-    line-height: 1.5;
-    margin: 0;
-    flex: 1;
-}
-.ref-link {
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: var(--color-accent);
-    margin-top: 0.25rem;
-}
-
-/* ── Closing signature — the diploma's "issued by" footer ────────── */
-.diploma-signature {
-    margin-top: 2.25rem;
-    padding-top: 1.5rem;
-    border-top: 1px dashed var(--color-border);
-    text-align: center;
-}
-.signature-seal {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 48px;
-    height: 48px;
-    margin-bottom: 0.625rem;
-}
-.seal-hex {
-    font-size: 48px;
-    line-height: 1;
-    color: var(--color-accent);
-    opacity: 0.22;
-    text-shadow: 0 0 14px var(--color-accent-mid);
-}
-.seal-check {
-    position: absolute;
-    inset: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 22px;
-    height: 22px;
-    margin: auto;
-    border-radius: 50%;
-    background: var(--color-accent);
-    color: var(--color-bg);
-    font-size: 0.65rem;
-    box-shadow: 0 0 0 4px var(--color-bg-featured);
-}
-.signature-line {
-    font-family: 'Playfair Display', serif;
-    font-size: 0.875rem;
-    color: var(--color-text-muted);
-    line-height: 1.55;
-    max-width: 540px;
-    margin: 0 auto 1.1rem;
-}
-.signature-line em { font-style: italic; }
-.diploma-pun {
-    color: var(--color-text);
-    font-weight: 500;
-}
-.diploma-meta {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: 1.25rem 2.5rem;
-    margin: 0;
-}
-.diploma-meta > div { min-width: 0; }
-.diploma-meta dt {
-    font-family: var(--font-mono);
-    font-size: 0.62rem;
-    font-weight: 600;
-    letter-spacing: 0.16em;
-    color: var(--color-text-dim);
-    text-transform: uppercase;
-    margin-bottom: 0.25rem;
-}
-.diploma-meta dd {
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    color: var(--color-text);
-    margin: 0;
-}
-
-/* ── Mobile ──────────────────────────────────────────────────────── */
-@media (max-width: 900px) {
-    .academy { padding: 70px 0 80px; }
-    .academy-stats { grid-template-columns: repeat(2, 1fr); gap: 1.25rem 1rem; padding: 1.5rem 1.25rem; }
-    .academy-stat:nth-child(2) { border-left: 1px solid var(--color-border); }
-    .academy-stat:nth-child(3) { border-left: none; }
-    .academy-path {
-        gap: 0.75rem;
-    }
-    .academy-step {
-        flex: 0 0 100%;
-    }
-    .academy-step a { flex-direction: row; align-items: center; text-align: left; flex-wrap: wrap; }
-    .academy-step a .step-num { flex-shrink: 0; }
-    .step-title { flex: 1; min-width: 200px; }
-    .step-blurb { flex: 1 1 100%; }
-    .step-meta { width: auto; border-top: 0; padding-top: 0; margin-left: auto; }
-    .academy-reference { grid-template-columns: 1fr; }
-
-    .academy-diploma-frame { padding: 2.25rem 1.5rem; }
-    .diploma-corner { width: 20px; height: 20px; }
-    .diploma-corner-tl, .diploma-corner-tr { top: 10px; }
-    .diploma-corner-bl, .diploma-corner-br { bottom: 10px; }
-    .diploma-corner-tl, .diploma-corner-bl { left: 10px; }
-    .diploma-corner-tr, .diploma-corner-br { right: 10px; }
-}
-@media (max-width: 600px) {
-    .academy-stat-num { font-size: 1.75rem; }
-    .academy-stat-label { font-size: 0.65rem; }
-    .academy-step a { flex-direction: column; align-items: center; text-align: center; }
-    .step-meta { width: 100%; border-top: 1px dashed var(--color-border); padding-top: 0.4rem; margin-left: 0; }
-}
-
-/* ================================
    Academy launch toast — single dismissable popup announcing the
-   Saltify Academy. Lives on Learn Salt deep pages only (not on the
+   Salt Academy. Lives on Learn Salt deep pages only (not on the
    home page where Academy is already prominent, not on the standalone
    Academy page itself).
    ================================ */
@@ -2347,34 +1873,18 @@ a.academy-track-tag:hover {
     gap: 0.875rem;
 }
 .academy-toast-seal {
-    position: relative;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    width: 44px;
-    height: 44px;
-    flex-shrink: 0;
-}
-.academy-toast-seal .seal-hex {
-    font-size: 44px;
-    line-height: 1;
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    background: var(--color-accent-softer);
+    border: 1px solid var(--color-accent-mid);
     color: var(--color-accent);
-    opacity: 0.25;
-}
-.toast-seal-check {
-    position: absolute;
-    inset: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 20px;
-    height: 20px;
-    margin: auto;
-    border-radius: 50%;
-    background: var(--color-accent);
-    color: var(--color-bg);
-    font-size: 0.6rem;
-    box-shadow: 0 0 0 3px var(--color-bg-featured);
+    font-size: 1rem;
+    line-height: 1;
+    flex-shrink: 0;
 }
 .academy-toast-text { flex: 1; min-width: 0; }
 .academy-toast-eyebrow {
@@ -2387,17 +1897,12 @@ a.academy-track-tag:hover {
     text-transform: uppercase;
 }
 .academy-toast-title {
-    font-family: 'Playfair Display', serif;
-    font-size: 1.05rem;
-    font-weight: 700;
+    font-size: 1rem;
+    font-weight: 600;
     color: var(--color-text);
     margin: 0 0 0.3rem;
-    line-height: 1.25;
+    line-height: 1.3;
     letter-spacing: -0.005em;
-}
-.academy-toast-title em {
-    font-style: italic;
-    color: var(--color-accent);
 }
 .academy-toast-sub {
     font-family: var(--font-mono);

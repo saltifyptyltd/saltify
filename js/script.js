@@ -1,15 +1,17 @@
 'use strict';
 
 const RELEASES_CACHE_KEY = 'saltifyReleasesV1';
-const RELEASES_TTL_MS = 60 * 60 * 1000;
+const BLOG_CACHE_KEY = 'saltifyBlogV1';
+const FEED_TTL_MS = 60 * 60 * 1000;
+const BLOG_FEED_URL = 'https://saltproject.io/blog/index.xml';
 
 document.addEventListener('DOMContentLoaded', () => {
     initTheme();
     initNavigation();
     initAnimations();
     initSaltFeed();
+    initSaltBlog();
     initStateMap();
-    initAcademy();
     initAcademyToast();
 });
 
@@ -140,7 +142,7 @@ function initSaltFeed() {
     const cached = readReleaseCache();
     if (cached) {
         container.innerHTML = cached.map(releaseCard).join('');
-        if (Date.now() - cached.cachedAt < RELEASES_TTL_MS) return;
+        if (Date.now() - cached.cachedAt < FEED_TTL_MS) return;
     } else {
         container.innerHTML = skeletons(6);
     }
@@ -164,9 +166,49 @@ function initSaltFeed() {
         })
         .catch(() => {
             if (cached) return;
-            const section = container.closest('.salt-wild');
-            if (section) section.style.display = 'none';
+            hideGridAndSubhead(container);
         });
+}
+
+function initSaltBlog() {
+    const container = document.getElementById('saltBlog');
+    if (!container) return;
+
+    const cached = readBlogCache();
+    if (cached) {
+        container.innerHTML = cached.map(blogCard).join('');
+        if (Date.now() - cached.cachedAt < FEED_TTL_MS) return;
+    } else {
+        container.innerHTML = skeletons(6);
+    }
+
+    fetch(BLOG_FEED_URL)
+        .then(r => { if (!r.ok) throw new Error(); return r.text(); })
+        .then(xmlText => {
+            const xml = new DOMParser().parseFromString(xmlText, 'text/xml');
+            if (xml.querySelector('parsererror')) throw new Error();
+            const items = Array.from(xml.querySelectorAll('item')).slice(0, 6);
+            if (items.length === 0) throw new Error();
+            const posts = items.map(item => ({
+                title: textOf(item, 'title'),
+                link: textOf(item, 'link'),
+                pubDate: textOf(item, 'pubDate'),
+            }));
+            container.innerHTML = posts.map(blogCard).join('');
+            writeBlogCache(posts);
+        })
+        .catch(() => {
+            if (cached) return;
+            hideGridAndSubhead(container);
+        });
+}
+
+function hideGridAndSubhead(container) {
+    container.style.display = 'none';
+    const prev = container.previousElementSibling;
+    if (prev && prev.classList.contains('salt-wild-subhead')) {
+        prev.style.display = 'none';
+    }
 }
 
 function readReleaseCache() {
@@ -186,6 +228,54 @@ function writeReleaseCache(releases) {
             releases,
         }));
     } catch { /* quota / private mode — ignore */ }
+}
+
+function readBlogCache() {
+    try {
+        const raw = localStorage.getItem(BLOG_CACHE_KEY);
+        if (!raw) return null;
+        const { cachedAt, posts } = JSON.parse(raw);
+        if (!Array.isArray(posts) || posts.length === 0) return null;
+        return Object.assign(posts, { cachedAt });
+    } catch { return null; }
+}
+
+function writeBlogCache(posts) {
+    try {
+        localStorage.setItem(BLOG_CACHE_KEY, JSON.stringify({
+            cachedAt: Date.now(),
+            posts,
+        }));
+    } catch { /* quota / private mode — ignore */ }
+}
+
+function blogCard(post) {
+    const date = formatShortDate(post.pubDate);
+    const age = timeAgo(post.pubDate);
+    return `
+        <a class="release-card hover-card" href="${escHtml(post.link)}" target="_blank" rel="noopener noreferrer">
+            <div class="release-card-top">
+                <span class="release-tag">${escHtml(date)}</span>
+                <span class="release-age">${age}</span>
+            </div>
+            <h3 class="release-title">${escHtml(post.title)}</h3>
+            <div class="release-footer">
+                <span class="release-stat"><i class="fas fa-rss" aria-hidden="true"></i> saltproject.io/blog</span>
+                <span class="release-link">Read post ↗</span>
+            </div>
+        </a>`;
+}
+
+function formatShortDate(rfcDate) {
+    const d = new Date(rfcDate);
+    if (isNaN(d)) return '';
+    const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+}
+
+function textOf(parent, tag) {
+    const el = parent.querySelector(tag);
+    return el ? el.textContent.trim() : '';
 }
 
 function releaseCard(release) {
@@ -238,7 +328,7 @@ function escHtml(str) {
 /* ================================
    State Modules Map (salt-states-map.html)
    Loads data/salt-states.json, renders a card per module grouped into
-   functional categories. Search + OS chip filters; first category open.
+   functional categories. Search + OS chip filters; all collapsed on load.
    ================================ */
 function initStateMap() {
     const container = document.getElementById('mapContainer');
@@ -269,16 +359,16 @@ function renderStateMap(data) {
         if (m.category && byCat[m.category]) byCat[m.category].push(m);
     });
 
-    /* Render each category section */
-    container.innerHTML = categories.map((cat, i) => {
+    /* Render each category section. All categories start collapsed —
+       the user clicks a category head to expand it. */
+    container.innerHTML = categories.map(cat => {
         const cards = byCat[cat.id] || [];
-        const open = i === 0; // first category open
         const cardsHtml = cards.length
             ? `<div class="map-cards">${cards.map(stateMapCard).join('')}</div>`
             : `<div class="map-cat-empty">Curation in progress — coming soon.</div>`;
         return `
-            <div class="map-category" data-open="${open}" data-cat="${escHtml(cat.id)}">
-                <div class="map-cat-head" role="button" tabindex="0" aria-expanded="${open}" aria-controls="cat-body-${escHtml(cat.id)}">
+            <div class="map-category" data-open="false" data-cat="${escHtml(cat.id)}">
+                <div class="map-cat-head" role="button" tabindex="0" aria-expanded="false" aria-controls="cat-body-${escHtml(cat.id)}">
                     <span class="map-cat-toggle">▸</span>
                     <div style="flex:1; min-width:0;">
                         <h3 class="map-cat-title">${escHtml(cat.label)}</h3>
@@ -403,60 +493,3 @@ function wireStateMapInteractions() {
     });
 }
 
-/* ================================
-   Saltify Academy — landing-page section
-   - Draws the connector line across the 5 path cards on scroll-into-view.
-   - Counts up the stat numbers from 0 to their data-count target.
-   No-ops on pages without .academy.
-   ================================ */
-function initAcademy() {
-    const section = document.querySelector('.academy');
-    if (!section) return;
-
-    /* Connector line draw */
-    const path = section.querySelector('.academy-path');
-    if (path) {
-        const pathObs = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    path.classList.add('drawn');
-                    pathObs.unobserve(path);
-                }
-            });
-        }, { threshold: 0.25 });
-        pathObs.observe(path);
-    }
-
-    /* Stat count-up */
-    const stats = section.querySelectorAll('.academy-stat-num[data-count]');
-    if (stats.length) {
-        const statObs = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (!entry.isIntersecting) return;
-                animateCount(entry.target);
-                statObs.unobserve(entry.target);
-            });
-        }, { threshold: 0.5 });
-        stats.forEach(el => statObs.observe(el));
-    }
-}
-
-function animateCount(el) {
-    const target = parseInt(el.dataset.count, 10);
-    if (isNaN(target)) return;
-    /* Skip animation if user prefers reduced motion */
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-        el.textContent = target;
-        return;
-    }
-    const duration = 1100;
-    const start = performance.now();
-    function tick(now) {
-        const t = Math.min(1, (now - start) / duration);
-        const eased = 1 - Math.pow(1 - t, 3); // ease-out cubic
-        el.textContent = Math.floor(eased * target);
-        if (t < 1) requestAnimationFrame(tick);
-        else el.textContent = target;
-    }
-    requestAnimationFrame(tick);
-}

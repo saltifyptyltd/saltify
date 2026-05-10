@@ -9,7 +9,7 @@
         <priority>1.0</priority>
     </url>
 
-    <!-- Saltify Academy hub (curriculum overview, shareable URL) -->
+    <!-- Salt Academy hub (curriculum overview, shareable URL) -->
     <url>
         <loc>https://saltify.work/salt-academy.html</loc>
         <lastmod>2026-05-09</lastmod>

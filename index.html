@@ -9,8 +9,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-    <link rel="stylesheet" href="css/style.css?v=36">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,600;0,700;1,600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css?v=39">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
 <body>
@@ -82,145 +82,27 @@
         </div>
     </section>
 
-    <!-- Saltify Academy -->
-    <section class="academy" aria-labelledby="academy-heading">
-        <div class="academy-glow" aria-hidden="true"></div>
+    <!-- Salt Academy intro -->
+    <section class="install-promo" aria-labelledby="academy-heading">
         <div class="container">
-          <article class="academy-diploma-frame fade-in">
-            <span class="diploma-corner diploma-corner-tl" aria-hidden="true"></span>
-            <span class="diploma-corner diploma-corner-tr" aria-hidden="true"></span>
-            <span class="diploma-corner diploma-corner-bl" aria-hidden="true"></span>
-            <span class="diploma-corner diploma-corner-br" aria-hidden="true"></span>
-
-            <header class="academy-intro">
-                <p class="diploma-overline"><span class="academy-mark" aria-hidden="true">⬡</span> Free · No sign-up · Honorary credential</p>
-                <h2 id="academy-heading" class="diploma-name">Saltify <span class="diploma-name-script">Academy</span></h2>
-                <div class="diploma-rule" aria-hidden="true"></div>
-                <p class="diploma-tagline">Learn Salt the Saltify way.</p>
-                <p class="academy-sub">Eight free guides. Zero sign-ups. From your first <code>salt-call</code> to the AI-augmented dev workflow — all in plain English. <strong>The course we wish we had.</strong></p>
-
-                <div class="academy-stats" role="list">
-                    <div class="academy-stat" role="listitem">
-                        <span class="academy-stat-num" data-count="8">8</span>
-                        <span class="academy-stat-label">Free guides</span>
+            <div class="install-promo-grid install-promo-grid--solo">
+                <div class="install-promo-card fade-in">
+                    <p class="install-promo-card-tag">Start here · Curriculum</p>
+                    <h2 id="academy-heading">Salt Academy.</h2>
+                    <p class="install-promo-lead">The whole curriculum on one page. Five courses, two reference companions, one advanced track. <strong>The course we wish we had.</strong></p>
+                    <div class="install-promo-stats">
+                        <div class="install-promo-stat">
+                            <span class="install-promo-stat-num">8</span>
+                            <span class="install-promo-stat-label">guides</span>
+                        </div>
+                        <div class="install-promo-stat">
+                            <span class="install-promo-stat-num">127</span>
+                            <span class="install-promo-stat-label">modules</span>
+                        </div>
                     </div>
-                    <div class="academy-stat" role="listitem">
-                        <span class="academy-stat-num" data-count="127">127</span>
-                        <span class="academy-stat-label">State modules mapped</span>
-                    </div>
-                    <div class="academy-stat" role="listitem">
-                        <span class="academy-stat-num">30<span class="academy-stat-unit">min</span></span>
-                        <span class="academy-stat-label">To confident</span>
-                    </div>
-                    <div class="academy-stat" role="listitem">
-                        <span class="academy-stat-num" data-count="0">0</span>
-                        <span class="academy-stat-label">Sign-ups</span>
-                    </div>
+                    <a href="salt-academy.html" class="btn-primary">Open the Academy →</a>
                 </div>
-            </header>
-
-            <!-- Sequential learning path -->
-            <div class="academy-track-head">
-                <a href="salt-academy.html" class="academy-track-tag">Start here →</a>
-                <h3>The five-course path. Beginner → production.</h3>
             </div>
-            <ol class="academy-path">
-                <li class="academy-step fade-in">
-                    <a href="install-guide.html">
-                        <span class="step-num">SALT 101</span>
-                        <span class="step-title">Install Guide</span>
-                        <span class="step-blurb">Build VCF Salt the right way. 3 servers, 11 steps, blue/green ready.</span>
-                        <span class="step-meta"><i class="far fa-clock" aria-hidden="true"></i> ~20 min read</span>
-                    </a>
-                </li>
-                <li class="academy-step fade-in">
-                    <a href="getting-started.html">
-                        <span class="step-num">SALT 102</span>
-                        <span class="step-title">Getting Started</span>
-                        <span class="step-blurb">Your first state files. Pillar. GPG. Push to Git. Hello-world to source-of-truth.</span>
-                        <span class="step-meta"><i class="far fa-clock" aria-hidden="true"></i> ~15 min</span>
-                    </a>
-                </li>
-                <li class="academy-step fade-in">
-                    <a href="states.html">
-                        <span class="step-num">SALT 201</span>
-                        <span class="step-title">Salt States</span>
-                        <span class="step-blurb">Six modules cover 90%. Requisites, top file, real production patterns.</span>
-                        <span class="step-meta"><i class="far fa-clock" aria-hidden="true"></i> ~10 min</span>
-                    </a>
-                </li>
-                <li class="academy-step fade-in">
-                    <a href="windows.html">
-                        <span class="step-num">SALT 301</span>
-                        <span class="step-title">Salt on Windows</span>
-                        <span class="step-blurb">Production patterns, not theory. The 6 quirks. winrepo. Fleet-wide.</span>
-                        <span class="step-meta"><i class="far fa-clock" aria-hidden="true"></i> ~12 min</span>
-                    </a>
-                </li>
-                <li class="academy-step fade-in">
-                    <a href="salt-ai.html">
-                        <span class="step-num">SALT 401</span>
-                        <span class="step-title">Salt + AI</span>
-                        <span class="step-blurb">Use Claude, ChatGPT, Cursor with Salt. Pillar-aware prompts that actually work.</span>
-                        <span class="step-meta"><i class="far fa-clock" aria-hidden="true"></i> ~10 min</span>
-                    </a>
-                </li>
-            </ol>
-
-            <!-- Advanced track -->
-            <div class="academy-track-head academy-track-head-second">
-                <span class="academy-track-tag">Advanced</span>
-                <h3>Tooling track — for the AI-augmented workflow.</h3>
-            </div>
-            <ol class="academy-path academy-path-advanced">
-                <li class="academy-step fade-in">
-                    <a href="salt-ai-tooling.html">
-                        <span class="step-num">SALT 501</span>
-                        <span class="step-title">AI Tooling</span>
-                        <span class="step-blurb">VSCode, SaltStack ext, Copilot Chat, Claude in Chrome, Claude Code (IDE + terminal). Install commands lifted from official docs.</span>
-                        <span class="step-meta"><i class="far fa-clock" aria-hidden="true"></i> ~25 min</span>
-                    </a>
-                </li>
-            </ol>
-
-            <!-- Reference companions -->
-            <div class="academy-track-head academy-track-head-second">
-                <span class="academy-track-tag academy-track-tag-ref">Always handy</span>
-                <h3>Two reference companions.</h3>
-            </div>
-            <div class="academy-reference">
-                <a href="salt-cheat-sheet.html" class="academy-ref-card fade-in">
-                    <span class="ref-code">SALT REF · 01</span>
-                    <span class="ref-icon"><i class="fas fa-bolt" aria-hidden="true"></i></span>
-                    <h4>Salt Cheat Sheet</h4>
-                    <p>The 50 commands you'll actually use, on one scrollable page. No spec sheet, no docstrings.</p>
-                    <span class="ref-link">Open the cheat sheet →</span>
-                </a>
-                <a href="salt-state-modules.html" class="academy-ref-card fade-in">
-                    <span class="ref-code">SALT REF · 02</span>
-                    <span class="ref-icon"><i class="fas fa-list-ul" aria-hidden="true"></i></span>
-                    <h4>State Modules Index</h4>
-                    <p>Every state module in current Salt master — 127 of them — grouped by what they do, with usage examples.</p>
-                    <span class="ref-link">Browse all 127 →</span>
-                </a>
-            </div>
-
-            <!-- Closing signature -->
-            <footer class="diploma-signature">
-                <span class="signature-seal" aria-hidden="true">
-                    <span class="seal-hex">⬡</span>
-                    <span class="seal-check"><i class="fas fa-check"></i></span>
-                </span>
-                <p class="signature-line">
-                    <em>Awarded to anyone who reads all <strong>5 courses</strong> + <strong>1 advanced</strong> + <strong>2 references</strong>. <span class="diploma-pun">No sign-up. No exam. Just the work.</span></em>
-                </p>
-                <dl class="diploma-meta">
-                    <div><dt>Issued by</dt><dd>Saltify Pty Ltd · Canberra</dd></div>
-                    <div><dt>Curriculum</dt><dd>SALT 101–401 · 501 · REF 01–02</dd></div>
-                    <div><dt>Serial</dt><dd>SA-2026-0001</dd></div>
-                </dl>
-            </footer>
-          </article>
         </div>
     </section>
 
@@ -254,7 +136,7 @@
                     </div>
                     <h3>Free or enterprise</h3>
                     <p>Salt Project is open source, free, fully featured. VMware Aria Automation Config (formerly SaltStack Config) wraps it with RBAC, RaaS, and a UI for regulated environments. Same engine, same patterns.</p>
-                    <a href="https://www.vmware.com/products/aria-automation-config.html" target="_blank" rel="noopener" class="what-link">Aria Automation Config ↗</a>
+                    <a href="https://techdocs.broadcom.com/us/en/vmware-cis/other/vmware-salt/8-18/using-vmware-salt/overview/vcf-salt-and-open-source-salt.html" target="_blank" rel="noopener" class="what-link">VMware Salt on Broadcom ↗</a>
                 </article>
             </div>
         </div>
@@ -326,7 +208,7 @@
                     <div class="service-icon">
                         <i class="fas fa-cube" aria-hidden="true"></i>
                     </div>
-                    <h3>Salt — Free Edition</h3>
+                    <h3>Salt — Open Source</h3>
                     <p class="service-tech">Open Source · Self-Hosted</p>
                     <p>Salt Project upstream, properly architected. Master/minion topology, pillar separation, environment splits, RBAC via external auth. Same enterprise patterns, no licence fees.</p>
                 </article>
@@ -452,32 +334,11 @@
         </div>
     </section>
 
-    <!-- Free guides promo: install + getting-started -->
+    <!-- Curriculum guides grid -->
     <section class="install-promo">
         <div class="container">
-            <p class="install-promo-eyebrow">FREE WALKTHROUGHS · NO SIGNUP</p>
+            <p class="install-promo-eyebrow">EVERY GUIDE, ON ONE PAGE</p>
             <div class="install-promo-grid">
-                <div class="install-promo-card fade-in">
-                    <p class="install-promo-card-tag">Start here · Curriculum</p>
-                    <h2>Saltify Academy.</h2>
-                    <p class="install-promo-lead">The whole curriculum on one page. Five courses, two reference companions, one advanced track. <strong>The course we wish we had.</strong></p>
-                    <div class="install-promo-stats">
-                        <div class="install-promo-stat">
-                            <span class="install-promo-stat-num">8</span>
-                            <span class="install-promo-stat-label">free guides</span>
-                        </div>
-                        <div class="install-promo-stat">
-                            <span class="install-promo-stat-num">127</span>
-                            <span class="install-promo-stat-label">modules</span>
-                        </div>
-                        <div class="install-promo-stat">
-                            <span class="install-promo-stat-num">0</span>
-                            <span class="install-promo-stat-label">sign-ups</span>
-                        </div>
-                    </div>
-                    <a href="salt-academy.html" class="btn-primary">Open the Academy →</a>
-                </div>
-
                 <div class="install-promo-card fade-in">
                     <p class="install-promo-card-tag">Step 1 · Install</p>
                     <h2>Build VCF Salt the right way.</h2>
@@ -646,7 +507,6 @@
                     <a href="salt-state-modules.html" class="btn-primary">Browse all 127 →</a>
                 </div>
             </div>
-            <p class="install-promo-note">No signup. No email gate. Just the playbook.</p>
         </div>
     </section>
 
@@ -691,13 +551,18 @@
         </div>
     </section>
 
-    <!-- Salt in the wild — live GitHub releases -->
+    <!-- Salt in the wild — GitHub releases + blog feed -->
     <section class="salt-wild section-alt">
         <div class="container">
             <header class="section-header">
                 <h2>Salt in the wild</h2>
-                <p>Live from <code>saltstack/salt</code> — the latest releases of the engine we run.</p>
+                <p>Live from upstream — releases as they ship, blog posts as they drop.</p>
             </header>
+
+            <p class="salt-wild-subhead"><i class="fas fa-rss" aria-hidden="true"></i> From the blog <span>· <code>saltproject.io</code></span></p>
+            <div class="release-grid divider-grid" id="saltBlog"></div>
+
+            <p class="salt-wild-subhead"><i class="fab fa-github" aria-hidden="true"></i> Releases <span>· <code>saltstack/salt</code> · stable only</span></p>
             <div class="release-grid divider-grid" id="saltFeed"></div>
         </div>
     </section>
@@ -727,23 +592,20 @@
         </div>
     </footer>
 
-    <!-- Saltify Academy launch toast -->
-    <aside class="academy-toast" id="academyToast" role="dialog" aria-label="Saltify Academy launch announcement">
+    <!-- Salt Academy launch toast -->
+    <aside class="academy-toast" id="academyToast" role="dialog" aria-label="Salt Academy launch announcement">
         <button class="academy-toast-close" id="academyToastClose" aria-label="Dismiss">×</button>
         <div class="academy-toast-body">
-            <span class="academy-toast-seal" aria-hidden="true">
-                <span class="seal-hex">⬡</span>
-                <span class="toast-seal-check"><i class="fas fa-check"></i></span>
-            </span>
+            <span class="academy-toast-seal" aria-hidden="true">⬡</span>
             <div class="academy-toast-text">
                 <p class="academy-toast-eyebrow">NEW · NOW LIVE</p>
-                <h3 class="academy-toast-title"><em>Saltify</em> Academy is live</h3>
-                <p class="academy-toast-sub">5 courses · 1 advanced · 2 references · No sign-up</p>
+                <h3 class="academy-toast-title">Salt Academy is live</h3>
+                <p class="academy-toast-sub">5 courses · 1 advanced · 2 references</p>
                 <a href="salt-academy.html" class="academy-toast-cta">Open the Academy <span aria-hidden="true">→</span></a>
             </div>
         </div>
     </aside>
 
-    <script src="js/script.js?v=31"></script>
+    <script src="js/script.js?v=34"></script>
 </body>
 </html>
