@@ -287,6 +287,14 @@ salt '*' http.query http://example.com/ \
                 </article>
 
                 <article class="cmd-card hover-card fade-in">
+                    <div class="cmd-label"><i class="fas fa-diagram-project"></i> Orchestrate</div>
+                    <pre><code>salt-run state.orchestrate orch.&lt;sls&gt;
+salt-run state.orchestrate orch.&lt;sls&gt; test=True   <span class="code-comment"># dry run</span>
+salt-run state.orchestrate orch.&lt;sls&gt; saltenv=prod</code></pre>
+                    <p>Run a multi-step state across the fleet from one place. The runner sequences <code>salt.state</code> / <code>salt.function</code> calls in order, with requisites between steps.</p>
+                </article>
+
+                <article class="cmd-card hover-card fade-in">
                     <div class="cmd-label"><i class="fas fa-laptop"></i> Local mode</div>
                     <pre><code>salt-call --local state.apply test=True
 salt-call --local grains.items
