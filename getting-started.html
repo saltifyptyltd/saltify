@@ -576,7 +576,7 @@ sudo salt '*' state.apply</code></pre>
     <section class="guide-section">
         <div class="container">
             <h2>Pillar — config in one place.</h2>
-            <p class="section-intro">Pillar moves credentials, paths, and per-environment values out of state files. The state file says what to do; pillar holds the values it does it with. When the values change you edit pillar and redeploy — the state files don't move.</p>
+            <p class="section-intro">State files describe what to do. Pillar holds the values they use to do it — credentials, paths, hostnames, anything that varies per minion or per environment. The master ships each minion only the pillar data targeted at it, so secrets stay scoped. When a value changes, you edit pillar and re-apply the state. The state file itself doesn't need to change.</p>
 
             <div class="quickstart-grid divider-grid gs-steps">
 
