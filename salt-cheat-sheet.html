@@ -349,18 +349,14 @@ salt-call --local pkg.install nginx</code></pre>
                 </div>
                 <div class="pro-tip">
                     <p class="pro-tip-label"><i class="fas fa-lightbulb"></i> Tip 03</p>
-                    <p>Master down? <code>salt-call --local state.apply</code> runs straight from the minion. No master, no waiting. Useful when you're rebuilding the master itself.</p>
-                </div>
-                <div class="pro-tip">
-                    <p class="pro-tip-label"><i class="fas fa-lightbulb"></i> Tip 04</p>
                     <p>Edit pillar, run <code>salt '*' saltutil.refresh_pillar</code>. Without it, minions cache the old data and you'll wonder why your change didn't land.</p>
                 </div>
                 <div class="pro-tip">
-                    <p class="pro-tip-label"><i class="fas fa-lightbulb"></i> Tip 05</p>
+                    <p class="pro-tip-label"><i class="fas fa-lightbulb"></i> Tip 04</p>
                     <p>Forget a module's options? <code>salt '*' sys.doc &lt;module&gt;</code> dumps every function and arg. Faster than Googling, no tab switch.</p>
                 </div>
                 <div class="pro-tip">
-                    <p class="pro-tip-label"><i class="fas fa-lightbulb"></i> Tip 06</p>
+                    <p class="pro-tip-label"><i class="fas fa-lightbulb"></i> Tip 05</p>
                     <p>Two terminals open: one running your command, the other tailing <code>salt-run state.event pretty=True</code>. You see what Salt is actually doing in real time.</p>
                 </div>
             </div>
