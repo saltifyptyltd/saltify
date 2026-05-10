@@ -1161,6 +1161,7 @@ p code, li code, h4 code {
     display: flex;
     flex-direction: column;
     gap: 0.75rem;
+    min-width: 0;
 }
 
 .quickstart-grid > .quickstart-step:nth-child(5) {
