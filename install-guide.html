@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
-    <link rel="stylesheet" href="css/style.css?v=41">
+    <link rel="stylesheet" href="css/style.css?v=43">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -317,6 +317,11 @@
                 <i class="fas fa-lightbulb"></i>
                 <p><strong>Why three, not two or four?</strong> Two servers (the official Basic Enterprise model) means one master, which is fragile. Four servers (Distributed Enterprise) is more than you need below about 10,000 minions. Three is what we land on for most clients.</p>
             </div>
+
+            <div class="callout callout-tip">
+                <i class="fas fa-book"></i>
+                <p><strong>Other VCF Salt patterns.</strong> This guide documents one architecture: the 3-server stack we run in production. For Broadcom's full list of supported deployment patterns (Basic, Standard, Distributed Enterprise) and the canonical configuration reference, see the <a href="https://techdocs.broadcom.com/us/en/vmware-cis/other/vmware-salt/8-18/using-vmware-salt/best-practices-and-faqs/installation-reference-guide/vcf-salt-installation-and-configuration.html" target="_blank" rel="noopener">VCF Salt Installation and Configuration Reference ↗</a>.</p>
+            </div>
         </div>
     </section>
 
@@ -511,7 +516,7 @@ VMware_Salt_Raas-&lt;ver&gt;-&lt;build&gt;.el9_Installer.tar.gz</code></pre>
 
             <div class="callout callout-warn">
                 <i class="fas fa-shield-halved"></i>
-                <p><strong>If your servers are air-gapped</strong>, those wheels don't exist on the box yet. The bundle ships them in its <code>pip/</code> folder — you install them manually. <strong>This is step 09 in the install below.</strong></p>
+                <p><strong>If your servers are air-gapped</strong>, those wheels don't ship in the installer bundle — you'll need to download them on a box with internet first and copy them across to each node. (Future bundle releases may include them; today they don't.) <strong>This is step 09 in the install below.</strong></p>
             </div>
         </div>
     </section>
@@ -523,6 +528,20 @@ VMware_Salt_Raas-&lt;ver&gt;-&lt;build&gt;.el9_Installer.tar.gz</code></pre>
             <p class="section-intro">Run on the boxes from section 3. The first 3 steps are on every server; after that each step says where to run. <strong>Steps 1–7 install Salt by hand. From step 8, Salt configures itself.</strong></p>
 
             <div class="quickstart-grid divider-grid install-steps">
+                <article class="quickstart-step fade-in">
+                    <span class="step-number">PREREQ</span>
+                    <h4>System packages</h4>
+                    <p>Install these on <strong>every server</strong> first. Salt won't install cleanly without them.</p>
+                    <pre><code>sudo yum install -y \
+  git \
+  java \
+  python39 \
+  openssl \
+  python3-cryptography \
+  python3-pyOpenSSL \
+  pinentry</code></pre>
+                </article>
+
                 <article class="quickstart-step fade-in">
                     <span class="step-number">01</span>
                     <h4>Get the bundle</h4>

@@ -118,6 +118,16 @@ img { max-width: 100%; display: block; }
 a { text-decoration: none; color: inherit; }
 ul { list-style: none; }
 
+.callout a {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    font-weight: 500;
+}
+.callout a:hover {
+    text-decoration-thickness: 2px;
+}
+
 code {
     font-family: var(--font-mono);
     font-size: 0.875em;
@@ -1615,11 +1625,12 @@ pre code {
 
 @media (max-width: 480px) {
     /* Smallest screens: hide Services + About to keep the inline bar tidy.
-       Both anchor in-page sections on the home page, so Home + scroll
-       still reaches them. Order is: Home · Services · Learn · About · Talk. */
+       Both are in-page anchors on the home page (Home + scroll reaches
+       them). Order is: Home · Services · Learn · Academy · About · Talk;
+       visible after hiding becomes: Home · Learn · Academy · Talk. */
     .nav-menu { gap: 0.75rem; }
     .nav-menu > li:nth-child(2),
-    .nav-menu > li:nth-child(4) { display: none; }
+    .nav-menu > li:nth-child(5) { display: none; }
 
     .container,
     .nav-container { padding: 0 1.25rem; }
