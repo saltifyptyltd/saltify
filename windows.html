@@ -246,8 +246,13 @@ sudo salt '&lt;your minion id&gt;' pkg.list_pkgs</code></pre>
             <div class="field-callout">
                 <p class="field-callout-tag"><i class="fas fa-bolt"></i> From production</p>
                 <h3>Bake the minion into your golden image</h3>
-                <p>Don't install on every new VM. Install once into your Windows template. New VMs come up with the minion already there — first boot picks up the master config from a sysprep specialize step or unattend file.</p>
-                <p><strong>Trick:</strong> ship the template with <code>master: salt-master.example.com</code> as a CNAME. Cuts over with DNS, no reinstall, no re-key. The blue/green pattern from the <a href="install-guide.html" style="color: var(--color-accent);">install guide</a> works the same way for minions as it does for masters.</p>
+                <p>Install once into your Windows template; new VMs come up with the minion already there. First boot picks up the master config from a sysprep specialize step or an unattend file. Ship the template with <code>master: salt-master.example.com</code> as a CNAME so cutover becomes a DNS change with no reinstall or re-key. The blue/green pattern from the <a href="install-guide.html" style="color: var(--color-accent);">install guide</a> applies to minions the same way it does to masters.</p>
+            </div>
+
+            <div class="field-callout">
+                <p class="field-callout-tag"><i class="fas fa-bolt"></i> From production · VCF Salt</p>
+                <h3>VCF Salt: blueprint or RaaS deploy</h3>
+                <p>If you're on VCF Salt rather than the open-source build, two more options open up. With VMware blueprint integration, the minion install lands as part of the VM build itself, so new VMs come up already enrolled. Recent RaaS releases also expose a "Deploy minion" section in the UI that pushes the minion from RaaS to a target host directly, which is handy for one-off deploys where editing the blueprint isn't worth it.</p>
             </div>
 
             <div class="field-callout">
