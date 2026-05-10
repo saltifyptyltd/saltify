@@ -175,9 +175,9 @@
                     <h4>Use AI here. Save hours.</h4>
                     <ul>
                         <li><i class="fas fa-check-circle"></i> <span><strong>Scaffolding.</strong> Generating the first 80% of a state file from a clear description. Read it, fix the 20%, ship.</span></li>
-                        <li><i class="fas fa-check-circle"></i> <span><strong>Reading errors.</strong> Paste a Salt traceback + the failing state. AI explains it faster than digging through `-l debug` output.</span></li>
+                        <li><i class="fas fa-check-circle"></i> <span><strong>Reading errors.</strong> Paste a Salt traceback + the failing state. AI explains it faster than digging through <code>-l debug</code> output.</span></li>
                         <li><i class="fas fa-check-circle"></i> <span><strong>Pillar from prose.</strong> Translating "50 web servers, 3 envs, TLS varies" into structured pillar YAML.</span></li>
-                        <li><i class="fas fa-check-circle"></i> <span><strong>Documenting your states.</strong> Generating human-readable runbooks from existing `.sls` files.</span></li>
+                        <li><i class="fas fa-check-circle"></i> <span><strong>Documenting your states.</strong> Generating human-readable runbooks from existing <code>.sls</code> files.</span></li>
                     </ul>
                 </div>
                 <div class="verdict-card bad">
@@ -229,7 +229,7 @@ No comments. YAML only.</code></pre>
             <div class="prompt-block" style="border-left-color: var(--color-danger);">
                 <div class="prompt-label" style="color: var(--color-danger);"><i class="fas fa-bug"></i> Bad prompt</div>
                 <pre><code>Set up a webserver with Salt</code></pre>
-                <p class="prompt-why"><strong>Why it fails:</strong> No version → mixed-era YAML. No OS → wrong package names. No module constraint → AI picks weird modules. No `require:` instruction → implicit ordering. You'll spend 30 minutes debugging.</p>
+                <p class="prompt-why"><strong>Why it fails:</strong> No version → mixed-era YAML. No OS → wrong package names. No module constraint → AI picks weird modules. No <code>require:</code> instruction → implicit ordering. You'll spend 30 minutes debugging.</p>
             </div>
 
             <h3>The "minimal first, then expand" pattern</h3>
@@ -247,7 +247,7 @@ No comments. YAML only.</code></pre>
         <div class="container">
             <span class="section-tag">03 · The fastest debug loop</span>
             <h2>Paste-the-error troubleshooting.</h2>
-            <p class="section-intro">When a state fails, AI is faster than `-l debug` output for the first read. Not for the fix — for the diagnosis. This is the workflow.</p>
+            <p class="section-intro">When a state fails, AI is faster than <code>-l debug</code> output for the first read. Not for the fix — for the diagnosis. This is the workflow.</p>
 
             <div class="workflow">
                 <div class="workflow-step">
@@ -398,7 +398,7 @@ salt 'minion-test' state.apply your.state</code></pre>
         <div class="container">
             <span class="section-tag">07 · The Saltify pattern</span>
             <h2>AI uplift — what we leave behind when we exit.</h2>
-            <p class="section-intro">Most consultancies leave you with a working stack and a phone number. We leave you with a stack, a phone number, <em>and a colleague that doesn't bill</em>. This is what that means in practice.</p>
+            <p class="section-intro">Most consultancies leave you with a working stack and a phone number. We leave you with a stack, a phone number, <em>and a colleague who doesn't bill</em>. This is what that means in practice.</p>
 
             <h3>The handover kit</h3>
             <ul style="color: var(--color-text-muted); line-height: 1.7; padding-left: 1.5rem;">
@@ -418,20 +418,20 @@ salt 'minion-test' state.apply your.state</code></pre>
                 <p><strong>Want this for your team?</strong> AI uplift is bundled with every Saltify engagement — blue/green build-outs, multi-master deployments, VCF Salt installs. We don't charge extra for the prompt library, the MCP server, or the runbook templates. <a href="index.html#contact" style="color: var(--color-accent); border-bottom: 1px solid var(--color-accent-mid);">Talk to us</a>.</p>
             </div>
 
-            <p class="source-credit">Built from production Saltify engagements + <a href="https://modelcontextprotocol.io/" target="_blank" rel="noopener noreferrer">Anthropic's MCP spec</a>. Patterns evolve as Salt and Claude both ship — last reviewed May 2026.</p>
+            <p class="source-credit">Built from production Saltify engagements + <a href="https://modelcontextprotocol.io/docs/getting-started/intro" target="_blank" rel="noopener noreferrer">Anthropic's MCP spec</a>. Patterns evolve as Salt and Claude both ship — last reviewed May 2026.</p>
         </div>
     </section>
 
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
-            <div class="footer-content">
+            <div class="footer-inner">
                 <p class="footer-logo">
                     <span class="logo-primary">Saltify</span>
                     <span class="logo-secondary">Pty Ltd</span>
                 </p>
-                <p class="footer-text">Canberra-based Salt consultancy. Event-driven, AI-uplifted, government-ready.</p>
-                <p class="footer-meta">© 2026 Saltify Pty Ltd. ABN coming soon.</p>
+                <p class="footer-tagline">Enterprise Salt for teams that can't afford fragile infrastructure. Based in Australia.</p>
+                <p class="footer-copy">© 2026 Saltify Pty Ltd</p>
             </div>
         </div>
     </footer>

@@ -456,7 +456,7 @@ install_iis_console:
                 <article class="quickstart-step fade-in">
                     <span class="step-number">09</span>
                     <h4>Add a user to a group</h4>
-                    <p>Use <code>group.present</code> with <code>addusers:</code>. The user must already exist — local or AD-joined. For AD users, prefix with <code>DOMAIN\\</code>.</p>
+                    <p>Use <code>group.present</code> with <code>addusers:</code>. The user must already exist — local or AD-joined. For AD users, prefix with <code>DOMAIN\</code>.</p>
                     <pre><code><span class="code-comment"># /srv/salt/windows/group_membership.sls</span>
 add_to_remote_desktop_users:
   group.present:
@@ -604,10 +604,10 @@ base:
 windows_local_groups:
   Remote Desktop Users:
     - saltdemo
-    - DOMAIN\app-svc
+    - DOMAIN\\app-svc
 
   Backup Operators:
-    - DOMAIN\backup-svc</code></pre>
+    - DOMAIN\\backup-svc</code></pre>
                     <div class="apply-box">
                         <p class="apply-label"><i class="fas fa-play"></i> Refresh and verify</p>
                         <pre><code><span class="code-comment"># tell every minion to re-pull pillar from the master</span>

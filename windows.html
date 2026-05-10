@@ -267,7 +267,7 @@ win-server-2022:
             <div class="field-callout">
                 <p class="field-callout-tag"><i class="fas fa-bolt"></i> From production</p>
                 <h3>Pick a sensible minion ID convention</h3>
-                <p>Default is the hostname. That's fine for one-off boxes. For fleets, use something role-aware: <code>app-web01</code>, <code>db-prod-01</code>. Lets you target with globs (<code>salt 'app-*'</code>) and grains (<code>os_family:Windows</code>) cleanly. Don't change minion IDs after the fact — Salt treats it as a new minion and you lose history.</p>
+                <p>Default is the hostname. That's fine for one-off boxes. For fleets, use something role-aware: <code>app-web01</code>, <code>db-prod-01</code>. Lets you target with globs (<code>salt 'app-*'</code>) and grains (<code>os_family:Windows</code>) cleanly. Don't change minion IDs after the fact — Salt treats them as new minions and you lose history.</p>
             </div>
 
             <h3 style="margin-top: 2.5rem;">If <code>test.ping</code> doesn't return</h3>
@@ -421,7 +421,7 @@ sudo salt-pip install pygit2</code></pre>
                     <h4>Build package database on minions</h4>
                     <p>Each Windows minion parses the YAML and builds a local database. Slow first time, fast after.</p>
                     <pre><code>sudo salt -G 'os:windows' pkg.refresh_db</code></pre>
-                    <p style="font-size: 0.85rem;">Output: <code>success: 301, failed: 0</code> or similar. If anything fails, you've got malformed YAML.</p>
+                    <p style="font-size: 0.85rem;">Output: <code>success: NNN, failed: 0</code> or similar. If anything fails, you've got malformed YAML.</p>
                 </article>
 
                 <article class="quickstart-step fade-in">

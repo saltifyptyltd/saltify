@@ -281,7 +281,7 @@ https://go.microsoft.com/fwlink/?linkid=852157</code></pre>
                     <div class="step">
                         <span class="step-n">02</span>
                         <div class="step-body">
-                            <p><strong>Restart your console.</strong> The installer adds VS Code to <code>%PATH</code>, but open consoles won't see the new value until you start a fresh one.</p>
+                            <p><strong>Restart your console.</strong> The installer adds VS Code to <code>%PATH%</code>, but open consoles won't see the new value until you start a fresh one.</p>
                         </div>
                     </div>
                     <div class="step">
@@ -319,9 +319,9 @@ https://go.microsoft.com/fwlink/?linkid=852157</code></pre>
                         <span class="step-n">03</span>
                         <div class="step-body">
                             <p>Or do it manually for zsh:</p>
-                            <pre><code>cat &lt;&lt; EOF &gt;&gt; ~/.zprofile
+                            <pre><code>cat &lt;&lt; 'EOF' &gt;&gt; ~/.zprofile
 <span class="code-comment"># Add Visual Studio Code (code)</span>
-export PATH="\$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
+export PATH="$PATH:/Applications/Visual Studio Code.app/Contents/Resources/app/bin"
 EOF</code></pre>
                             <p>Restart the terminal so <code>$PATH</code> picks it up.</p>
                         </div>
@@ -359,7 +359,7 @@ EOF</code></pre>
                 <div class="step">
                     <span class="step-n">A</span>
                     <div class="step-body">
-                        <p><strong>From the command line</strong> (after VS Code's <code>code</code> command is in your PATH from §1):</p>
+                        <p><strong>From the command line</strong> (after VS Code's <code>code</code> command is in your PATH from section 1):</p>
                         <pre><code>code --install-extension korekontrol.saltstack</code></pre>
                     </div>
                 </div>
@@ -438,7 +438,7 @@ EOF</code></pre>
 
             <figure class="figure">
                 <img src="img/academy-501/copilot-inline-chat.png" loading="lazy" alt="GitHub Copilot Chat inline-chat prompt example showing a question being asked directly in the editor">
-                <figcaption>Source: <a href="https://code.visualstudio.com/docs/copilot/copilot-chat" target="_blank" rel="noopener">code.visualstudio.com/docs/copilot/copilot-chat</a></figcaption>
+                <figcaption>Source: <a href="https://code.visualstudio.com/docs/copilot/chat/copilot-chat" target="_blank" rel="noopener">code.visualstudio.com/docs/copilot/chat/copilot-chat</a></figcaption>
             </figure>
 
             <h3>Beyond inline chat</h3>
@@ -446,10 +446,10 @@ EOF</code></pre>
 
             <figure class="figure">
                 <img src="img/academy-501/copilot-reviewer-mode.png" loading="lazy" alt="GitHub Copilot Chat custom reviewer mode interface showing an agent-style review of code changes">
-                <figcaption>Source: <a href="https://code.visualstudio.com/docs/copilot/customization/custom-chat-modes" target="_blank" rel="noopener">code.visualstudio.com/docs/copilot/customization</a></figcaption>
+                <figcaption>Source: <a href="https://code.visualstudio.com/docs/copilot/customization/custom-agents" target="_blank" rel="noopener">code.visualstudio.com/docs/copilot/customization</a></figcaption>
             </figure>
 
-            <p>Full quickstart in the <a href="https://code.visualstudio.com/docs/copilot/getting-started-chat" target="_blank" rel="noopener" style="color: var(--color-accent);">official docs ↗</a>.</p>
+            <p>Full quickstart in the <a href="https://code.visualstudio.com/docs/copilot/chat/getting-started-chat" target="_blank" rel="noopener" style="color: var(--color-accent);">official docs ↗</a>.</p>
         </div>
     </section>
 
@@ -588,7 +588,7 @@ EOF</code></pre>
         <div class="container">
             <p class="section-tag"><span class="level">06 · Advanced</span>~10 min</p>
             <h2>Claude Code — in the terminal.</h2>
-            <p class="section-intro">The CLI is what powers everything. The VS Code extension wraps it; this section installs it standalone — or alongside the extension if you already did §5. Use the CLI when you want speed, scripting, agent mode without a UI, or to run Claude Code in CI.</p>
+            <p class="section-intro">The CLI is what powers everything. The VS Code extension wraps it; this section installs it standalone — or alongside the extension if you already did section 5. Use the CLI when you want speed, scripting, agent mode without a UI, or to run Claude Code in CI.</p>
 
             <p class="source-cite">Source: <a href="https://code.claude.com/docs/en/setup" target="_blank" rel="noopener">code.claude.com/docs/en/setup</a> — Advanced setup</p>
 
@@ -661,10 +661,10 @@ claude doctor</code></pre>
                     <tr style="border-bottom: 1px solid var(--color-border);"><td style="padding: 0.6rem 0.75rem;"><code>claude "task"</code></td><td style="padding: 0.6rem 0.75rem; color: var(--color-text-muted);">Run a one-off task and stay in interactive</td></tr>
                     <tr style="border-bottom: 1px solid var(--color-border);"><td style="padding: 0.6rem 0.75rem;"><code>claude -p "query"</code></td><td style="padding: 0.6rem 0.75rem; color: var(--color-text-muted);">One-shot query, exits when done — useful for scripts</td></tr>
                     <tr style="border-bottom: 1px solid var(--color-border);"><td style="padding: 0.6rem 0.75rem;"><code>claude -c</code></td><td style="padding: 0.6rem 0.75rem; color: var(--color-text-muted);">Continue the most recent conversation in this directory</td></tr>
-                    <tr style="border-bottom: 1px solid var(--color-border);"><td style="padding: 0.6rem 0.75rem;"><code>claude -r</code></td><td style="padding: 0.6rem 0.75rem; color: var(--color-text-muted);">Resume a specific previous conversation (interactive picker)</td></tr>
-                    <tr><td style="padding: 0.6rem 0.75rem;"><code>claude --worktree feat-x</code></td><td style="padding: 0.6rem 0.75rem; color: var(--color-text-muted);">Start in an isolated git worktree (parallel sessions)</td></tr>
+                    <tr><td style="padding: 0.6rem 0.75rem;"><code>claude -r</code></td><td style="padding: 0.6rem 0.75rem; color: var(--color-text-muted);">Resume a specific previous conversation (interactive picker)</td></tr>
                 </tbody>
             </table>
+            <p style="font-size: 0.85rem; color: var(--color-text-muted); margin-top: 0.5rem;"><strong>Parallel sessions?</strong> Claude Code doesn't have a built-in worktree flag — use <code>git worktree add ../feat-x feat-x</code>, then <code>cd ../feat-x</code> and run <code>claude</code>. Each worktree is its own session.</p>
 
             <div class="callout callout-tip">
                 <i class="fas fa-link" aria-hidden="true"></i>

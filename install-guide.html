@@ -991,14 +991,14 @@ gpg --full-generate-key --homedir /tmp/gpgkeys</code></pre>
                 </div>
 
                 <p style="margin-top: 1.25rem;">Now export the keys, package them, and install:</p>
-                <pre><code><span class="code-comment"># export the public + secret keys</span>
+                <pre><code><span class="code-comment"># export the public + secret keys into the homedir so they tar with it</span>
 gpg --homedir /tmp/gpgkeys --expert --armor \
-    --export &gt; salt_pubkey.asc
+    --export &gt; /tmp/gpgkeys/salt_pubkey.asc
 gpg --homedir /tmp/gpgkeys --expert --armor \
-    --export-secret-key &gt; salt_seckey.asc
+    --export-secret-key &gt; /tmp/gpgkeys/salt_seckey.asc
 
 <span class="code-comment"># package the gpg dir and unpack at /etc/salt/gpgkeys</span>
-cd ..
+cd /tmp
 tar czvf gpgkeys.tgz gpgkeys
 sudo tar -zxvf /tmp/gpgkeys.tgz -C /etc/salt/
 
