@@ -620,6 +620,12 @@ sudo salt '*' test.ping</code></pre>
                     <p style="font-size: 0.85rem;">All three minions (both masters + the data node) should return <code>True</code>. If not, restart <code>salt-minion</code> on the silent box and retry.</p>
                 </article>
 
+                <article class="quickstart-step fade-in" style="grid-column: 1 / -1; background: var(--color-bg-card); border-left: 3px solid rgba(120, 200, 140, 0.7); padding: 1.75rem 2rem;">
+                    <h4 style="margin-top: 0; font-size: 1.05rem;">Pause: open-source Salt is now installed.</h4>
+                    <p>Steps 1–7 gave you a working Salt Project install: three minions, two masters, keys accepted, ping passing. That's the open-source build, fully usable on its own. <strong>If that's all you need, stop here.</strong></p>
+                    <p>Step 8 onwards installs VCF Salt (the commercial Broadcom build) on top. We use the Salt you just installed to do it: the minion on the data node gets PostgreSQL, Valkey, and RaaS via a highstate; the masters get the SSEAPE plugin the same way.</p>
+                </article>
+
                 <article class="quickstart-step fade-in" style="grid-column: 1 / -1; background: var(--color-bg-featured); border-left: 3px solid var(--color-accent); padding: 2rem 2.25rem;">
                     <span class="step-number"><i class="fas fa-wand-magic-sparkles" style="margin-right: 0.4rem; color: var(--color-accent);"></i>08 — THE PIVOT</span>
                     <h4>Set up the pillar — values for the highstate</h4>
