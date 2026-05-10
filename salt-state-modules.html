@@ -103,6 +103,21 @@
         .map-fnlist .fn-name { color: var(--color-accent); }
         .map-fnlist .fn-sig  { color: var(--color-text-dim); }
 
+        /* ── Source / official resources ───────────────────────────────── */
+        .map-resources { padding: 50px 0 80px; }
+        .map-resources-head { text-align: center; max-width: 620px; margin: 0 auto 2.25rem; }
+        .map-resources-eyebrow { font-family: var(--font-mono); font-size: 0.7rem; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--color-accent); margin: 0 0 0.75rem; }
+        .map-resources-head h2 { font-size: clamp(1.4rem, 2.4vw, 1.75rem); letter-spacing: -0.015em; margin: 0 0 0.625rem; }
+        .map-resources-head p { color: var(--color-text-muted); line-height: 1.6; margin: 0; }
+        .map-resources-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; max-width: 1080px; margin: 0 auto; }
+        .map-resource-card { display: flex; flex-direction: column; gap: 0.5rem; padding: 1.25rem 1.4rem; background: var(--color-bg-card); border: 1px solid var(--color-border); border-radius: var(--radius); text-decoration: none; color: inherit; transition: transform 200ms cubic-bezier(0.4, 0, 0.2, 1), border-color 160ms, box-shadow 160ms; }
+        .map-resource-card:hover { transform: translateY(-2px); border-color: var(--color-accent-mid); box-shadow: 0 12px 28px -16px rgba(6, 182, 212, 0.35); }
+        .map-resource-icon { width: 36px; height: 36px; border-radius: 8px; background: var(--color-accent-softer); border: 1px solid var(--color-accent-mid); display: inline-flex; align-items: center; justify-content: center; color: var(--color-accent); font-size: 0.95rem; margin-bottom: 0.25rem; }
+        .map-resource-card h3 { font-size: 1rem; font-weight: 600; color: var(--color-text); margin: 0; letter-spacing: -0.005em; }
+        .map-resource-card p { font-size: 0.85rem; color: var(--color-text-muted); line-height: 1.5; margin: 0; flex: 1; }
+        .map-resource-link { font-family: var(--font-mono); font-size: 0.78rem; font-weight: 500; color: var(--color-accent); margin-top: 0.5rem; }
+        @media (max-width: 900px) { .map-resources-grid { grid-template-columns: 1fr; max-width: 480px; } }
+
         /* ── Loading + empty states ────────────────────────────────────── */
         .map-loading { padding: 2.5rem; text-align: center; color: var(--color-text-muted); }
         .map-loading i { color: var(--color-accent); margin-right: 0.5rem; }
@@ -200,6 +215,37 @@
         <div class="container">
             <div id="mapContainer">
                 <div class="map-loading"><i class="fas fa-circle-notch fa-spin"></i> Loading state modules…</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Source / official resources -->
+    <section class="map-resources">
+        <div class="container">
+            <header class="map-resources-head">
+                <p class="map-resources-eyebrow">FROM THE SOURCE</p>
+                <h2>Want the upstream docs?</h2>
+                <p>This index is curated — same 127 modules, regrouped by what they do. The official Salt docs are the canonical reference. These are the entry points if you want to browse them direct.</p>
+            </header>
+            <div class="map-resources-grid">
+                <a href="https://docs.saltproject.io/en/master/ref/states/all/index.html" target="_blank" rel="noopener" class="map-resource-card">
+                    <div class="map-resource-icon"><i class="fas fa-list-ul" aria-hidden="true"></i></div>
+                    <h3>Official state modules index</h3>
+                    <p>The canonical alphabetical list of every state module on Salt master.</p>
+                    <span class="map-resource-link">docs.saltproject.io ↗</span>
+                </a>
+                <a href="https://github.com/saltstack/salt/tree/master/salt/states" target="_blank" rel="noopener" class="map-resource-card">
+                    <div class="map-resource-icon"><i class="fab fa-github" aria-hidden="true"></i></div>
+                    <h3>State modules source</h3>
+                    <p>Read the actual Python implementing each state module on GitHub.</p>
+                    <span class="map-resource-link">github.com/saltstack/salt ↗</span>
+                </a>
+                <a href="https://docs.saltproject.io/salt/user-guide/en/latest/topics/states.html" target="_blank" rel="noopener" class="map-resource-card">
+                    <div class="map-resource-icon"><i class="fas fa-book" aria-hidden="true"></i></div>
+                    <h3>Salt States — user guide</h3>
+                    <p>The conceptual doc for state files, requisites, and how it all fits together.</p>
+                    <span class="map-resource-link">docs.saltproject.io ↗</span>
+                </a>
             </div>
         </div>
     </section>
