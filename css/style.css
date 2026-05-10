@@ -1204,6 +1204,7 @@ p code, li code, h4 code {
     display: flex;
     flex-direction: column;
     gap: 0.625rem;
+    min-width: 0;
 }
 
 .cmd-label {
