@@ -247,7 +247,7 @@
                     <li><strong>Masters are HA inside the deployment</strong> — mirrored keys + auto-accept.</li>
                     <li><strong>Blue/green = swap the whole 3-server stack.</strong> Or rebuild from Git. Both take ten minutes.</li>
                     <li><strong>Everything in Git.</strong> Pillar, states, secrets (encrypted with GPG). Stack is reproducible by definition.</li>
-                    <li><strong>Not a RaaS-UI tutorial.</strong> We install RaaS — it's part of the stack — but state and pillar authoring lives in Git, not the web UI.</li>
+                    <li><strong>RaaS isn't used for state files or pillar.</strong> We install RaaS — it's part of the stack — but state and pillar authoring lives in Git, not the web UI.</li>
                     <li><strong>Air-gapped install</strong> only differs in one place: the pip wheels.</li>
                 </ul>
             </div>
@@ -335,7 +335,7 @@
 
             <div class="callout callout-warn">
                 <i class="fas fa-circle-info"></i>
-                <p><strong>What this guide is NOT.</strong> RaaS gets installed — it's part of the stack and minions need it — but we don't <em>use</em> the RaaS web UI to author states or pillar. Git is the source of truth. State files live in a Git repo; pillar lives in Git; secrets live in Git (encrypted with GPG). If you came looking for a tutorial on building states through the RaaS UI, this isn't it. The trade-off (no UI workflow, no database-as-source-of-truth) is what makes the blue/green pattern possible — we never restore a RaaS database, we just flip a CNAME and rebuild from Git. <strong>Small price to pay for not firefighting at 2am.</strong></p>
+                <p><strong>What this guide is NOT.</strong> RaaS gets installed — it's part of the stack and can be used for some tasks — but we don't <em>use</em> the RaaS web UI to author states or pillar. Git is the source of truth. State files live in a Git repo; pillar lives in Git; secrets live in Git (encrypted with GPG). If you came looking for a tutorial on building states through the RaaS UI, this isn't it. The trade-off (no UI workflow, no database-as-source-of-truth) is what makes the blue/green pattern possible — we never restore a RaaS database, we just flip a CNAME and rebuild from Git. <strong>Small price to pay for not firefighting at 2am.</strong></p>
             </div>
 
             <div class="callout callout-tip">
