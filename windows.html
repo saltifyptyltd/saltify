@@ -257,20 +257,6 @@ sudo salt '&lt;your minion id&gt;' pkg.list_pkgs</code></pre>
 
             <div class="field-callout">
                 <p class="field-callout-tag"><i class="fas fa-bolt"></i> From production</p>
-                <h3>salt-cloud (saltify driver) for fleet rollouts</h3>
-                <p>If the boxes already exist and you can SMB to them, push the MSI from the master via <code>salt-cloud</code> with the <code>saltify</code> driver. No need to log into each Windows host.</p>
-                <pre><code><span class="code-comment"># /etc/salt/cloud.profiles.d/win.conf</span>
-win-server-2022:
-  driver: saltify
-  ssh_host: win01.example.com
-  win_username: Administrator
-  win_password: &lt;encrypt-with-pillar-gpg&gt;
-  master: salt-master.example.com
-  win_installer: /etc/salt/cloud.deploy.d/Salt-Minion-3007.1-AMD64-Setup.exe</code></pre>
-            </div>
-
-            <div class="field-callout">
-                <p class="field-callout-tag"><i class="fas fa-bolt"></i> From production</p>
                 <h3>Pick a sensible minion ID convention</h3>
                 <p>Default is the hostname. That's fine for one-off boxes. For fleets, use something role-aware: <code>app-web01</code>, <code>db-prod-01</code>. Lets you target with globs (<code>salt 'app-*'</code>) and grains (<code>os_family:Windows</code>) cleanly. Don't change minion IDs after the fact — Salt treats them as new minions and you lose history.</p>
             </div>
