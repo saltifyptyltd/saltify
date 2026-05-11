@@ -55,26 +55,8 @@
             line-height: 1.1;
             color: var(--color-text);
         }
-        .academy-hero-diffs {
-            text-align: left;
-            max-width: 720px;
-            margin: 0 auto 2.5rem;
-            color: var(--color-text-muted);
-            line-height: 1.65;
-            font-size: 0.95rem;
-        }
-        .academy-hero-diffs ul {
-            padding-left: 1.25rem;
-            margin: 0;
-        }
-        .academy-hero-diffs li {
-            margin-bottom: 0.625rem;
-        }
-        .academy-hero-diffs li strong {
-            color: var(--color-text);
-            font-weight: 600;
-        }
         .academy-hero-stats {
+            margin-top: 2.5rem;
             display: flex;
             justify-content: center;
             gap: 2.75rem;
@@ -189,28 +171,6 @@
             margin-top: 0.5rem;
         }
 
-        .academy-outro {
-            padding: 50px 0 100px;
-            text-align: center;
-        }
-        .academy-outro h2 {
-            font-size: clamp(1.5rem, 2.5vw, 1.875rem);
-            letter-spacing: -0.015em;
-            margin-bottom: 0.625rem;
-        }
-        .academy-outro p {
-            color: var(--color-text-muted);
-            max-width: 560px;
-            margin: 0 auto 1.5rem;
-            line-height: 1.6;
-        }
-        .academy-outro-actions {
-            display: flex;
-            justify-content: center;
-            gap: 0.875rem;
-            flex-wrap: wrap;
-        }
-
         @media (max-width: 700px) {
             .academy-resources-grid { grid-template-columns: 1fr; max-width: 480px; }
         }
@@ -219,7 +179,6 @@
             .academy-hero-stats { gap: 1.75rem; }
             .academy-hero-stat-num { font-size: 1.75rem; }
             .academy-resources { padding: 40px 0 20px; }
-            .academy-outro { padding: 40px 0 70px; }
         }
     </style>
 </head>
@@ -268,15 +227,6 @@
         <div class="container">
             <p class="academy-hero-tag"><span class="academy-hero-mark" aria-hidden="true">⬡</span> The curriculum</p>
             <h1 id="academy-heading">Salt Academy.</h1>
-            <div class="academy-hero-diffs">
-                <ul>
-                    <li><strong>Practical Focus:</strong> Rather than just theory, the guides focus on production patterns, such as a 3-server architecture and a rebuild-from-Git pattern applied to daily workflows.</li>
-                    <li><strong>Plain English Approach:</strong> The curriculum is written in "plain English" by practitioners who deploy Salt professionally, aiming for clarity over dense technical jargon.</li>
-                    <li><strong>Curated Content:</strong> It condenses Salt's vast ecosystem into 8 guides, 127 modules, and 5 courses, specifically highlighting "anti-patterns" and quirks to avoid in production.</li>
-                    <li><strong>AI Integration:</strong> Unlike traditional docs, it includes specific guidance on using AI as a productivity multiplier, including setup for MCP and identifying AI failure modes.</li>
-                    <li><strong>Searchable References:</strong> It provides reorganized resources, such as 127 state modules grouped into 9 functional categories with usage examples, making it easier to find solutions based on specific tasks.</li>
-                </ul>
-            </div>
             <div class="academy-hero-stats" role="list">
                 <div class="academy-hero-stat" role="listitem">
                     <span class="academy-hero-stat-num">8</span>
@@ -323,7 +273,7 @@
                 <div class="install-promo-card fade-in">
                     <p class="install-promo-card-tag">Step 2 · Use it</p>
                     <h2>Your first Salt state.</h2>
-                    <p class="install-promo-lead">From hello-world to pillar to Git. Windows + Linux side by side. <strong>Same rebuild-from-Git pattern, applied to your day-one workflow.</strong></p>
+                    <p class="install-promo-lead">From hello-world to pillar to Git. Windows + Linux side by side. The rebuild-from-Git pattern, applied to your day-one workflow.</p>
                     <div class="install-promo-stats">
                         <div class="install-promo-stat">
                             <span class="install-promo-stat-num">5</span>
@@ -365,7 +315,7 @@
                 <div class="install-promo-card fade-in">
                     <p class="install-promo-card-tag">Step 4 · Windows</p>
                     <h2>Salt on Windows. The practical bits.</h2>
-                    <p class="install-promo-lead">Install the minion, learn the 6 quirks Salt has on Windows, manage software fleet-wide with winrepo. <strong>One scrollable page.</strong></p>
+                    <p class="install-promo-lead">Install the minion, learn the 6 quirks Salt has on Windows, manage software fleet-wide with winrepo.</p>
                     <div class="install-promo-stats">
                         <div class="install-promo-stat">
                             <span class="install-promo-stat-num">5</span>
@@ -407,7 +357,7 @@
                 <div class="install-promo-card fade-in">
                     <p class="install-promo-card-tag">Advanced · AI Tooling</p>
                     <h2>The AI toolchain. Installed, signed in, working.</h2>
-                    <p class="install-promo-lead">VSCode, the SaltStack extension, Copilot Chat, Claude in Chrome, Claude Code (IDE + terminal). <strong>Install commands lifted from official docs.</strong></p>
+                    <p class="install-promo-lead">VSCode, the SaltStack extension, Copilot Chat, Claude in Chrome, Claude Code (IDE + terminal). Install commands lifted from official docs.</p>
                     <div class="install-promo-stats">
                         <div class="install-promo-stat">
                             <span class="install-promo-stat-num">6</span>
@@ -431,7 +381,7 @@
                 <div class="install-promo-card fade-in">
                     <p class="install-promo-card-tag">Reference · Cheat Sheet</p>
                     <h2>Salt Cheat Sheet.</h2>
-                    <p class="install-promo-lead">60-ish commands organised by category. Vibe checks, keys, targeting, states, debug, jobs, network. <strong>Copy-paste ready. Bookmark this page.</strong></p>
+                    <p class="install-promo-lead">60-ish commands organised by category. Vibe checks, keys, targeting, states, debug, jobs, network. <strong>Copy-paste ready.</strong></p>
                     <div class="install-promo-stats">
                         <div class="install-promo-stat">
                             <span class="install-promo-stat-num">60+</span>
@@ -523,18 +473,6 @@
 
             <p class="salt-wild-subhead"><i class="fab fa-github" aria-hidden="true"></i> Releases <span>· <code>saltstack/salt</code> · stable only</span></p>
             <div class="release-grid divider-grid" id="saltFeed"></div>
-        </div>
-    </section>
-
-    <!-- Outro: send people back to home / contact -->
-    <section class="academy-outro">
-        <div class="container">
-            <h2>Want this in your environment, faster?</h2>
-            <p>The Academy is the read-it-yourself version. If you'd rather have us build it for you, Saltify takes contracts. We're Canberra-based with an Australian Government track record.</p>
-            <div class="academy-outro-actions">
-                <a href="index.html#contact" class="btn-primary">Let's talk →</a>
-                <a href="index.html" class="btn-ghost">Back to home</a>
-            </div>
         </div>
     </section>
 

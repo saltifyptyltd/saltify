@@ -234,7 +234,7 @@
         <div class="container">
             <p class="crumb">Getting Started</p>
             <h1>Your first Salt state.</h1>
-            <p class="lead">Salt is installed. The masters are talking to the data layer. Now what? <strong>This is what you do next.</strong> A hands-on tutorial that picks up exactly where the <a href="install-guide.html" style="color: var(--color-accent);">install guide</a> ends.</p>
+            <p class="lead">Salt is installed. The masters are talking to the data layer. This hands-on tutorial picks up exactly where the <a href="install-guide.html" style="color: var(--color-accent);">install guide</a> ends.</p>
             <p class="doc-version"><strong>v1.2</strong> · Updated 2026-05-09</p>
 
             <div class="tldr">
@@ -254,7 +254,7 @@
         <div class="container">
             <div class="callout callout-tip" style="max-width: 760px; margin: 0 auto;">
                 <i class="fas fa-brain"></i>
-                <p><strong>One mental shift before you start.</strong> Salt is declarative. You don't tell it <em>"install nginx on the minion"</em>; you describe what the minion should look like (<em>"nginx is installed"</em>), and Salt makes that true and keeps it true. From here on, manage minions from the master. No more SSHing into them.</p>
+                <p><strong>Salt is declarative.</strong> You don't tell it <em>"install nginx on the minion"</em>; you describe what the minion should look like (<em>"nginx is installed"</em>), and Salt makes that true and keeps it true. From here on you manage minions from the master, not by SSH.</p>
             </div>
         </div>
     </section>
@@ -316,7 +316,7 @@ base:
                 <article class="quickstart-step fade-in">
                     <span class="step-number">04</span>
                     <h4>First Windows state <span class="platform-tag"><i class="fab fa-windows" aria-hidden="true"></i> Windows</span></h4>
-                    <p>Create a folder at <code>C:\saltdemo</code> and a text file inside it. The simplest possible thing — but it proves Salt can write to a Windows box.</p>
+                    <p>Create a folder at <code>C:\saltdemo</code> and a text file inside it. The simplest possible thing, but it proves Salt can write to a Windows box.</p>
                     <pre><code><span class="code-comment"># create the file</span>
 vi /srv/salt/windows/hello.sls</code></pre>
                     <pre><code><span class="code-comment"># /srv/salt/windows/hello.sls</span>
@@ -371,7 +371,7 @@ hello_file:
 
             <div class="callout callout-tip">
                 <i class="fas fa-circle-info"></i>
-                <p><strong>Why two states?</strong> Same intent (folder + file), different operating system, different paths. Same Salt module (<code>file.directory</code>, <code>file.managed</code>) — Salt translates to whatever the OS needs underneath. That cross-platform parity is one of the reasons Salt exists.</p>
+                <p><strong>Why two states?</strong> Same intent (folder + file), different operating system, different paths. Same Salt module (<code>file.directory</code>, <code>file.managed</code>); Salt translates to whatever the OS needs underneath.</p>
             </div>
         </div>
     </section>
@@ -641,7 +641,7 @@ add_to_{{ group | replace(' ', '_') }}:
 
             <div class="callout callout-tip" style="margin-top: 1.75rem;">
                 <i class="fas fa-circle-info"></i>
-                <p><strong>Why this matters.</strong> Per-environment values (dev / staging / prod) and secrets (<a href="install-guide.html#gpg-deep-dive" style="color: var(--color-accent);">encrypted with GPG</a>) all sit in pillar. The same state file ships to every environment; pillar is what makes it behave correctly in each one. Logic in states, data in pillar.</p>
+                <p><strong>Why this matters.</strong> Per-environment values (dev / staging / prod) and secrets (<a href="install-guide.html#gpg-deep-dive" style="color: var(--color-accent);">encrypted with GPG</a>) all sit in pillar. The same state file ships to every environment; pillar is what makes it behave correctly in each one.</p>
             </div>
         </div>
     </section>
@@ -702,7 +702,7 @@ git -C /srv/salt rev-parse HEAD</code></pre>
 
             <div class="callout callout-tip" style="margin-top: 1.75rem;">
                 <i class="fas fa-link"></i>
-                <p><strong>You've just closed the loop with the install guide.</strong> When you build a green stack later, the master doesn't need to be configured by hand — the <a href="install-guide.html" style="color: var(--color-accent);">install guide's GIT card (section 6)</a> does this exact pattern, plus a 10-minute cron pull. <strong>Future masters get every state you wrote, automatically.</strong></p>
+                <p><strong>You've just closed the loop with the install guide.</strong> When you build a green stack later, the master doesn't need to be configured by hand — the <a href="install-guide.html" style="color: var(--color-accent);">install guide's GIT card (section 6)</a> does this exact pattern, plus a 10-minute cron pull. <strong>Future masters get every state you wrote.</strong></p>
             </div>
 
             <div class="callout callout-tip" style="margin-top: 1.75rem;">
@@ -716,7 +716,7 @@ git -C /srv/salt rev-parse HEAD</code></pre>
     <section class="guide-section section-alt" id="modules-reference">
         <div class="container">
             <h2>Modules used in this guide.</h2>
-            <p class="section-intro">Every Salt state module we used, with a direct link to its full reference. <strong>Bookmark this</strong> — the official docs are the source of truth. We've shown one or two options per module; each module typically has 20+.</p>
+            <p class="section-intro">Every Salt state module we used, with a direct link to its full reference. The official docs are the source of truth; we've shown one or two options per module, but each module typically has 20+.</p>
 
             <div class="pattern-grid" style="grid-template-columns: repeat(2, 1fr);">
                 <div class="pattern-card">
@@ -762,7 +762,7 @@ git -C /srv/salt rev-parse HEAD</code></pre>
     <section class="guide-section">
         <div class="container">
             <h2>Coming next</h2>
-            <p class="section-intro">You now have the skeleton: folders, top files, and one state per platform. We'll continue from here.</p>
+            <p class="section-intro">You now have the skeleton: folders, top files, and one state per platform. The pieces below build on it.</p>
 
             <div class="coming-next">
                 <div class="coming-next-item">
@@ -771,11 +771,11 @@ git -C /srv/salt rev-parse HEAD</code></pre>
                 </div>
                 <div class="coming-next-item">
                     <h4>Multi-environment — dev, staging, prod</h4>
-                    <p>Add more roots to <code>file_roots.conf</code> and <code>pillar.conf</code>. Same states, different pillar per environment. The same blue/green pattern from the <a href="install-guide.html" style="color: var(--color-accent);">install guide</a>, applied at the data level.</p>
+                    <p>Add more roots to <code>file_roots.conf</code> and <code>pillar.conf</code>. Same states, different pillar per environment — the same blue/green pattern from the <a href="install-guide.html" style="color: var(--color-accent);">install guide</a>, one layer down.</p>
                 </div>
                 <div class="coming-next-item">
                     <h4>Jinja templating — go deeper</h4>
-                    <p>Conditionals (<code>{% if grains['os_family'] == 'RedHat' %}…{% endif %}</code>), filters, file templating with <code>file.managed</code> + <code>template: jinja</code>. The same template, behaving correctly on different OSs.</p>
+                    <p>Conditionals (<code>{% if grains['os_family'] == 'RedHat' %}…{% endif %}</code>), filters, file templating with <code>file.managed</code> + <code>template: jinja</code>. One template, the right output per OS.</p>
                 </div>
                 <div class="coming-next-item">
                     <h4>Targeting — by name, glob, grain</h4>

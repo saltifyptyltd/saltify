@@ -575,7 +575,7 @@ sudo rpm -ivh salt-minion-*.rpm</code></pre>
                 <article class="quickstart-step fade-in">
                     <span class="step-number">04</span>
                     <h4>Mirror master keys</h4>
-                    <p>This is the magic. Both masters use the <em>same</em> <code>master.pem</code> and <code>master.pub</code>. That's how a minion can talk to either master without re-keying — and how blue/green works later.</p>
+                    <p>Both masters use the <em>same</em> <code>master.pem</code> and <code>master.pub</code>. That's how a minion can talk to either master without re-keying, and how blue/green works later.</p>
                     <pre><code><span class="code-comment"># on master 1 — generate the keys (first time only)</span>
 <span class="code-comment"># the files don't exist until you start the service once</span>
 sudo systemctl start salt-master
@@ -593,7 +593,7 @@ sudo vim   /etc/salt/pki/master/master.pub</code></pre>
                 <article class="quickstart-step fade-in">
                     <span class="step-number">05</span>
                     <h4>Set auto-accept</h4>
-                    <p>The other half of the magic. Edit <code>/etc/salt/master</code> on both masters.</p>
+                    <p>Edit <code>/etc/salt/master</code> on both masters.</p>
                     <pre><code>user: root
 auto_accept: True</code></pre>
                     <p style="font-size: 0.85rem;">If your security policy bans blanket auto-accept, use <code>auto_accept_grain</code> patterns — but the rule must match on both masters.</p>
@@ -841,7 +841,7 @@ sudo salt '*' test.ping</code></pre>
 
             <div class="callout callout-warn">
                 <i class="fas fa-exclamation-triangle"></i>
-                <p><strong>Don't skip step 11a.</strong> Leaving <code>master_autoaccept: true</code> in place after install means any new master plugin registers without review — that's a security hole. The line goes in for 10b, comes back out in 11a. Always.</p>
+                <p><strong>Don't skip step 11a.</strong> Leaving <code>master_autoaccept: true</code> in place after install means any new master plugin registers without review — that's a security hole. The line goes in for 10b, comes back out in 11a, no exceptions.</p>
             </div>
         </div>
     </section>

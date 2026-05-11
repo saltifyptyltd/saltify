@@ -305,8 +305,8 @@ sudo salt '&lt;your minion id&gt;' pkg.list_pkgs</code></pre>
                     <p class="quirk-num">QUIRK 01</p>
                     <div class="quirk-body">
                         <h4><code>group</code> on file states does nothing</h4>
-                        <p>Windows files <em>do</em> have a "primary group" property, but it's basically vestigial — leftover from Services for Unix / NFS compatibility. Salt knows this and silently ignores the <code>group</code> parameter on file states. No error, no warning that matters, just nothing.</p>
-                        <p>If you actually want to set the primary group (you probably don't), use <code>file.get_pgid</code>, <code>file.get_pgroup</code>, or the <code>pgroup</code> arg on <code>file.chown</code>.</p>
+                        <p>Windows files <em>do</em> have a "primary group" property, but it's vestigial — leftover from Services for Unix / NFS compatibility. Salt knows this and silently ignores the <code>group</code> parameter on file states. No error, no warning that matters, just nothing.</p>
+                        <p>If you want to set the primary group (you probably don't), use <code>file.get_pgid</code>, <code>file.get_pgroup</code>, or the <code>pgroup</code> arg on <code>file.chown</code>.</p>
                         <div class="quirk-fix"><i class="fas fa-wrench"></i> <span>Skip <code>group:</code> in your file states on Windows. Use ACLs via <code>win_dacl</code> if you need real permissions.</span></div>
                     </div>
                 </div>
@@ -426,7 +426,7 @@ sudo salt-pip install pygit2</code></pre>
             </div>
 
             <h3 style="margin-top: 2rem;">Day-2 operations</h3>
-            <p style="color: var(--color-text-muted); line-height: 1.6;">Once winrepo is set up, these are the four commands you'll actually run.</p>
+            <p style="color: var(--color-text-muted); line-height: 1.6;">Once winrepo is set up, these are the four commands you'll run.</p>
 
             <div class="ops-grid">
                 <div class="ops-card">
@@ -541,7 +541,7 @@ source_hash: 'sha256=&lt;your hash&gt;'</code></pre>
                 </div>
                 <div class="planned-item">
                     <i class="fas fa-clock"></i>
-                    <span><strong>Scheduled tasks</strong> — Windows Task Scheduler from Salt, with examples that actually run</span>
+                    <span><strong>Scheduled tasks</strong> — Windows Task Scheduler from Salt, with copy-paste examples</span>
                 </div>
                 <div class="planned-item">
                     <i class="fas fa-terminal"></i>
