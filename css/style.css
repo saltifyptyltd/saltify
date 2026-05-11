@@ -1694,6 +1694,18 @@ pre code {
     max-width: 480px;
 }
 
+.install-promo-grid--references {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 880px;
+    margin: 0 auto;
+}
+
+/* When an eyebrow follows a grid (the references section pattern), give it
+   breathing room above so the two grids read as separate sections. */
+.install-promo-grid + .install-promo-eyebrow {
+    margin-top: 3.5rem;
+}
+
 /* Cards are ~30% smaller than the previous 2-column promo so the grid fits
    nine articles as 3 rows of 3. Padding, type sizes, and stat-row spacing
    all scale together. */
