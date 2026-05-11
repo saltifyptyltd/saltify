@@ -26,7 +26,7 @@ The Salt releases + blog feeds only render against live external APIs, so when i
 
 ## Cache busters
 
-Every page links `css/style.css?v=N` and `js/script.js?v=N`. **Bump both numbers across all 10 pages** when you change CSS or JS — drift causes wasted refetches as visitors browse across pages. Currently `style.css?v=39` and `script.js?v=34`.
+Every page links `css/style.css?v=N` and `js/script.js?v=N` (independent counters). **Bump the affected one across all 10 pages** when you change that asset — drift causes wasted refetches as visitors browse across pages. Read the current `?v=N` from any HTML file before bumping; don't keep the number here (it goes stale fast).
 
 ## Conventions worth keeping
 
@@ -47,6 +47,7 @@ Every page links `css/style.css?v=N` and `js/script.js?v=N`. **Bump both numbers
 
 ## Sync rules
 
-- **8 curriculum cards mirrored on `index.html` and `salt-academy.html`** — same copy, same order. Change one, mirror to the other.
+- **Curriculum cards mirrored on `index.html` and `salt-academy.html`** — split layout: a 6-card "courses" grid then a "References · for lookup, not reading in order" eyebrow then a 2-card `.install-promo-grid--references` grid. Same copy, same order on both files. Card titles match each destination page's H1 verbatim. Change one, mirror to the other.
+- **Per-page canonical tag in `<head>`** — `<link rel="canonical" href="https://saltify.work/<filename>">` on every page (bare `/` for `index.html`), placed right after the `rel="icon"` line. Add when introducing a new page.
 - **Launch toast HTML duplicated across 9 pages** (every page except `salt-academy.html`). Change one, change all 9.
 - **Local-only `Documentation/` folder** — real keys/PATs/client hostnames; never commit. See `feedback_documentation_local_only.md`.
