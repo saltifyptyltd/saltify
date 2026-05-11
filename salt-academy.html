@@ -66,6 +66,16 @@
             line-height: 1.1;
             color: var(--color-text);
         }
+        .academy-hero-lead {
+            max-width: 620px;
+            margin: 1.5rem auto 0;
+            font-size: 1.05rem;
+            line-height: 1.65;
+            color: var(--color-text-muted);
+        }
+        .academy-hero-lead + .academy-hero-lead {
+            margin-top: 0.5rem;
+        }
         .academy-hero-stats {
             margin-top: 2.5rem;
             display: flex;
@@ -238,6 +248,8 @@
         <div class="container">
             <p class="academy-hero-tag"><span class="academy-hero-mark" aria-hidden="true">⬡</span> The curriculum</p>
             <h1 id="academy-heading">Salt Academy.</h1>
+            <p class="academy-hero-lead">Salt's a great product. The official docs aren't.</p>
+            <p class="academy-hero-lead">This is my attempt to fix that. More courses coming when I have time.</p>
             <div class="academy-hero-stats" role="list">
                 <div class="academy-hero-stat" role="listitem">
                     <span class="academy-hero-stat-num">8</span>
